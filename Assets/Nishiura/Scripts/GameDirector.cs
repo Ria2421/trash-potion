@@ -125,11 +125,12 @@ public class GameDirector : MonoBehaviour
 
                 if(1 == initUnitData[i,j])
                 {
-
+                    unitrnd = p1rnd;
                     unitNum = p1++;
                 }
                 else if (2 == initUnitData[i, j])
-                {                   
+                {
+                    unitrnd = p2rnd;
                     unitNum = p2++;
                     angle.y = 180;
                 }
@@ -147,22 +148,75 @@ public class GameDirector : MonoBehaviour
 
                 GameObject unit = resourcesInstantiate(resname, new Vector3(x, 0.6f, z), Quaternion.Euler(angle));
 
-
                 if(null != unit)
                 {
                     unit.GetComponent<UnitController>().PlayerNo = initUnitData[i,j];
                     unit.GetComponent<UnitController>().Type = playerType;
+
+                    unitData[i,j].Add(unit);
                 }
             }
 
             nowTurn = 0;
+            nextMode = MODE.MOVE_SELECT;
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        SelectMode();
+        if (isWait()) return;
+
+        Mode();
+
+        if (MODE.NONE != nextMode) InitMode(nextMode);
+    }
+
+    bool isWait()
+    { //CPUの待機処理(使わん) または何かしら待機処理
+        bool ret = false;
+
+        if(0 <waitTime)
+        {
+            if (MODE.NONE != nextMode) InitMode(nextMode);
+            ret = true;
+        }
+        return ret;
+    }
+
+    /// <summary>
+    /// メインモード
+    /// </summary>
+    /// <param name="next"></param>
+    void Mode()
+    {
+        if(MODE.MOVE_SELECT ==nowMode)
+        {
+            SelectMode();
+        }
+        else if(MODE.FIELD_UPDATE ==nowMode)
+        {
+            FieldUpdateMode();
+        }
+        else if (MODE.TURN_CHANGE == nowMode)
+        {
+            TurnChangeMode();
+        }
+    }
+
+    /// <summary>
+    /// 次のモード準備
+    /// </summary>
+    /// <param name="next"></param>
+    void InitMode(MODE next)
+    {
+        if(MODE.MOVE_SELECT ==next)
+        {
+            selectUnit = null;
+        }
+
+        nowMode = next;
+        nextMode = MODE.NONE;
     }
 
     void SelectMode()
@@ -174,12 +228,10 @@ public class GameDirector : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
-            if(Physics.Raycast(ray, out hit,100))
+            if(Physics.Raycast(ray,out hit,100))
             {
                 hitobj = hit.collider.gameObject;
             }
-            Debug.Log(hitobj);
-
         }
 
         if(null == hitobj) return;
@@ -190,7 +242,8 @@ public class GameDirector : MonoBehaviour
         int z = (int)(pos.z + (tileData.GetLength(0) / 2 - 0.5f));
 
         //ユニット選択
-        if(0 < unitData[z,x].Count && player[nowTurn].PlayerNo == unitData[z, x][0].GetComponent<UnitController>().PlayerNo)
+        if(0 < unitData[z,x].Count
+           && player[nowTurn].PlayerNo == unitData[z, x][0].GetComponent<UnitController>().PlayerNo)
         {
             Debug.Log("aaaaaaaaaa");
 
@@ -199,13 +252,80 @@ public class GameDirector : MonoBehaviour
                 selectUnit.GetComponent<UnitController>().Select(false);
             }
             selectUnit = unitData[z, x][0];
-            oldX = x ;
+            oldX = x;
             oldY = z;
 
             selectUnit.GetComponent<UnitController>().Select();
         }
+        else if(null != selectUnit)
+        {//移動先タイル選択
+            if(movableTile(oldX,oldY,x,z))
+            {
+                unitData[oldY, oldX].Clear();
+                pos.y += 0.5f;
+                selectUnit.transform.position = pos ;
 
-        //移動先タイル選択
+                unitData[z, x].Add(selectUnit);
+
+                nextMode = MODE.FIELD_UPDATE;
+            }
+        }
+    }
+
+    void FieldUpdateMode()
+    {
+        for(int i = 0; i <unitData.GetLength(0); i++)
+        {
+            for (int j = 0; j < unitData.GetLength(0); j++)
+            {
+                //ゴール時削除
+                if(1 == unitData[i,j].Count && player[nowTurn].PlayerNo*4 == tileData[i,j])
+                {
+                    if(UnitController.TYPE_BLUE == unitData[i, j][0].GetComponent<UnitController>().Type) 
+                    {//青だとwin
+                        player[nowTurn].IsClear = true;
+                    }
+                    Destroy(unitData[i, j][0]);
+                    unitData[i, j].RemoveAt(0);
+                }
+                //重複時、ユニットを削除
+                if (1 < unitData[i, j].Count)
+                {
+                    if (UnitController.TYPE_RED == unitData[i, j][0].GetComponent<UnitController>().Type)
+                    {//赤ユニット時処理
+                        player[nowTurn].Hp++;
+                        waitTime = 1.5f;
+                    }
+                    else
+                    {//青ユニット時処理
+                        player[nowTurn].Socre++;
+                        waitTime = 1.5f;
+                    }
+
+                    Destroy(unitData[i, j][0]);
+                    unitData[i, j].RemoveAt(0);
+                }
+            }
+        }
+
+        nextMode = MODE.TURN_CHANGE;
+    }
+
+    void TurnChangeMode()
+    {
+        //次のターンへ
+        nowTurn = getNextTurn();
+        nextMode = MODE.MOVE_SELECT;
+    }
+
+    int getNextTurn()
+    {
+        int ret = nowTurn;
+
+        ret++;
+        if (1 < ret) ret = 0;
+
+        return ret;
     }
 
     //ランダム配置関数(使わん)

@@ -5,48 +5,40 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    enum MODE
-    { 
-        Player1,
+    enum Player　
+    {
+        Player1=1,
         Player2,
         Player3,
         Player4
     }
 
-    [SerializeField] GameObject PlayerText;
+    //Textオブジェクトを格納するためのフィールド
+    [SerializeField] Text PlayerText;
+    private Player currentPlayer = Player.Player1;// 現在のプレイヤーを表すenumの変数
 
-    int nowPlayer;
 
     // Start is called before the first frame update
     void Start()
     {
-        PlayerText = GameObject.Find("PlayerText");
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        //while(nowPlayer ==true)
+        //エンターキーが押されたら
+        if (Input.GetKeyDown(KeyCode.Return))
         {
-            if (Input.GetKeyDown(KeyCode.Return))
-            {
-                nowPlayer++;
-
-                string Times = nowPlayer.ToString();
-                PlayerText.GetComponent<Text>().text = Times + "Pの番です";
-            }
+            //次のプレイヤーに変更する
+            currentPlayer = (Player)(((int)currentPlayer % 4) + 1);
+            trunChenge();// プレイヤーテキストを更新するメソッドを呼び出す
         }
-       
     }
 
-    void TurnCalc()
-    {
-
-    }
-    
     public void trunChenge()
     {
-       
-        
+        // 現在のプレイヤー番号をテキストに表示する
+        PlayerText.text = $"{(int)currentPlayer}P";
     }
 }

@@ -16,7 +16,7 @@ EditorBuildSettings:
     guid: 9db568991b140f8459914a42198f2a63
   - enabled: 0
     path: Assets/takamiya/Cenes/GameScene.unity
-    guid: 611bf19aa4c8c2f4e8a438300ad2f405
+    guid: e9b3f9d8e1da0e44a8afb9308ab57d15
   - enabled: 0
     path: Assets/takamiya/Cenes/Result.unity
     guid: cfa11beba5df4d943be6c53e6a224b0e
@@ -29,10 +29,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
+  - enabled: 0
     path: Assets/nakamoto/Scenes/Connect.unity
     guid: ca9fdf097c26e8a42afe8297860e174d
-  - enabled: 1
+  - enabled: 0
     path: Assets/nakamoto/Scenes/NextScene.unity
     guid: 8feddcb763a3c7f43b4a0f01831cbb45
   m_configObjects: {}

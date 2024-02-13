@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class GameDirector : MonoBehaviour
+public class GameDirecto : MonoBehaviour
 {
     //Player
     public bool[] isPlayer;

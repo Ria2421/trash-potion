@@ -15,7 +15,7 @@ public class Tutorial : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            Initiate.Fade("GameScene", Color.black, 1.0f);
+            Initiate.Fade("Game", Color.black, 1.0f);
         }
     }
 }

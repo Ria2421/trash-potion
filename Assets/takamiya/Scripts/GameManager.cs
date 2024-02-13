@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
 {
     enum Player　
     {
-        Player1=1,
+        Player1,
         Player2,
         Player3,
         Player4
@@ -15,8 +15,9 @@ public class GameManager : MonoBehaviour
 
     //Textオブジェクトを格納するためのフィールド
     [SerializeField] Text PlayerText;
+    [SerializeField] Text cycleCountText;
     private Player currentPlayer = Player.Player1;// 現在のプレイヤーを表すenumの変数
-
+    private int cycleCount;
 
     // Start is called before the first frame update
     void Start()
@@ -34,11 +35,22 @@ public class GameManager : MonoBehaviour
             currentPlayer = (Player)(((int)currentPlayer % 4) + 1);
             trunChenge();// プレイヤーテキストを更新するメソッドを呼び出す
         }
+        else if (currentPlayer == Player.Player1)
+        {
+            cycleCount++;
+
+            if (cycleCount ==2)
+            {
+                cycleCountText.text = "ターン目";
+            }
+        }
     }
 
     public void trunChenge()
     {
         // 現在のプレイヤー番号をテキストに表示する
         PlayerText.text = $"{(int)currentPlayer}P";
+
+        //cycleCountText.text = $"{ (int)currentPlayer}ターン目";
     }
 }

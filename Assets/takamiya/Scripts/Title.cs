@@ -15,7 +15,7 @@ public class Title : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Return))
         {
-            Initiate.Fade("Connection",Color.black,1.0f);
+            Initiate.Fade("Connection", Color.black,1.0f);
         }
         
     }

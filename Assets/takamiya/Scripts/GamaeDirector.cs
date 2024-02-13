@@ -180,8 +180,6 @@ public class GameDirecto : MonoBehaviour
         Mode();
 
         if (MODE.NONE != nextMode) InitMode(nextMode);
-
-       
     }
 
     bool isWait()

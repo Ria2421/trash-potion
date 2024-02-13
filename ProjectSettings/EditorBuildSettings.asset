@@ -6,17 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-<<<<<<< HEAD
-    path: Assets/Miura/Scenes/IGC.unity
-    guid: f94b3482068dd67489785adc6ee1a557
-  - enabled: 1
-    path: Assets/Miura/Scenes/UIScene.unity
-    guid: c16a364da89982648b95289875df9c91
-=======
     path: Assets/Nishiura/Scenes/IGC.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
     path: Assets/Nishiura/Scenes/UIScene.unity
     guid: b691c3a02ec69e54aaa05ce4f6b8631f
->>>>>>> f9efb201ebdb8c503425b653f03dbb8ef5c96471
   m_configObjects: {}

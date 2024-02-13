@@ -1,7 +1,11 @@
-using System.Collections;
+//
+// ゲームディレクタースクリプト
+// Name:西浦晃太 Date:2/8
+//
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameDirector : MonoBehaviour
 {
@@ -30,8 +34,8 @@ public class GameDirector : MonoBehaviour
 
     //フィールド
     int[,] tileData = new int[,]
-    {//手前
-        {0,0,8,0,0,0,0,0,8,0,0},
+    {
+        {0,0,8,0,0,0,0,0,8,0,0},//手前
         {0,2,1,1,1,1,1,1,1,2,0},
         {0,1,1,1,1,1,1,1,1,1,0},
         {0,1,1,1,1,1,1,1,1,1,0},
@@ -46,8 +50,8 @@ public class GameDirector : MonoBehaviour
 
     //プレイヤー初期配置
     int[,]initUnitData = new int[,] 
-    {//手前
-        {0,0,0,0,0,0,0,0,0,0,0},
+    {
+        {0,0,0,0,0,0,0,0,0,0,0},//手前
         {0,0,1,0,0,0,0,0,1,0,0},
         {0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0},
@@ -70,7 +74,6 @@ public class GameDirector : MonoBehaviour
     GameObject selectUnit;
     int oldX, oldY;
 
-
     //ボタン等のオブジェクト
     GameObject txtInfo;
     GameObject buttonTurnEnd;
@@ -79,6 +82,13 @@ public class GameDirector : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //画面上のオブジェクト取得
+        txtInfo = GameObject.Find("Info");
+        buttonTurnEnd = GameObject.Find("EndButton");
+        objCamera = GameObject.Find("Main Camera");
+
+        txtInfo.GetComponent<Text>().text = "";
+
         List<int> p1rnd = getRandomList(PLAYER_MAX, PLAYER_MAX / 2);
         List<int> p2rnd = getRandomList(PLAYER_MAX, PLAYER_MAX / 2);
         int p1 = 0;
@@ -210,9 +220,16 @@ public class GameDirector : MonoBehaviour
     /// <param name="next"></param>
     void InitMode(MODE next)
     {
+        updateHp();
+
         if(MODE.MOVE_SELECT ==next)
         {
+            buttonTurnEnd.SetActive(false);
             selectUnit = null;
+        }
+        else if(MODE.WAIT_TURN_END ==next)
+        {
+            buttonTurnEnd.SetActive(true);
         }
 
         nowMode = next;
@@ -224,7 +241,7 @@ public class GameDirector : MonoBehaviour
         GameObject hitobj = null;
 
         if(Input.GetMouseButtonUp(0))
-        {
+        { //クリック時、ユニット選択
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
@@ -241,12 +258,9 @@ public class GameDirector : MonoBehaviour
         int x = (int)(pos.x + (tileData.GetLength(1) / 2 - 0.5f));
         int z = (int)(pos.z + (tileData.GetLength(0) / 2 - 0.5f));
 
-        //ユニット選択
         if(0 < unitData[z,x].Count
            && player[nowTurn].PlayerNo == unitData[z, x][0].GetComponent<UnitController>().PlayerNo)
-        {
-            Debug.Log("aaaaaaaaaa");
-
+        { //ユニット選択
             if(null != selectUnit)
             {
                 selectUnit.GetComponent<UnitController>().Select(false);
@@ -298,7 +312,7 @@ public class GameDirector : MonoBehaviour
                     }
                     else
                     {//青ユニット時処理
-                        player[nowTurn].Socre++;
+                        player[nowTurn].Score++;
                         waitTime = 1.5f;
                     }
 
@@ -313,13 +327,33 @@ public class GameDirector : MonoBehaviour
 
     void TurnChangeMode()
     {
-        //次のターンへ
-        nowTurn = getNextTurn();
-        nextMode = MODE.MOVE_SELECT;
+        nextMode = MODE.NONE;
+
+        if (player[nowTurn].IsClear || 4 <= player[nowTurn].Score)
+        { //I win
+            txtInfo.GetComponent<Text>().text = player[nowTurn].GetPlayerName() + "の勝ち";
+        }
+        else if (1 > player[nowTurn].Hp)
+        { //I lose
+            txtInfo.GetComponent<Text>().text = player[getNextTurn()].GetPlayerName() + "の勝ち";
+        }
+        else
+        {
+            nextMode = MODE.MOVE_SELECT;
+
+            int oldTurn = nowTurn;
+            nowTurn = getNextTurn();
+
+            if (player[nowTurn].isPlayer && player[oldTurn].isPlayer)
+            {
+                //次のプレイヤー
+                nextMode = MODE.WAIT_TURN_START;
+            }
+        }
     }
 
     int getNextTurn()
-    {
+    {//次ターンを取得
         int ret = nowTurn;
 
         ret++;
@@ -335,7 +369,6 @@ public class GameDirector : MonoBehaviour
 
         if(range < count)
         {
-            Debug.LogError("リスト生成エラー");
             return ret;
         }
 
@@ -387,18 +420,78 @@ public class GameDirector : MonoBehaviour
         //壁以外
         if(1 == tileData[z,x] || 2 == tileData[z,x] || player[nowTurn].PlayerNo*4 == tileData[z, x])
         {
-           
             if( 0== unitData[z,x].Count) 
             { //誰もいないマス
                 ret = true;
             }
             else
             {//誰かいるマス
-
                 if (unitData[z, x][0].GetComponent<UnitController>().PlayerNo != player[nowTurn].PlayerNo)
                 {//敵だった場合
                     ret = true;
                 }
+            }
+        }
+
+        return ret;
+    }
+
+    void updateHp()
+    {
+        for (int i = 0; i < player.Length; i++)
+        {
+            GameObject obj = GameObject.Find(player[i].PlayerNo + "PText");
+
+            if (null ==obj) continue;
+
+            string t = player[i].GetPlayerName() + " HP : " + player[i].Hp + " Score : " + player[i].Score;
+
+            obj.GetComponent<Text>().text = t;
+        }
+    }
+
+    public void RestartScene()
+    { //ゲームシーン名をここに入れる リスタート関数
+        SceneManager.LoadScene("IGC");
+    }
+
+    public void TurnEnd()
+    {
+        if (MODE.WAIT_TURN_START == nowMode)
+        { //ターンスタート
+            //1P's Camera
+            objCamera.transform.position = new Vector3(0, 8.69f, 0);
+            objCamera.transform.eulerAngles = new Vector3(90, 0, 0);
+
+            if(2 == player[nowTurn].PlayerNo)
+            { //2P's Camera
+                objCamera.transform.position = new Vector3(0, 8.69f, 0);
+                objCamera.transform.eulerAngles = new Vector3(90, 180, 0);
+            }
+
+            buttonTurnEnd.SetActive(false);
+            nextMode = MODE.MOVE_SELECT;
+        }
+        else if(MODE.WAIT_TURN_END == nowMode)
+        { //ターン終了
+            //カメラ上にセット
+            objCamera.transform.position = new Vector3(0, 8.69f, 0);
+            objCamera.transform.eulerAngles = new Vector3(90, 0, 0);
+
+            nextMode = MODE.WAIT_TURN_START;
+        }
+    }
+
+    List<GameObject> getUnits()
+    { //全ユニットを取得
+        List<GameObject> ret = new List<GameObject>();
+
+        for(int i =0; i < unitData.GetLength(1); i ++)
+        {
+            for (int j = 0; j < unitData.GetLength(1); j++)
+            {
+                if (1 > unitData[i, j].Count) continue;
+                ret.AddRange(unitData[i, j]);
             }
         }
 

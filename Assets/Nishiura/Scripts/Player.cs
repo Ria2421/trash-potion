@@ -1,6 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+//
+// プレイヤー情報スクリプト
+// Name:西浦晃太 Date:2/8
+//
 
 public class Player
 {
@@ -13,7 +14,7 @@ public class Player
     public int Hp = 1;
 
     //相手の青い駒をとると加点
-    public int Socre;
+    public int Score;
 
     public Player(bool isPlayer, int playerno)
     {

@@ -1,9 +1,7 @@
 //
-//プレイヤー移動スクリプト
-//Name:西浦晃太 Date:2/8
+// プレイヤーコントロールスクリプト
+// Name:西浦晃太 Date:2/8
 //
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class UnitController : MonoBehaviour
@@ -17,17 +15,6 @@ public class UnitController : MonoBehaviour
     //どちらのプレイヤーか
     public int PlayerNo;
     public int Type;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     /// <summary>
     /// 選択時の動作

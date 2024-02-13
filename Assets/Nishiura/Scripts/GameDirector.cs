@@ -32,6 +32,7 @@ public class GameDirector : MonoBehaviour
     //待機時間定義
     float waitTime;
 
+    //0:Wall 1:NormalTile 2:GoalTile 3:1P'sGoal 4:2P's Goal
     //フィールド
     int[,] tileData = new int[,]
     {
@@ -112,7 +113,6 @@ public class GameDirector : MonoBehaviour
                 //タイル配置
                 string resname = "";
 
-                //1:NormalTile 2:GoalTile 3:1P'sGoal 4:2P's Goal
                 int no = tileData[i,j];
                 if (4 == no || 8 == no) no = 5;
 

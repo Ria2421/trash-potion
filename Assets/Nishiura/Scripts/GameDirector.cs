@@ -244,50 +244,45 @@ public class GameDirector : MonoBehaviour
 
     void SelectMode()
     {
-        GameObject hitobj = null;
-
-        if(Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonUp(0))
         { //クリック時、ユニット選択
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
-            if(Physics.Raycast(ray,out hit,100))
+            if (Physics.Raycast(ray, out hit, 100))
             {
-                hitobj = hit.collider.gameObject;
-            }
-        }
+                if (null != hit.collider.gameObject)
+                {
+                    Vector3 pos = hit.collider.gameObject.transform.position;
 
-        if(null == hitobj) return;
+                    int x = (int)(pos.x + (tileData.GetLength(1) / 2 - 0.5f));
+                    int z = (int)(pos.z + (tileData.GetLength(0) / 2 - 0.5f));
 
-        Vector3 pos = hitobj.transform.position;
+                    if (0 < unitData[z, x].Count && player[nowTurn].PlayerNo == unitData[z, x][0].GetComponent<UnitController>().PlayerNo)
+                    { //ユニット選択
+                        if (null != selectUnit)
+                        {
+                            selectUnit.GetComponent<UnitController>().Select(false);
+                        }
+                        selectUnit = unitData[z, x][0];
+                        oldX = x;
+                        oldY = z;
 
-        int x = (int)(pos.x + (tileData.GetLength(1) / 2 - 0.5f));
-        int z = (int)(pos.z + (tileData.GetLength(0) / 2 - 0.5f));
+                        selectUnit.GetComponent<UnitController>().Select();
+                    }
+                    else if (null != selectUnit)
+                    {//移動先タイル選択
+                        if (movableTile(oldX, oldY, x, z))
+                        {
+                            unitData[oldY, oldX].Clear();
+                            pos.y += 0.5f;
+                            selectUnit.transform.position = pos;
+                            unitData[z, x].Add(selectUnit);
 
-        if(0 < unitData[z,x].Count
-           && player[nowTurn].PlayerNo == unitData[z, x][0].GetComponent<UnitController>().PlayerNo)
-        { //ユニット選択
-            if(null != selectUnit)
-            {
-                selectUnit.GetComponent<UnitController>().Select(false);
-            }
-            selectUnit = unitData[z, x][0];
-            oldX = x;
-            oldY = z;
-
-            selectUnit.GetComponent<UnitController>().Select();
-        }
-        else if(null != selectUnit)
-        {//移動先タイル選択
-            if(movableTile(oldX,oldY,x,z))
-            {
-                unitData[oldY, oldX].Clear();
-                pos.y += 0.5f;
-                selectUnit.transform.position = pos ;
-
-                unitData[z, x].Add(selectUnit);
-
-                nextMode = MODE.FIELD_UPDATE;
+                            nextMode = MODE.FIELD_UPDATE;
+                        }
+                    }
+                }
             }
         }
     }
@@ -311,6 +306,8 @@ public class GameDirector : MonoBehaviour
                 //重複時、ユニットを削除
                 if (1 < unitData[i, j].Count)
                 {
+                    unitData[i, j][1].GetComponent<UnitController>().Select(false);
+
                     if (UnitController.TYPE_RED == unitData[i, j][0].GetComponent<UnitController>().Type)
                     {//赤ユニット時処理
                         player[nowTurn].Hp--;
@@ -353,7 +350,7 @@ public class GameDirector : MonoBehaviour
             if (player[oldTurn].isPlayer && player[nowTurn].isPlayer)
             {
                 //次のプレイヤー
-                nextMode = MODE.WAIT_TURN_START;
+                nextMode = MODE.WAIT_TURN_END;
             }
         }
     }
@@ -424,7 +421,9 @@ public class GameDirector : MonoBehaviour
         //}
 
         //壁以外
-        if(1 == tileData[z,x] || 2 == tileData[z,x] || player[nowTurn].PlayerNo*4 == tileData[z, x])
+        if(1 == tileData[z,x] 
+           || 2 == tileData[z,x] 
+           || player[nowTurn].PlayerNo*4 == tileData[z, x])
         {
             if( 0== unitData[z,x].Count) 
             { //誰もいないマス

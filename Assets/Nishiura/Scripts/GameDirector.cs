@@ -25,7 +25,7 @@ public class GameDirector : MonoBehaviour
         TURN_CHANGE,
     }
 
-    //MODE 
+    //MODE‘JˆÚ
     MODE nowMode;
     MODE nextMode;
 

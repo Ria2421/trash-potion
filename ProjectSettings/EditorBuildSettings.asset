@@ -20,6 +20,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/takamiya/Cenes/Result.unity
     guid: cfa11beba5df4d943be6c53e6a224b0e
+  - enabled: 1
+    path: Assets/Nishiura/Scenes/IGC.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Nishiura/Scenes/UIScene.unity
+    guid: b691c3a02ec69e54aaa05ce4f6b8631f
   - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05

@@ -16,14 +16,14 @@ EditorBuildSettings:
     guid: 9db568991b140f8459914a42198f2a63
   - enabled: 0
     path: Assets/takamiya/Cenes/GameScene.unity
-    guid: e9b3f9d8e1da0e44a8afb9308ab57d15
+    guid: 611bf19aa4c8c2f4e8a438300ad2f405
   - enabled: 0
     path: Assets/takamiya/Cenes/Result.unity
     guid: cfa11beba5df4d943be6c53e6a224b0e
-  - enabled: 0
+  - enabled: 1
     path: Assets/Nishiura/Scenes/IGC.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
-  - enabled: 0
+  - enabled: 1
     path: Assets/Nishiura/Scenes/UIScene.unity
     guid: b691c3a02ec69e54aaa05ce4f6b8631f
   - enabled: 0
@@ -35,4 +35,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/nakamoto/Scenes/NextScene.unity
     guid: 8feddcb763a3c7f43b4a0f01831cbb45
+  - enabled: 0
+    path: Assets/Miura/Scenes_nsur/IGC.unity
+    guid: 3e120dfec91563a4fb3150730dcebc8e
   m_configObjects: {}

@@ -78,9 +78,9 @@ public class Client : MonoBehaviour
             connectText.text = "接続完了";
 
             // サーバーからPL番号を受信
-            byte[] buffer = new byte[2048];                                        // 送受信データ格納用
+            byte[] buffer = new byte[1024];                                        // 送受信データ格納用
             stream = tcpClient.GetStream();                                        // クライアントのデータ送受信に使うNetworkStreamを取得
-            int length = await stream.ReadAsync(buffer, 0, buffer.Length);         // 受信データのバイト数を取得
+            int length = await stream.ReadAsync(buffer, 0, 1);                     // 受信データのバイト数を取得
             string recevieString = Encoding.UTF8.GetString(buffer, 0, length);     // 受信データを文字列に変換
 
             // 何Pか表示

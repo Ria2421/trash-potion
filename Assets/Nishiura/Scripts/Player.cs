@@ -11,7 +11,7 @@ public class Player
     public bool IsClear;
 
     //相手の赤い駒をとるとダメージ
-    public int Hp = 1;
+    public int Hp = 4;
 
     //相手の青い駒をとると加点
     public int Score;

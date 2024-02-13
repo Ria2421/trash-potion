@@ -463,7 +463,7 @@ public class GameDirector : MonoBehaviour
 
     public void RestartScene()
     { //ゲームシーン名をここに入れる リスタート関数
-        //SceneManager.LoadScene("IGC");
+        SceneManager.LoadScene("IGC");
     }
 
     public void TurnEnd()

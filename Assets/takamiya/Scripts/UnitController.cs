@@ -4,7 +4,7 @@
 //
 using UnityEngine;
 
-public class UnitController : MonoBehaviour
+public class UnitControlle : MonoBehaviour
 {
     //プレーヤーのタイプ
     public const int TYPE_BLUE = 1;

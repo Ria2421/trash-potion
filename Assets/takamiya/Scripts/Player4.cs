@@ -3,7 +3,7 @@
 // Name:¼‰YW‘¾ Date:2/8
 //
 
-public class Player
+public class Player4
 {
     public bool isPlayer;
     public int PlayerNo;
@@ -16,7 +16,7 @@ public class Player
     //‘Šè‚ÌÂ‚¢‹î‚ğ‚Æ‚é‚Æ‰Á“_
     public int Score;
 
-    public Player(bool isPlayer, int playerno)
+    public Player4(bool isPlayer, int playerno)
     {
         this.isPlayer = isPlayer;
         this.PlayerNo = playerno;

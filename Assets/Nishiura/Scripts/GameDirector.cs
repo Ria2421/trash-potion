@@ -123,25 +123,26 @@ public class GameDirector : MonoBehaviour
                 //プレイヤー配置
                 unitData[i,j] = new List<GameObject>();
 
-                Vector3 angle = new Vector3(0,0,0);
-                int playerType = UnitController.TYPE_BLUE;
-
-                List<int> unitrnd = new List<int>();
-
-                int unitNum = -1;
-
                 //1P配置
                 resname = "Unit1";
 
+                //プレイヤー毎設定
+                Vector3 angle = new Vector3(0,0,0);
+                int playerType = UnitController.TYPE_BLUE;
+                List<int> unitrnd = new List<int>();
+                int unitNum = -1;
+
                 if(1 == initUnitData[i,j])
-                {
+                { //1Pユニット配置
                     unitrnd = p1rnd;
-                    unitNum = p1++;
+                    unitNum = p1;
+                    p1++;
                 }
                 else if (2 == initUnitData[i, j])
-                {
+                { //2Pユニット配置
                     unitrnd = p2rnd;
-                    unitNum = p2++;
+                    unitNum = p2;
+                    p2++;
                     angle.y = 180;
                 }
                 else
@@ -166,10 +167,11 @@ public class GameDirector : MonoBehaviour
                     unitData[i,j].Add(unit);
                 }
             }
+        } 
 
-            nowTurn = 0;
-            nextMode = MODE.MOVE_SELECT;
-        }
+        nowTurn = 0;
+
+        nextMode = MODE.MOVE_SELECT;
     }
 
     // Update is called once per frame
@@ -192,7 +194,7 @@ public class GameDirector : MonoBehaviour
     { //CPUの待機処理(使わん) または何かしら待機処理
         bool ret = false;
 
-        if(0 <waitTime)
+        if (0 <waitTime)
         {
             if (MODE.NONE != nextMode) InitMode(nextMode);
             ret = true;
@@ -228,12 +230,16 @@ public class GameDirector : MonoBehaviour
     {
         updateHp();
 
-        if(MODE.MOVE_SELECT ==next)
+        if(MODE.WAIT_TURN_START == next)
         {
-            buttonTurnEnd.SetActive(false);
-            selectUnit = null;
+            buttonTurnEnd.SetActive(true);
         }
-        else if(MODE.WAIT_TURN_END ==next)
+        else if (MODE.MOVE_SELECT == next)
+        {
+            selectUnit = null;
+            buttonTurnEnd.SetActive(false);
+        }
+        else if(MODE.WAIT_TURN_END == next)
         {
             buttonTurnEnd.SetActive(true);
         }
@@ -313,7 +319,7 @@ public class GameDirector : MonoBehaviour
                 {
                     if (UnitController.TYPE_RED == unitData[i, j][0].GetComponent<UnitController>().Type)
                     {//赤ユニット時処理
-                        player[nowTurn].Hp++;
+                        player[nowTurn].Hp--;
                         waitTime = 1.5f;
                     }
                     else
@@ -350,7 +356,7 @@ public class GameDirector : MonoBehaviour
             int oldTurn = nowTurn;
             nowTurn = getNextTurn();
 
-            if (player[nowTurn].isPlayer && player[oldTurn].isPlayer)
+            if (player[oldTurn].isPlayer && player[nowTurn].isPlayer)
             {
                 //次のプレイヤー
                 nextMode = MODE.WAIT_TURN_START;
@@ -465,24 +471,24 @@ public class GameDirector : MonoBehaviour
     {
         if (MODE.WAIT_TURN_START == nowMode)
         { //ターンスタート
-            //1P's Camera
-            objCamera.transform.position = new Vector3(0, 8.69f, 0);
-            objCamera.transform.eulerAngles = new Vector3(90, 0, 0);
+            ////1P's Camera
+            //objCamera.transform.position = new Vector3(0, 8.69f, 0);
+            //objCamera.transform.eulerAngles = new Vector3(90, 0, 0);
 
-            if(2 == player[nowTurn].PlayerNo)
-            { //2P's Camera
-                objCamera.transform.position = new Vector3(0, 8.69f, 0);
-                objCamera.transform.eulerAngles = new Vector3(90, 180, 0);
-            }
+            //if(2 == player[nowTurn].PlayerNo)
+            //{ //2P's Camera
+            //    objCamera.transform.position = new Vector3(0, 8.69f, 0);
+            //    objCamera.transform.eulerAngles = new Vector3(90, 180, 0);
+            //}
 
             buttonTurnEnd.SetActive(false);
             nextMode = MODE.MOVE_SELECT;
         }
         else if(MODE.WAIT_TURN_END == nowMode)
         { //ターン終了
-            //カメラ上にセット
-            objCamera.transform.position = new Vector3(0, 8.69f, 0);
-            objCamera.transform.eulerAngles = new Vector3(90, 0, 0);
+            ////カメラ上にセット
+            //objCamera.transform.position = new Vector3(0, 8.69f, 0);
+            //objCamera.transform.eulerAngles = new Vector3(90, 0, 0);
 
             nextMode = MODE.WAIT_TURN_START;
         }

@@ -416,29 +416,34 @@ public class GameDirector : MonoBehaviour
     {
         bool ret = false;
 
-        //差分を取得
+        // 差分を取得
         int dx = Mathf.Abs(oldx - x);
         int dz = Mathf.Abs(oldz - z);
 
-        //斜め進行不可
-        //if(1 <dx + dz)
-        //{
-        //    ret = false;
-        //}
+        Debug.Log("dx:" + dx);
+        Debug.Log("dz:" + dz);
+        Debug.Log("合計:" + (dx + dz));
 
-        //壁以外
-        if(1 == tileData[z,x] 
-           || 2 == tileData[z,x] 
-           || player[nowTurn].PlayerNo*4 == tileData[z, x])
+        // 斜め進行不可
+        if (dx + dz > 2 || dx > 1 || dz > 1)
         {
-            if( 0== unitData[z,x].Count) 
-            { //誰もいないマス
+            Debug.Log("進行不可");
+            return ret = false;
+        }
+
+        // 壁以外
+        if (1 == tileData[z, x]
+           || 2 == tileData[z, x]
+           || player[nowTurn].PlayerNo * 4 == tileData[z, x])
+        {
+            if (0 == unitData[z, x].Count)
+            { // 誰もいないマス
                 ret = true;
             }
             else
-            {//誰かいるマス
+            {// 誰かいるマス
                 if (unitData[z, x][0].GetComponent<UnitController>().PlayerNo != player[nowTurn].PlayerNo)
-                {//敵だった場合
+                {// 敵だった場合
                     ret = true;
                 }
             }

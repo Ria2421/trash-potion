@@ -5,19 +5,22 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/takamiya/Cenes/Title.unity
     guid: 480577b289f968c42b965506a6af9568
-  - enabled: 0
+  - enabled: 1
     path: Assets/takamiya/Cenes/Connection.unity
     guid: 98f679ef1c858fe4da748ee59d37abfe
-  - enabled: 0
+  - enabled: 1
     path: Assets/takamiya/Cenes/Tutorial.unity
     guid: 9db568991b140f8459914a42198f2a63
   - enabled: 0
     path: Assets/takamiya/Cenes/GameScene.unity
     guid: e9b3f9d8e1da0e44a8afb9308ab57d15
-  - enabled: 0
+  - enabled: 1
+    path: Assets/takamiya/Cenes/Game.unity
+    guid: f7a5c31fd58a2de44b6d946637d3016f
+  - enabled: 1
     path: Assets/takamiya/Cenes/Result.unity
     guid: cfa11beba5df4d943be6c53e6a224b0e
   - enabled: 0
@@ -35,4 +38,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/nakamoto/Scenes/NextScene.unity
     guid: 8feddcb763a3c7f43b4a0f01831cbb45
+  - enabled: 1
+    path: Assets/takamiya/Cenes/UIScene.unity
+    guid: 6e9a80f0f3f2b9f4cbc8aed6fdf6ceaf
   m_configObjects: {}

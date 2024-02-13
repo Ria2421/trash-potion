@@ -7,6 +7,7 @@ public class Player4
 {
     public bool isPlayer;
     public int PlayerNo;
+
     //ƒNƒŠƒA‚µ‚½‚©
     public bool IsClear;
 

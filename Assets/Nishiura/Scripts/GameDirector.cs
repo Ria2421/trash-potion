@@ -182,6 +182,12 @@ public class GameDirector : MonoBehaviour
         Mode();
 
         if (MODE.NONE != nextMode) InitMode(nextMode);
+
+        if(Input.GetKeyDown(KeyCode.Return))
+        {
+            Initiate.DoneFading();
+            Initiate.Fade("Result", Color.black, 1.5f);
+        }
     }
 
     bool isWait()
@@ -458,7 +464,7 @@ public class GameDirector : MonoBehaviour
 
     public void RestartScene()
     { //ゲームシーン名をここに入れる リスタート関数
-        SceneManager.LoadScene("IGC");
+        //SceneManager.LoadScene("IGC");
     }
 
     public void TurnEnd()

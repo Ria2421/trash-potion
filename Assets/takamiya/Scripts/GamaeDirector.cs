@@ -180,6 +180,8 @@ public class GameDirecto : MonoBehaviour
         Mode();
 
         if (MODE.NONE != nextMode) InitMode(nextMode);
+
+       
     }
 
     bool isWait()
@@ -452,7 +454,10 @@ public class GameDirecto : MonoBehaviour
 
     public void RestartScene()
     { //ゲームシーン名をここに入れる リスタート関数
-        SceneManager.LoadScene("IGC");
+        if (Input.GetMouseButtonDown(0))
+        {
+            Initiate.Fade("Result", Color.black, 1.0f);
+        }
     }
 
     public void TurnEnd()

@@ -2,6 +2,7 @@
 // ゲームディレクタースクリプト
 // Name:西浦晃太 Date:2/8
 //
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -36,7 +37,7 @@ public class GameDirector : MonoBehaviour
     //フィールド
     int[,] tileData = new int[,]
     {
-        {0,0,8,0,0,0,0,0,8,0,0},//手前
+        {0,0,0,0,0,0,0,0,0,0,0},//手前
         {0,2,1,1,1,1,1,1,1,2,0},
         {0,1,1,1,1,1,1,1,1,1,0},
         {0,1,1,1,1,1,1,1,1,1,0},
@@ -46,7 +47,7 @@ public class GameDirector : MonoBehaviour
         {0,1,1,1,1,1,1,1,1,1,0},
         {0,1,1,1,1,1,1,1,1,1,0},
         {0,2,1,1,1,1,1,1,1,2,0},
-        {0,0,4,0,0,0,0,0,4,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0},
     };
 
     //プレイヤー初期配置
@@ -299,7 +300,7 @@ public class GameDirector : MonoBehaviour
                             pos.y += 0.5f;
                             selectUnit.transform.position = pos;
                             unitData[z, x].Add(selectUnit);
-
+                            unitData[z, x][0].GetComponent<UnitController>().OffColliderEnable();
                             nextMode = MODE.FIELD_UPDATE;
                         }
                     }
@@ -382,17 +383,17 @@ public class GameDirector : MonoBehaviour
         return ret;
     }
 
-    GameObject resourcesInstantiate(string name,Vector3 pos, Quaternion angle)
+    GameObject resourcesInstantiate(string name, Vector3 pos, Quaternion angle)
     {
-        GameObject prefab =(GameObject)Resources.Load(name);
+        GameObject prefab = (GameObject)Resources.Load(name);
 
-        if(null == prefab )
+        if (null == prefab)
         {
             return null;
         }
 
+        Debug.Log(name);
         GameObject ret = Instantiate(prefab, pos, angle);
-
         return ret;
     }
 

@@ -90,8 +90,6 @@ public class GameDirector : MonoBehaviour
 
         txtInfo.GetComponent<Text>().text = "";
 
-        List<int> p1rnd = getRandomList(PLAYER_MAX, PLAYER_MAX / 2);
-        List<int> p2rnd = getRandomList(PLAYER_MAX, PLAYER_MAX / 2);
         int p1 = 0;
         int p2 = 0;
 
@@ -123,8 +121,6 @@ public class GameDirector : MonoBehaviour
                 //プレイヤー配置
                 unitData[i,j] = new List<GameObject>();
 
-                //1P配置
-                resname = "Unit1";
 
                 //プレイヤー毎設定
                 Vector3 angle = new Vector3(0,0,0);
@@ -134,16 +130,16 @@ public class GameDirector : MonoBehaviour
 
                 if(1 == initUnitData[i,j])
                 { //1Pユニット配置
-                    unitrnd = p1rnd;
                     unitNum = p1;
                     p1++;
+                    resname = "Unit1";
                 }
                 else if (2 == initUnitData[i, j])
                 { //2Pユニット配置
-                    unitrnd = p2rnd;
                     unitNum = p2;
                     p2++;
                     angle.y = 180;
+                    resname = "Unit2";
                 }
                 else
                 {
@@ -367,33 +363,6 @@ public class GameDirector : MonoBehaviour
 
         ret++;
         if (1 < ret) ret = 0;
-
-        return ret;
-    }
-
-    //ランダム配置関数(使わん)
-    List<int>getRandomList(int range,int count)
-    {
-        List<int> ret = new List<int>();
-
-        if(range < count)
-        {
-            return ret;
-        }
-
-        while(true)
-        {
-            int no = Random.Range(0,range);
-
-            if(-1 == ret.IndexOf(no))
-            {
-                ret.Add(no);
-            }
-            if(count <= ret.Count)
-            {
-                break;
-            }
-        }
 
         return ret;
     }

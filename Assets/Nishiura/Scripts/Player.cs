@@ -5,7 +5,6 @@
 
 public class Player
 {
-    public bool isPlayer;
     public int PlayerNo;
     //ƒNƒŠƒA‚µ‚½‚©
     public bool IsClear;
@@ -16,9 +15,8 @@ public class Player
     //‘Šè‚ÌÂ‚¢‹î‚ğ‚Æ‚é‚Æ‰Á“_
     public int Score;
 
-    public Player(bool isPlayer, int playerno)
+    public Player(int playerno)
     {
-        this.isPlayer = isPlayer;
         this.PlayerNo = playerno;
     }
 
@@ -26,15 +24,7 @@ public class Player
     {
         string ret = "";
         string playerName = PlayerNo + "P";
-
-        if(!isPlayer)
-        {
-            playerName = "–¼–³‚µ‚Ì”m";
-        }
-        else
-        {
-            ret = playerName;
-        }
+        ret = playerName;
 
         return ret;
     }

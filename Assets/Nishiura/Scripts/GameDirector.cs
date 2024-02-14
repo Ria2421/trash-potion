@@ -53,7 +53,7 @@ public class GameDirector : MonoBehaviour
     int[,]initUnitData = new int[,] 
     {
         {0,0,0,0,0,0,0,0,0,0,0},//手前
-        {0,1,0,0,0,0,0,0,0,1,0},
+        {0,3,0,0,0,0,0,0,0,1,0},
         {0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0},
@@ -61,7 +61,7 @@ public class GameDirector : MonoBehaviour
         {0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0},
-        {0,2,0,0,0,0,0,0,0,2,0},
+        {0,4,0,0,0,0,0,0,0,2,0},
         {0,0,0,0,0,0,0,0,0,0,0},
     };
 
@@ -78,7 +78,6 @@ public class GameDirector : MonoBehaviour
     //ボタン等のオブジェクト
     GameObject txtInfo;
     GameObject buttonTurnEnd;
-    GameObject objCamera;
 
     // Start is called before the first frame update
     void Start()
@@ -86,24 +85,25 @@ public class GameDirector : MonoBehaviour
         //画面上のオブジェクト取得
         txtInfo = GameObject.Find("Info");
         buttonTurnEnd = GameObject.Find("EndButton");
-        objCamera = GameObject.Find("Main Camera");
 
         txtInfo.GetComponent<Text>().text = "";
 
-        List<int> p1rnd = getRandomList(PLAYER_MAX, PLAYER_MAX / 2);
-        List<int> p2rnd = getRandomList(PLAYER_MAX, PLAYER_MAX / 2);
         int p1 = 0;
         int p2 = 0;
+        int p3 = 0;
+        int p4 = 0;
 
         unitData = new List<GameObject>[tileData.GetLength(0), tileData.GetLength(1)];
 
         //プレイヤー設定
-        player = new Player[2];     //人数
-        player[0] = new Player(isPlayer[0], 1);
-        player[1] = new Player(isPlayer[1], 2);
+        player = new Player[4];     //人数
+        player[0] = new Player(1);
+        player[1] = new Player(2);
+        player[2] = new Player(3);
+        player[3] = new Player(4);
 
         //タイル初期化
-        for(int i = 0; i<tileData.GetLength(0); i++)
+        for (int i = 0; i<tileData.GetLength(0); i++)
         {
             for (int j = 0; j < tileData.GetLength(1); j++)
             {
@@ -123,39 +123,54 @@ public class GameDirector : MonoBehaviour
                 //プレイヤー配置
                 unitData[i,j] = new List<GameObject>();
 
-                //1P配置
-                resname = "Unit1";
-
                 //プレイヤー毎設定
-                Vector3 angle = new Vector3(0,0,0);
-                int playerType = UnitController.TYPE_BLUE;
-                List<int> unitrnd = new List<int>();
-                int unitNum = -1;
+                Vector3 angle = new Vector3(0, 0, 0);
+                int playerType = UnitController.TYPE_RED;
+                //int playerType = UnitController.TYPE_BLUE;
+                //List<int> unitrnd = new List<int>();
+                int unitNum;
 
-                if(1 == initUnitData[i,j])
+                if (1 == initUnitData[i,j])
                 { //1Pユニット配置
-                    unitrnd = p1rnd;
+                    resname = "Unit1";
                     unitNum = p1;
+                    playerType = UnitController.TYPE_RED;
                     p1++;
                 }
                 else if (2 == initUnitData[i, j])
                 { //2Pユニット配置
-                    unitrnd = p2rnd;
+                    resname = "Unit2";
                     unitNum = p2;
+                    playerType = UnitController.TYPE_BLUE;
                     p2++;
-                    angle.y = 180;
+                    // オブジェクトの向き
+                    //angle.y = 180;
+                }
+                else if (3 == initUnitData[i, j])
+                { //3Pユニット配置
+                    resname = "Unit3";
+                    unitNum = p3;
+                    playerType = UnitController.TYPE_YELLOW;
+                    p3++;
+                }
+                else if (4 == initUnitData[i, j])
+                { //4Pユニット配置
+                    resname = "Unit4";
+                    unitNum = p4;
+                    playerType = UnitController.TYPE_GREEN;
+                    p4++;
                 }
                 else
                 {
                     resname = "";
                 }
 
-                //赤ユニット配置判定
-                if (-1 < unitrnd.IndexOf(unitNum))
-                {
-                    resname = "Unit2";
-                    playerType = UnitController.TYPE_RED;
-                }
+                ////赤ユニット配置判定
+                //if (-1 < unitrnd.IndexOf(unitNum))
+                //{
+                //    resname = "Unit2";
+                //    playerType = UnitController.TYPE_RED;
+                //}
 
                 GameObject unit = resourcesInstantiate(resname, new Vector3(x, 0.6f, z), Quaternion.Euler(angle));
 
@@ -228,7 +243,7 @@ public class GameDirector : MonoBehaviour
     /// <param name="next"></param>
     void InitMode(MODE next)
     {
-        updateHp();
+        //updateHp();
 
         if(MODE.WAIT_TURN_START == next)
         {
@@ -295,41 +310,41 @@ public class GameDirector : MonoBehaviour
 
     void FieldUpdateMode()
     {
-        for(int i = 0; i <unitData.GetLength(0); i++)
-        {
-            for (int j = 0; j < unitData.GetLength(0); j++)
-            {
-                //ゴール時削除
-                if(1 == unitData[i,j].Count && player[nowTurn].PlayerNo*4 == tileData[i,j])
-                {
-                    if(UnitController.TYPE_BLUE == unitData[i, j][0].GetComponent<UnitController>().Type) 
-                    {//青だとwin
-                        player[nowTurn].IsClear = true;
-                    }
-                    Destroy(unitData[i, j][0]);
-                    unitData[i, j].RemoveAt(0);
-                }
-                //重複時、ユニットを削除
-                if (1 < unitData[i, j].Count)
-                {
-                    unitData[i, j][1].GetComponent<UnitController>().Select(false);
+        //for(int i = 0; i <unitData.GetLength(0); i++)
+        //{
+        //    for (int j = 0; j < unitData.GetLength(0); j++)
+        //    {
+        //        //ゴール時削除
+        //        if(1 == unitData[i,j].Count && player[nowTurn].PlayerNo*4 == tileData[i,j])
+        //        {
+        //            if(UnitController.TYPE_BLUE == unitData[i, j][0].GetComponent<UnitController>().Type) 
+        //            {//青だとwin
+        //                player[nowTurn].IsClear = true;
+        //            }
+        //            Destroy(unitData[i, j][0]);
+        //            unitData[i, j].RemoveAt(0);
+        //        }
+        //        //重複時、ユニットを削除
+        //        if (1 < unitData[i, j].Count)
+        //        {
+        //            unitData[i, j][1].GetComponent<UnitController>().Select(false);
 
-                    if (UnitController.TYPE_RED == unitData[i, j][0].GetComponent<UnitController>().Type)
-                    {//赤ユニット時処理
-                        player[nowTurn].Hp--;
-                        waitTime = 1.5f;
-                    }
-                    else
-                    {//青ユニット時処理
-                        player[nowTurn].Score++;
-                        waitTime = 1.5f;
-                    }
+        //            if (UnitController.TYPE_RED == unitData[i, j][0].GetComponent<UnitController>().Type)
+        //            {//赤ユニット時処理
+        //                player[nowTurn].Hp--;
+        //                waitTime = 1.5f;
+        //            }
+        //            else
+        //            {//青ユニット時処理
+        //                player[nowTurn].Score++;
+        //                waitTime = 1.5f;
+        //            }
 
-                    Destroy(unitData[i, j][0]);
-                    unitData[i, j].RemoveAt(0);
-                }
-            }
-        }
+        //            Destroy(unitData[i, j][0]);
+        //            unitData[i, j].RemoveAt(0);
+        //        }
+        //    }
+        //}
 
         nextMode = MODE.TURN_CHANGE;
     }
@@ -353,11 +368,7 @@ public class GameDirector : MonoBehaviour
             int oldTurn = nowTurn;
             nowTurn = getNextTurn();
 
-            if (player[oldTurn].isPlayer && player[nowTurn].isPlayer)
-            {
-                //次のプレイヤー
-                nextMode = MODE.WAIT_TURN_END;
-            }
+            nextMode = MODE.WAIT_TURN_END;
         }
     }
 
@@ -366,34 +377,7 @@ public class GameDirector : MonoBehaviour
         int ret = nowTurn;
 
         ret++;
-        if (1 < ret) ret = 0;
-
-        return ret;
-    }
-
-    //ランダム配置関数(使わん)
-    List<int>getRandomList(int range,int count)
-    {
-        List<int> ret = new List<int>();
-
-        if(range < count)
-        {
-            return ret;
-        }
-
-        while(true)
-        {
-            int no = Random.Range(0,range);
-
-            if(-1 == ret.IndexOf(no))
-            {
-                ret.Add(no);
-            }
-            if(count <= ret.Count)
-            {
-                break;
-            }
-        }
+        if (3 < ret) ret = 0;
 
         return ret;
     }
@@ -420,14 +404,15 @@ public class GameDirector : MonoBehaviour
         int dx = Mathf.Abs(oldx - x);
         int dz = Mathf.Abs(oldz - z);
 
-        Debug.Log("dx:" + dx);
-        Debug.Log("dz:" + dz);
-        Debug.Log("合計:" + (dx + dz));
+        //Debug.Log("dx:" + dx);
+        //Debug.Log("dz:" + dz);
+        //Debug.Log("合計:" + (dx + dz));
 
         // 斜め進行不可
         if (dx + dz > 2 || dx > 1 || dz > 1)
         {
             Debug.Log("進行不可");
+            Debug.Log("Z:" + z + " " + "X" + x);
             return ret = false;
         }
 
@@ -452,19 +437,19 @@ public class GameDirector : MonoBehaviour
         return ret;
     }
 
-    void updateHp()
-    {
-        for (int i = 0; i < player.Length; i++)
-        {
-            GameObject obj = GameObject.Find(player[i].PlayerNo + "PText");
+    //void updateHp()
+    //{
+    //    for (int i = 0; i < player.Length; i++)
+    //    {
+    //        GameObject obj = GameObject.Find(player[i].PlayerNo + "PText");
 
-            if (null ==obj) continue;
+    //        if (null ==obj) continue;
 
-            string t = player[i].GetPlayerName() + " HP : " + player[i].Hp + " Score : " + player[i].Score;
+    //        string t = player[i].GetPlayerName() + " HP : " + player[i].Hp + " Score : " + player[i].Score;
 
-            obj.GetComponent<Text>().text = t;
-        }
-    }
+    //        obj.GetComponent<Text>().text = t;
+    //    }
+    //}
 
     public void RestartScene()
     { //ゲームシーン名をここに入れる リスタート関数
@@ -475,42 +460,14 @@ public class GameDirector : MonoBehaviour
     {
         if (MODE.WAIT_TURN_START == nowMode)
         { //ターンスタート
-            ////1P's Camera
-            //objCamera.transform.position = new Vector3(0, 8.69f, 0);
-            //objCamera.transform.eulerAngles = new Vector3(90, 0, 0);
-
-            //if(2 == player[nowTurn].PlayerNo)
-            //{ //2P's Camera
-            //    objCamera.transform.position = new Vector3(0, 8.69f, 0);
-            //    objCamera.transform.eulerAngles = new Vector3(90, 180, 0);
-            //}
 
             buttonTurnEnd.SetActive(false);
             nextMode = MODE.MOVE_SELECT;
         }
         else if(MODE.WAIT_TURN_END == nowMode)
         { //ターン終了
-            ////カメラ上にセット
-            //objCamera.transform.position = new Vector3(0, 8.69f, 0);
-            //objCamera.transform.eulerAngles = new Vector3(90, 0, 0);
 
             nextMode = MODE.WAIT_TURN_START;
         }
-    }
-
-    List<GameObject> getUnits()
-    { //全ユニットを取得
-        List<GameObject> ret = new List<GameObject>();
-
-        for(int i =0; i < unitData.GetLength(1); i ++)
-        {
-            for (int j = 0; j < unitData.GetLength(1); j++)
-            {
-                if (1 > unitData[i, j].Count) continue;
-                ret.AddRange(unitData[i, j]);
-            }
-        }
-
-        return ret;
     }
 }

@@ -627,7 +627,7 @@ Transform:
   m_GameObject: {fileID: 802526449}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -40, y: -5, z: 3}
+  m_LocalPosition: {x: -15, y: -5, z: 3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1604,7 +1604,7 @@ Transform:
   m_GameObject: {fileID: 1494156978}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 40, y: -5, z: 3}
+  m_LocalPosition: {x: 15, y: -5, z: 3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1622,7 +1622,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff5c0e3d771cae041b17581fe82cac14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  portionPrefabs: []
+  portionPrefabs:
+  - {fileID: 865220798906372650, guid: 7787f6fe730966144af5ef6280765974, type: 3}
+  - {fileID: 1292757332340929654, guid: 6c6df5e3c50b5074e80cd2b3f42c73bc, type: 3}
+  - {fileID: 2128265107555412600, guid: 21ef614eec6f1d842ac06a954fe29d16, type: 3}
+  - {fileID: 2436571611837013609, guid: a7bed1207e70c694988dd7addf303f86, type: 3}
+  - {fileID: 6397654440276606610, guid: bb98c137889c9ae4a9bcea0771c19547, type: 3}
+  - {fileID: 6051622587633496978, guid: 7fff829d435087f40b7ec9d5c7911eb3, type: 3}
   slowFlag: 1
 --- !u!1 &1512558415
 GameObject:

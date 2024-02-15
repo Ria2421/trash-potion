@@ -4,14 +4,16 @@ using UnityEngine;
 
 public class PortionManager : MonoBehaviour
 {
-    [SerializeField] GameObject[] portionPrefabs;
-
-    [SerializeField] bool slowFlag;
+    [SerializeField] GameObject[] portionPrefabs;       //ポーションのプレハブ
+    [SerializeField] bool slowFlag;                     //ポーションのフラグ判定
+    int rand;                                           //ポーション生成をランダムにするための変数
+    int randAngle;                                           //ポーションの角度の変数
 
     // Start is called before the first frame update
     void Start()
     {
-        InvokeRepeating("SlowPortion", 1.5f,1.5f);
+        //1.5秒間隔で関数を実行
+        InvokeRepeating("SlowPortion", 0.5f,0.5f);
     }
 
     // Update is called once per frame
@@ -23,8 +25,11 @@ public class PortionManager : MonoBehaviour
     //ポーション射出
     public void SlowPortion()
     {
+        rand = Random.Range(0, 5);
+        randAngle = Random.Range(-180, 180);
+
         //ポーションを生成してコンポーネントを取得
-        GameObject portion = Instantiate(portionPrefabs[0],transform.position,Quaternion.identity);
+        GameObject portion = Instantiate(portionPrefabs[rand],transform.position,Quaternion.Euler(-90 + randAngle,0,0));
         if(slowFlag)
         {
             portion.GetComponent<portion>().SlowLeft();

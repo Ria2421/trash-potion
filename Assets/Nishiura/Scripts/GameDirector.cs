@@ -4,6 +4,7 @@
 //
 using System;
 using System.Collections.Generic;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -16,7 +17,7 @@ public class GameDirector : MonoBehaviour
     int nowTurn;
 
     //GameMode
-    enum MODE
+    public enum MODE
     {
         NONE=-1,
         WAIT_TURN_START,
@@ -28,10 +29,7 @@ public class GameDirector : MonoBehaviour
 
     //MODE遷移
     MODE nowMode;
-    MODE nextMode;
-
-    //待機時間定義
-    float waitTime;
+    public MODE nextMode;
 
     //0:Wall 1:NormalTile 2:GoalTile 3:1P'sGoal 4:2P's Goal
     //フィールド
@@ -51,7 +49,7 @@ public class GameDirector : MonoBehaviour
     };
 
     //プレイヤー初期配置
-    int[,]initUnitData = new int[,] 
+    int[,] initUnitData = new int[,]
     {
         {0,0,0,0,0,0,0,0,0,0,0},//手前
         {0,3,0,0,0,0,0,0,0,1,0},
@@ -88,12 +86,6 @@ public class GameDirector : MonoBehaviour
         buttonTurnEnd = GameObject.Find("EndButton");
 
         txtInfo.GetComponent<Text>().text = "";
-
-        int p1 = 0;
-        int p2 = 0;
-        int p3 = 0;
-        int p4 = 0;
-
         unitData = new List<GameObject>[tileData.GetLength(0), tileData.GetLength(1)];
 
         //プレイヤー設定
@@ -113,6 +105,10 @@ public class GameDirector : MonoBehaviour
 
                 //タイル配置
                 string resname = "";
+                int p1 = 0;
+                int p2 = 0;
+                int p3 = 0;
+                int p4 = 0;
 
                 int no = tileData[i,j];
                 if (4 == no || 8 == no) no = 5;
@@ -129,19 +125,16 @@ public class GameDirector : MonoBehaviour
                 int playerType = UnitController.TYPE_RED;
                 //int playerType = UnitController.TYPE_BLUE;
                 //List<int> unitrnd = new List<int>();
-                int unitNum;
 
-                if (1 == initUnitData[i,j])
+                if (1 == initUnitData[i, j])
                 { //1Pユニット配置
                     resname = "Unit1";
-                    unitNum = p1;
                     playerType = UnitController.TYPE_RED;
                     p1++;
                 }
                 else if (2 == initUnitData[i, j])
                 { //2Pユニット配置
                     resname = "Unit2";
-                    unitNum = p2;
                     playerType = UnitController.TYPE_BLUE;
                     p2++;
                     // オブジェクトの向き
@@ -150,14 +143,12 @@ public class GameDirector : MonoBehaviour
                 else if (3 == initUnitData[i, j])
                 { //3Pユニット配置
                     resname = "Unit3";
-                    unitNum = p3;
                     playerType = UnitController.TYPE_YELLOW;
                     p3++;
                 }
                 else if (4 == initUnitData[i, j])
                 { //4Pユニット配置
                     resname = "Unit4";
-                    unitNum = p4;
                     playerType = UnitController.TYPE_GREEN;
                     p4++;
                 }
@@ -175,12 +166,12 @@ public class GameDirector : MonoBehaviour
 
                 GameObject unit = resourcesInstantiate(resname, new Vector3(x, 0.6f, z), Quaternion.Euler(angle));
 
-                if(null != unit)
+                if (null != unit)
                 {
-                    unit.GetComponent<UnitController>().PlayerNo = initUnitData[i,j];
+                    unit.GetComponent<UnitController>().PlayerNo = initUnitData[i, j];
                     unit.GetComponent<UnitController>().Type = playerType;
 
-                    unitData[i,j].Add(unit);
+                    unitData[i, j].Add(unit);
                 }
             }
         } 
@@ -193,29 +184,15 @@ public class GameDirector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isWait()) return;
-
         Mode();
 
         if (MODE.NONE != nextMode) InitMode(nextMode);
 
-        if(Input.GetKeyDown(KeyCode.Return))
-        {
-            Initiate.DoneFading();
-            Initiate.Fade("Result", Color.black, 1.5f);
-        }
-    }
-
-    bool isWait()
-    { //CPUの待機処理(使わん) または何かしら待機処理
-        bool ret = false;
-
-        if (0 <waitTime)
-        {
-            if (MODE.NONE != nextMode) InitMode(nextMode);
-            ret = true;
-        }
-        return ret;
+        //if(Input.GetKeyDown(KeyCode.Return))
+        //{
+        //    Initiate.DoneFading();
+        //    Initiate.Fade("Result", Color.black, 1.5f);
+        //}
     }
 
     /// <summary>
@@ -265,8 +242,8 @@ public class GameDirector : MonoBehaviour
     }
 
     void SelectMode()
-    {
-        if (Input.GetMouseButtonUp(0))
+    { 
+        if (Input.GetMouseButtonDown(0))
         { //クリック時、ユニット選択
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -297,7 +274,7 @@ public class GameDirector : MonoBehaviour
                         if (movableTile(oldX, oldY, x, z))
                         {
                             unitData[oldY, oldX].Clear();
-                            pos.y += 0.5f;
+                            pos.y += 0.6f;
                             selectUnit.transform.position = pos;
                             unitData[z, x].Add(selectUnit);
                             unitData[z, x][0].GetComponent<UnitController>().OffColliderEnable();
@@ -354,23 +331,23 @@ public class GameDirector : MonoBehaviour
     {
         nextMode = MODE.NONE;
 
-        if (player[nowTurn].IsClear || 4 <= player[nowTurn].Score)
-        { //I win
-            txtInfo.GetComponent<Text>().text = player[nowTurn].GetPlayerName() + "の勝ち";
-        }
-        else if (1 > player[nowTurn].Hp)
-        { //I lose
-            txtInfo.GetComponent<Text>().text = player[getNextTurn()].GetPlayerName() + "の勝ち";
-        }
-        else
-        {
-            nextMode = MODE.MOVE_SELECT;
+        //if (player[nowTurn].IsClear || 4 <= player[nowTurn].Score)
+        //{ //I win
+        //    txtInfo.GetComponent<Text>().text = player[nowTurn].GetPlayerName() + "の勝ち";
+        //}
+        //else if (1 > player[nowTurn].Hp)
+        //{ //I lose
+        //    txtInfo.GetComponent<Text>().text = player[getNextTurn()].GetPlayerName() + "の勝ち";
+        //}
+        //else
+        //{
+        nextMode = MODE.MOVE_SELECT;
 
-            int oldTurn = nowTurn;
-            nowTurn = getNextTurn();
+        int oldTurn = nowTurn;
+        nowTurn = getNextTurn();
 
-            nextMode = MODE.WAIT_TURN_END;
-        }
+        nextMode = MODE.WAIT_TURN_END;
+        //}
     }
 
     int getNextTurn()
@@ -392,12 +369,16 @@ public class GameDirector : MonoBehaviour
             return null;
         }
 
-        Debug.Log(name);
         GameObject ret = Instantiate(prefab, pos, angle);
+
+        ret.name = ret.name.Replace("1(Clone)", "Unit1");
+        ret.name = ret.name.Replace("2(Clone)", "Unit2");
+        ret.name = ret.name.Replace("3(Clone)", "Unit3");
+        ret.name = ret.name.Replace("4(Clone)", "Unit4");
         return ret;
     }
 
-    bool movableTile(int oldx,int oldz,int x, int z)
+    public bool movableTile(int oldx,int oldz,int x, int z)
     {
         bool ret = false;
 
@@ -414,6 +395,7 @@ public class GameDirector : MonoBehaviour
         {
             Debug.Log("進行不可");
             Debug.Log("Z:" + z + " " + "X" + x);
+
             return ret = false;
         }
 

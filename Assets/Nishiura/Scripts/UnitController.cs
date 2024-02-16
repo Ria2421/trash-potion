@@ -2,6 +2,7 @@
 // プレイヤーコントロールスクリプト
 // Name:西浦晃太 Date:2/8
 //
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class UnitController : MonoBehaviour
@@ -45,8 +46,7 @@ public class UnitController : MonoBehaviour
             pos = new Vector3(transform.position.x, 0.6f, transform.position.z);
         }
 
-        transform.position = pos;   
-
+        transform.position = pos;
         return ret;
     }
 }

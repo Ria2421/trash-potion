@@ -20,12 +20,12 @@ public class Player
         this.PlayerNo = playerno;
     }
 
-    public string GetPlayerName()
-    {
-        string ret = "";
-        string playerName = PlayerNo + "P";
-        ret = playerName;
+    //public string GetPlayerName()
+    //{
+    //    string ret = "";
+    //    string playerName = PlayerNo + "P";
+    //    ret = playerName;
 
-        return ret;
-    }
+    //    return ret;
+    //}
 }

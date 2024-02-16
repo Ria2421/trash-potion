@@ -13,7 +13,7 @@ public class PortionManager : MonoBehaviour
     void Start()
     {
         //1.5•bŠÔŠu‚ÅŠÖ”‚ğÀs
-        InvokeRepeating("SlowPortion", 0.5f,0.5f);
+        InvokeRepeating("SlowPortion", 5.0f,0.5f);
     }
 
     // Update is called once per frame

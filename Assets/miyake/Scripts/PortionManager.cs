@@ -7,7 +7,7 @@ public class PortionManager : MonoBehaviour
     [SerializeField] GameObject[] portionPrefabs;       //ポーションのプレハブ
     [SerializeField] bool slowFlag;                     //ポーションのフラグ判定
     int rand;                                           //ポーション生成をランダムにするための変数
-    int randAngle;                                           //ポーションの角度の変数
+    int randAngle;                                      //ポーションの角度の変数
 
     // Start is called before the first frame update
     void Start()

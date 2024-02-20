@@ -1,6 +1,6 @@
 //---------------------------------------------------------------
 //
-//  とらっしゅぽーしょん！クライアント [ Trash_Portion_Server ]
+//  とらっしゅぽーしょん！クライアント [ Client.cs ]
 // Author:Kenta Nakamoto
 // Data 2024/02/08
 //
@@ -59,7 +59,7 @@ public class Client : MonoBehaviour
     /// <summary>
     /// 名前入力用UI
     /// </summary>
-    [SerializeField] InputField nameInput;
+    [SerializeField] GameObject nameInput;
 
     //------------------------------------------------------------------------------
     // メソッド ------------------------------------------
@@ -102,11 +102,14 @@ public class Client : MonoBehaviour
             int eventID = recvBuffer[0];
 
             // 受信データから文字列を取り出す
-            byte[] bufferJson = recvBuffer.Skip(1).ToArray();                          // 1バイト目をスキップ
-            string recevieString = Encoding.UTF8.GetString(recvBuffer, 0, length);     // 受信データを文字列に変換
+            byte[] bufferJson = recvBuffer.Skip(1).ToArray();                            // 1バイト目をスキップ
+            string recevieString = Encoding.UTF8.GetString(bufferJson, 0, length-1);     // 受信データを文字列に変換
 
             // 何Pか表示
-            playerText.text = "あなたは" + recevieString + "Pです";
+            playerText.text = "あなたは" + recevieString[0] + "Pです";
+
+            // 入力フィールドの有効化
+            nameInput.SetActive(true);
 
             //// 接続完了の受信待ち
             //length = await stream.ReadAsync(buffer, 0, buffer.Length);      // 受信データのバイト数を取得
@@ -119,6 +122,7 @@ public class Client : MonoBehaviour
             //    Initiate.DoneFading();
             //    Initiate.Fade("NextScene", Color.black, 1.5f);
             //}
+            tcpClient.Close();
         }
         catch (Exception ex)
         {
@@ -132,8 +136,8 @@ public class Client : MonoBehaviour
     {
         // 送信用データの作成
         UserData userData = new UserData();
-        userData.UserName = nameInput.text;   // 入力された名前を格納
-        userData.PlayerNo = myNo;             // 自分のプレイヤー番号を格納
+        userData.UserName = nameInput.GetComponent<InputField>().text;   // 入力された名前を格納
+        userData.PlayerNo = myNo;                                        // 自分のプレイヤー番号を格納
 
         // 送信データをJSONシリアライズ
         string json = JsonConvert.SerializeObject(userData);

@@ -419,7 +419,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 133
+    m_FontSize: 86
     m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 10
@@ -485,6 +485,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   connectText: {fileID: 1000463102}
   playerText: {fileID: 1158435672}
+  nameInput: {fileID: 1283268137}
 --- !u!1 &1283268137
 GameObject:
   m_ObjectHideFlags: 0
@@ -503,7 +504,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1283268138
 RectTransform:
   m_ObjectHideFlags: 0

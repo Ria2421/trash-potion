@@ -47,6 +47,11 @@ public class Client : MonoBehaviour
     private int myNo;
 
     /// <summary>
+    /// 全プレイヤーのデータリスト
+    /// </summary>
+    private UserDataList userDataList;
+
+    /// <summary>
     /// 接続時の表示テキスト
     /// </summary>
     [SerializeField] Text connectText;
@@ -60,6 +65,16 @@ public class Client : MonoBehaviour
     /// 名前入力用UI
     /// </summary>
     [SerializeField] GameObject nameInput;
+
+    /// <summary>
+    /// プレイヤーネーム表示用
+    /// </summary>
+    [SerializeField] GameObject playerName;
+
+    /// <summary>
+    /// 表示用プレイヤーオブジェ
+    /// </summary>
+    [SerializeField] GameObject playerObj;
 
     //------------------------------------------------------------------------------
     // メソッド ------------------------------------------
@@ -108,6 +123,9 @@ public class Client : MonoBehaviour
             // 何Pか表示
             playerText.text = "あなたは" + recevieString[0] + "Pです";
 
+            // 自分のPL Noを保存
+            myNo = int.Parse(recevieString[0].ToString());
+
             // 入力フィールドの有効化
             nameInput.SetActive(true);
 
@@ -122,7 +140,6 @@ public class Client : MonoBehaviour
             //    Initiate.DoneFading();
             //    Initiate.Fade("NextScene", Color.black, 1.5f);
             //}
-            tcpClient.Close();
         }
         catch (Exception ex)
         {
@@ -132,9 +149,13 @@ public class Client : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// ユーザーデータ送信処理
+    /// </summary>
     public async void sendUserData()
     {
-        // 送信用データの作成
+        // 送信用ユーザーデータの作成 ---------------------------------------------------------------------------
+
         UserData userData = new UserData();
         userData.UserName = nameInput.GetComponent<InputField>().text;   // 入力された名前を格納
         userData.PlayerNo = myNo;                                        // 自分のプレイヤー番号を格納
@@ -143,12 +164,54 @@ public class Client : MonoBehaviour
         string json = JsonConvert.SerializeObject(userData);
 
         // 送信処理
-        byte[] buffer = Encoding.UTF8.GetBytes(json);         // JSONをbyteに変換
-        await stream.WriteAsync(buffer, 0, buffer.Length);    // JSON送信処理
+        byte[] buffer = Encoding.UTF8.GetBytes(json);                // JSONをbyteに変換
+        buffer = buffer.Prepend((byte)EventID.UserData).ToArray();   // 送信データの先頭にイベントIDを付与
+        await stream.WriteAsync(buffer, 0, buffer.Length);           // JSON送信処理
+
+        // 入力フィールドの無効化
+        nameInput.SetActive(false);
 
         // 送信待機文字表示
         connectText.text = "送信中...";
 
+        // サーバーからPLデータリストの受信 ----------------------------------------------------------------------------------------------
 
+        byte[] recvBuffer = new byte[dataSize];                                    // 送受信データ格納用
+        stream = tcpClient.GetStream();                                            // クライアントのデータ送受信に使うNetworkStreamを取得
+        int length = await stream.ReadAsync(recvBuffer, 0, recvBuffer.Length);     // 受信データのバイト数を取得
+
+        // 受信データからイベントIDを取り出す
+        int eventID = recvBuffer[0];
+
+        // 受信データから文字列を取り出す
+        byte[] bufferJson = recvBuffer.Skip(1).ToArray();                              // 1バイト目をスキップ
+        string recevieString = Encoding.UTF8.GetString(bufferJson, 0, length - 1);     // 受信データを文字列に変換
+
+        // Jsonデシリアライズ
+        userDataList = JsonConvert.DeserializeObject<UserDataList>(recevieString);
+
+        // データ受信表示
+        connectText.text = "データ送受信完了";
+
+        // プレイヤー一覧の表示
+        OutputPlayer();
+    }
+
+    /// <summary>
+    /// プレイヤー一覧の表示処理
+    /// </summary>
+    private void OutputPlayer()
+    {
+        // プレイヤーオブジェ・名前の表示
+        playerObj.SetActive(true);
+        playerName.SetActive(true);
+
+        // プレイヤー名の反映
+        for (int i = 0; i < userDataList.userList.Length; i++)
+        {
+            // 各Noプレイヤー名をテキストに適用
+            string nameObj = (i + 1).ToString() + "PName";
+            GameObject.Find(nameObj).GetComponent<Text>().text = userDataList.userList[i].UserName;
+        }
     }
 }

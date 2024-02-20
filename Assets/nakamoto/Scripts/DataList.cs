@@ -48,7 +48,8 @@ class UserDataList
     /// <summary>
     /// ユーザーデータリスト
     /// </summary>
-    UserData[] userDatas;
+    public UserData[] userList
+    { get; set; }
 
     //////////////////////
     // 戦績変数追加予定 //

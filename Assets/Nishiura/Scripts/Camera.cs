@@ -24,17 +24,18 @@ public class MoveCameraManager : MonoBehaviour
         vcam4.Priority = 0;
         vcam5.Priority = 0;
     }
+
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetKeyDown(KeyCode.RightShift))
         {
             upCamera = false;
             cameraShift++;
             if (cameraShift > 3) cameraShift = 0;
         }
 
-        if (Input.GetKeyDown(KeyCode.RightShift))
+        if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             upCamera = false;
             cameraShift--;

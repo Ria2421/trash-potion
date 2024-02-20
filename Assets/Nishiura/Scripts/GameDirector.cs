@@ -8,6 +8,7 @@ using Unity.Burst.CompilerServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Cinemachine;
 
 public class GameDirector : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class GameDirector : MonoBehaviour
     public bool[] isPlayer; 
     Player[] player;
     int nowTurn;
+    CinemachineVirtualCamera[] camera = new CinemachineVirtualCamera[5];
 
     //GameMode
     public enum MODE
@@ -84,7 +86,11 @@ public class GameDirector : MonoBehaviour
         //画面上のオブジェクト取得
         txtInfo = GameObject.Find("Info");
         buttonTurnEnd = GameObject.Find("EndButton");
-
+        for(int i = 1; i<6;i++)
+        {
+            camera[i-1] = GameObject.Find("VCam"+ i ).GetComponent<CinemachineVirtualCamera>();
+        }
+        
         txtInfo.GetComponent<Text>().text = "";
         unitData = new List<GameObject>[tileData.GetLength(0), tileData.GetLength(1)];
 
@@ -129,13 +135,13 @@ public class GameDirector : MonoBehaviour
                 if (1 == initUnitData[i, j])
                 { //1Pユニット配置
                     resname = "Unit1";
-                    playerType = UnitController.TYPE_RED;
+                    playerType = UnitController.TYPE_BLUE;
                     p1++;
                 }
                 else if (2 == initUnitData[i, j])
                 { //2Pユニット配置
                     resname = "Unit2";
-                    playerType = UnitController.TYPE_BLUE;
+                    playerType = UnitController.TYPE_RED;
                     p2++;
                     // オブジェクトの向き
                     //angle.y = 180;
@@ -170,6 +176,35 @@ public class GameDirector : MonoBehaviour
                 {
                     unit.GetComponent<UnitController>().PlayerNo = initUnitData[i, j];
                     unit.GetComponent<UnitController>().Type = playerType;
+                    camera[playerType -1].Follow = unit.transform;
+                    if(playerType ==1 )
+                    { // Case Player1
+                        camera[0].transform.position = new Vector3(0, 0, 0);
+                        camera[0].transform.rotation =  Quaternion.Euler(0, 0, 0);
+                        camera[0].transform.position = new Vector3(4.5f, 1.6f, -5.5f);
+                        camera[0].transform.rotation = Quaternion.Euler(22.0f,0.0f,0.0f);
+                    }
+                    else if (playerType == 2)
+                    { // Case Player2
+                        camera[1].transform.position = new Vector3(0, 0, 0);
+                        camera[1].transform.rotation = Quaternion.Euler(0, 0, 0);
+                        camera[1].transform.position = new Vector3(6.5f, 1.6f, 4.5f);
+                        camera[1].transform.rotation = Quaternion.Euler(22.0f, -90.0f, 0.0f);
+                    }
+                    else if (playerType == 3)
+                    { // Case Player3
+                        camera[2].transform.position = new Vector3(0, 0, 0);
+                        camera[2].transform.rotation = Quaternion.Euler(0, 0, 0);
+                        camera[2].transform.position = new Vector3(-3.5f, 1.6f, 6.5f);
+                        camera[2].transform.rotation = Quaternion.Euler(22.0f, 180.0f, 0.0f);
+                    }
+                    else if (playerType == 4)
+                    { //Case Player4
+                        camera[3].transform.position = new Vector3(0, 0, 0);
+                        camera[3].transform.rotation = Quaternion.Euler(0, 0, 0);
+                        camera[3].transform.position = new Vector3(5.5f, 1.6f, -3.5f);
+                        camera[3].transform.rotation = Quaternion.Euler(22.0f, 90.0f, 0.0f);
+                    }
 
                     unitData[i, j].Add(unit);
                 }
@@ -177,7 +212,6 @@ public class GameDirector : MonoBehaviour
         } 
 
         nowTurn = 0;
-
         nextMode = MODE.MOVE_SELECT;
     }
 

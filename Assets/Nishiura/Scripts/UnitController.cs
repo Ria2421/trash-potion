@@ -8,8 +8,8 @@ using UnityEngine;
 public class UnitController : MonoBehaviour
 {
     //プレーヤーのタイプ
-    public const int TYPE_BLUE = 1;
-    public const int TYPE_RED = 2;
+    public const int TYPE_RED = 1;
+    public const int TYPE_BLUE = 2;
     public const int TYPE_YELLOW = 3;
     public const int TYPE_GREEN = 4;
 

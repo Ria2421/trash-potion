@@ -134,14 +134,14 @@ public class GameDirector : MonoBehaviour
 
                 if (1 == initUnitData[i, j])
                 { //1Pユニット配置
-                    resname = "Unit1";
-                    playerType = UnitController.TYPE_BLUE;
+                    resname = "Unit2";
+                    playerType = UnitController.TYPE_RED;
                     p1++;
                 }
                 else if (2 == initUnitData[i, j])
                 { //2Pユニット配置
-                    resname = "Unit2";
-                    playerType = UnitController.TYPE_RED;
+                    resname = "Unit1";
+                    playerType = UnitController.TYPE_BLUE;
                     p2++;
                     // オブジェクトの向き
                     //angle.y = 180;
@@ -179,31 +179,31 @@ public class GameDirector : MonoBehaviour
                     camera[playerType -1].Follow = unit.transform;
                     if(playerType ==1 )
                     { // Case Player1
-                        camera[0].transform.position = new Vector3(0, 0, 0);
-                        camera[0].transform.rotation =  Quaternion.Euler(0, 0, 0);
-                        camera[0].transform.position = new Vector3(4.5f, 1.6f, -5.5f);
-                        camera[0].transform.rotation = Quaternion.Euler(22.0f,0.0f,0.0f);
+                        CinemachineTransposer cinemachineTransposer = camera[0].GetCinemachineComponent<CinemachineTransposer>();
+                        cinemachineTransposer.m_FollowOffset.x = 0.0f;
+                        cinemachineTransposer.m_FollowOffset.y = 0.6f;
+                        cinemachineTransposer.m_FollowOffset.z = -2.0f;
                     }
                     else if (playerType == 2)
                     { // Case Player2
-                        camera[1].transform.position = new Vector3(0, 0, 0);
-                        camera[1].transform.rotation = Quaternion.Euler(0, 0, 0);
-                        camera[1].transform.position = new Vector3(6.5f, 1.6f, 4.5f);
-                        camera[1].transform.rotation = Quaternion.Euler(22.0f, -90.0f, 0.0f);
+                        CinemachineTransposer cinemachineTransposer = camera[1].GetCinemachineComponent<CinemachineTransposer>();
+                        cinemachineTransposer.m_FollowOffset.x = 0.0f;
+                        cinemachineTransposer.m_FollowOffset.y = 0.6f;
+                        cinemachineTransposer.m_FollowOffset.z = 2.5f;
                     }
                     else if (playerType == 3)
                     { // Case Player3
-                        camera[2].transform.position = new Vector3(0, 0, 0);
-                        camera[2].transform.rotation = Quaternion.Euler(0, 0, 0);
-                        camera[2].transform.position = new Vector3(-3.5f, 1.6f, 6.5f);
-                        camera[2].transform.rotation = Quaternion.Euler(22.0f, 180.0f, 0.0f);
+                        CinemachineTransposer cinemachineTransposer = camera[2].GetCinemachineComponent<CinemachineTransposer>();
+                        cinemachineTransposer.m_FollowOffset.x = 0.0f;
+                        cinemachineTransposer.m_FollowOffset.y = 0.6f;
+                        cinemachineTransposer.m_FollowOffset.z = -2.0f;
                     }
                     else if (playerType == 4)
                     { //Case Player4
-                        camera[3].transform.position = new Vector3(0, 0, 0);
-                        camera[3].transform.rotation = Quaternion.Euler(0, 0, 0);
-                        camera[3].transform.position = new Vector3(5.5f, 1.6f, -3.5f);
-                        camera[3].transform.rotation = Quaternion.Euler(22.0f, 90.0f, 0.0f);
+                        CinemachineTransposer cinemachineTransposer = camera[3].GetCinemachineComponent<CinemachineTransposer>();
+                        cinemachineTransposer.m_FollowOffset.x = 0.0f;
+                        cinemachineTransposer.m_FollowOffset.y = 0.6f;
+                        cinemachineTransposer.m_FollowOffset.z = 2.5f;
                     }
 
                     unitData[i, j].Add(unit);
@@ -475,6 +475,8 @@ public class GameDirector : MonoBehaviour
 
     public void TurnEnd()
     {
+        MoveCameraManager cameraManager = GameObject.Find("CameraManager").GetComponent<MoveCameraManager>();
+
         if (MODE.WAIT_TURN_START == nowMode)
         { //ターンスタート
 
@@ -483,7 +485,7 @@ public class GameDirector : MonoBehaviour
         }
         else if(MODE.WAIT_TURN_END == nowMode)
         { //ターン終了
-
+            cameraManager.MoveButton();
             nextMode = MODE.WAIT_TURN_START;
         }
     }

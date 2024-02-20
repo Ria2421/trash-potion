@@ -5,10 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/nakamoto/Scenes/Connect.unity
     guid: ca9fdf097c26e8a42afe8297860e174d
-  - enabled: 1
+  - enabled: 0
     path: Assets/nakamoto/Scenes/NextScene.unity
     guid: 8feddcb763a3c7f43b4a0f01831cbb45
   - enabled: 1

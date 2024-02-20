@@ -13,7 +13,6 @@ public class TitleManager : MonoBehaviour
     GameObject selectObject;
     [SerializeField] Text start;          //start‚Ì•Ï”
     [SerializeField] Text quit;           //qiot‚Ì•Ï”
-
     // Start is called before the first frame update
     void Start()
     {

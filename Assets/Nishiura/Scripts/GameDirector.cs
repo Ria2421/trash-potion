@@ -134,13 +134,13 @@ public class GameDirector : MonoBehaviour
 
                 if (1 == initUnitData[i, j])
                 { //1Pユニット配置
-                    resname = "Unit2";
+                    resname = "Unit1";
                     playerType = UnitController.TYPE_RED;
                     p1++;
                 }
                 else if (2 == initUnitData[i, j])
                 { //2Pユニット配置
-                    resname = "Unit1";
+                    resname = "Unit2";
                     playerType = UnitController.TYPE_BLUE;
                     p2++;
                     // オブジェクトの向き

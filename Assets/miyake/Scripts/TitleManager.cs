@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class TitleManager : MonoBehaviour
 {
@@ -42,6 +43,8 @@ public class TitleManager : MonoBehaviour
                 quit.color= Color.black;
                 start.fontSize = 80;
                 quit.fontSize = 64;
+
+                ChangeScene();
             }
         }
         else
@@ -62,7 +65,16 @@ public class TitleManager : MonoBehaviour
                 quit.color = Color.red;
                 start.fontSize = 64;
                 quit.fontSize = 80;
+
+                ChangeScene();
             }
         }
+    }
+
+    //ÉVÅ[ÉìÇÃêÿÇËë÷Ç¶
+    public void ChangeScene()
+    {
+        Initiate.DoneFading();
+        Initiate.Fade("Connect", Color.black, 1.5f);
     }
 }

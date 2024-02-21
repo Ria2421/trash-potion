@@ -17,6 +17,7 @@ public class GameDirector : MonoBehaviour
     Player[] player;
     int nowTurn;
     CinemachineVirtualCamera[] camera = new CinemachineVirtualCamera[5];
+    MoveCameraManager cameraManager;
 
     //GameMode
     public enum MODE
@@ -40,11 +41,11 @@ public class GameDirector : MonoBehaviour
         {0,0,0,0,0,0,0,0,0,0,0},//手前
         {0,2,1,1,1,1,1,1,1,2,0},
         {0,1,1,1,1,1,1,1,1,1,0},
+        {0,1,1,3,3,1,3,3,1,1,0},
+        {0,1,1,3,1,1,1,3,1,1,0},
         {0,1,1,1,1,1,1,1,1,1,0},
-        {0,1,1,1,1,1,1,1,1,1,0},
-        {0,1,1,1,1,1,1,1,1,1,0},
-        {0,1,1,1,1,1,1,1,1,1,0},
-        {0,1,1,1,1,1,1,1,1,1,0},
+        {0,1,1,3,1,1,1,3,1,1,0},
+        {0,1,1,3,3,1,3,3,1,1,0},
         {0,1,1,1,1,1,1,1,1,1,0},
         {0,2,1,1,1,1,1,1,1,2,0},
         {0,0,0,0,0,0,0,0,0,0,0},
@@ -79,6 +80,7 @@ public class GameDirector : MonoBehaviour
     //ボタン等のオブジェクト
     GameObject txtInfo;
     GameObject buttonTurnEnd;
+    GameObject brewingButton;
 
     // Start is called before the first frame update
     void Start()
@@ -86,7 +88,10 @@ public class GameDirector : MonoBehaviour
         //画面上のオブジェクト取得
         txtInfo = GameObject.Find("Info");
         buttonTurnEnd = GameObject.Find("EndButton");
-        for(int i = 1; i<6;i++)
+        brewingButton = GameObject.Find("BrewingButton");
+        cameraManager = GameObject.Find("CameraManager").GetComponent<MoveCameraManager>();
+
+        for (int i = 1; i<6;i++)
         {
             camera[i-1] = GameObject.Find("VCam"+ i ).GetComponent<CinemachineVirtualCamera>();
         }
@@ -404,11 +409,6 @@ public class GameDirector : MonoBehaviour
         }
 
         GameObject ret = Instantiate(prefab, pos, angle);
-
-        ret.name = ret.name.Replace("1(Clone)", "Unit1");
-        ret.name = ret.name.Replace("2(Clone)", "Unit2");
-        ret.name = ret.name.Replace("3(Clone)", "Unit3");
-        ret.name = ret.name.Replace("4(Clone)", "Unit4");
         return ret;
     }
 
@@ -475,8 +475,6 @@ public class GameDirector : MonoBehaviour
 
     public void TurnEnd()
     {
-        MoveCameraManager cameraManager = GameObject.Find("CameraManager").GetComponent<MoveCameraManager>();
-
         if (MODE.WAIT_TURN_START == nowMode)
         { //ターンスタート
 
@@ -488,5 +486,16 @@ public class GameDirector : MonoBehaviour
             cameraManager.MoveButton();
             nextMode = MODE.WAIT_TURN_START;
         }
+    }
+
+    public void Brewing()
+    {
+        cameraManager.CameraShift();
+    }
+
+    public void UsePotion()
+    {
+        cameraManager.MoveButton();
+        nextMode = MODE.WAIT_TURN_START;
     }
 }

@@ -3,6 +3,7 @@
 // Name:êºâYçWëæ Date:2/15
 //
 using UnityEngine;
+using UnityEngine.UI;
 using Cinemachine;
 public class MoveCameraManager : MonoBehaviour
 {
@@ -21,10 +22,12 @@ public class MoveCameraManager : MonoBehaviour
     GameObject Flame4;
     GameObject moveButton;
     GameObject brewingButton;
+    [SerializeField] Text turnCnt;
     int cameraShift = 0;
-    bool upCamera =false;
+    bool upCamera = false;
     int tabCnt;
     int moveCnt = 0;
+    int turnNum = 1;
 
     // Start is called before the first frame update
     void Start()
@@ -73,6 +76,8 @@ public class MoveCameraManager : MonoBehaviour
         //    if (cameraShift < 0) cameraShift = 3;
         //}
 
+        turnCnt.GetComponent<Text>().text = "ÉâÉEÉìÉh" + turnNum.ToString();
+
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             if (tabCnt == 0)
@@ -91,7 +96,7 @@ public class MoveCameraManager : MonoBehaviour
                 brewingButton.SetActive(false);
 
             }
-            else if(tabCnt == 1)
+            else if (tabCnt == 1)
             {
                 upCamera = false;
                 tabCnt = 0;
@@ -114,7 +119,11 @@ public class MoveCameraManager : MonoBehaviour
             }
         }
 
-        if (cameraShift > 3) cameraShift = 0;
+        if (cameraShift > 3)
+        {
+            cameraShift = 0;
+            turnNum++;
+        }
 
         if (cameraShift == 0)
         { // ÉJÉÅÉâÇÃóDêÊìxÇïœçX
@@ -148,8 +157,8 @@ public class MoveCameraManager : MonoBehaviour
             vcam4.Priority = 1;
             vcam5.Priority = 0;
         }
-        
-        if(upCamera == true) 
+
+        if (upCamera == true)
         {
             vcam1.Priority = 0;
             vcam2.Priority = 0;
@@ -177,7 +186,7 @@ public class MoveCameraManager : MonoBehaviour
             brewingButton.SetActive(false);
 
         }
-        else if(moveCnt == 1)
+        else if (moveCnt == 1)
         {
             upCamera = false;
             moveCnt = 0;
@@ -192,7 +201,11 @@ public class MoveCameraManager : MonoBehaviour
             Flame4.SetActive(false);
             moveButton.SetActive(true);
             brewingButton.SetActive(true);
-
         }
+    }
+
+    public void CameraShift()
+    {
+        cameraShift++;
     }
 }

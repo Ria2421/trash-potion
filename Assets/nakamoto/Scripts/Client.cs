@@ -76,6 +76,11 @@ public class Client : MonoBehaviour
     /// </summary>
     [SerializeField] GameObject playerObj;
 
+    /// <summary>
+    /// 準備完了ボタン格納用
+    /// </summary>
+    [SerializeField] GameObject completeButton;
+
     //------------------------------------------------------------------------------
     // メソッド ------------------------------------------
 
@@ -128,18 +133,6 @@ public class Client : MonoBehaviour
 
             // 入力フィールドの有効化
             nameInput.SetActive(true);
-
-            //// 接続完了の受信待ち
-            //length = await stream.ReadAsync(buffer, 0, buffer.Length);      // 受信データのバイト数を取得
-            //recevieString = Encoding.UTF8.GetString(buffer, 0, length);     // 受信データを文字列に変換
-
-            //if(recevieString == "完了")
-            //{
-            //    /* フェード処理 (黒)  
-            //        ( "シーン名",フェードの色, 速さ);  */
-            //    Initiate.DoneFading();
-            //    Initiate.Fade("NextScene", Color.black, 1.5f);
-            //}
         }
         catch (Exception ex)
         {
@@ -213,5 +206,68 @@ public class Client : MonoBehaviour
             string nameObj = (i + 1).ToString() + "PName";
             GameObject.Find(nameObj).GetComponent<Text>().text = userDataList.userList[i].UserName;
         }
+
+        // 準備完了ボタンの表示
+        completeButton.SetActive(true);
+    }
+
+    /// <summary>
+    /// 準備完了フラグ送信処理
+    /// </summary>
+    public async void SendComplete()
+    {   // 準備完了フラグ送信処理 -------------------------------------------------------------------------------------------------------------
+
+        // 準備完了ボタンの非表示
+        completeButton.SetActive(false);
+
+        UserData userData = new UserData();
+        userData.UserName = nameInput.GetComponent<InputField>().text;   // 入力された名前を格納
+        userData.PlayerNo = myNo;                                        // 自分のプレイヤー番号を格納
+
+        // 送信データをJSONシリアライズ
+        string json = JsonConvert.SerializeObject(userData);
+
+        // 送信処理
+        byte[] buffer = Encoding.UTF8.GetBytes(json);                  // JSONをbyteに変換
+        buffer = buffer.Prepend((byte)EventID.InGameFlag).ToArray();   // 送信データの先頭にイベントIDを付与
+        await stream.WriteAsync(buffer, 0, buffer.Length);             // JSON送信処理
+
+        // 送信待機文字表示
+        connectText.text = "完了待機中...";
+
+        // 完了フラグ受信処理 -------------------------------------------------------------------------------------------------------------
+
+        byte[] recvBuffer = new byte[dataSize];                                    // 送受信データ格納用
+        stream = tcpClient.GetStream();                                            // クライアントのデータ送受信に使うNetworkStreamを取得
+        int length = await stream.ReadAsync(recvBuffer, 0, recvBuffer.Length);     // 受信データのバイト数を取得
+
+        // 受信データからイベントIDを取り出す
+        int eventID = recvBuffer[0];
+
+        // 受信データから文字列を取り出す
+        byte[] bufferJson = recvBuffer.Skip(1).ToArray();                              // 1バイト目をスキップ
+        string recevieString = Encoding.UTF8.GetString(bufferJson, 0, length - 1);     // 受信データを文字列に変換
+
+        // データ受信表示
+        connectText.text = recevieString;
+
+#if DEBUG
+        // 状況表示
+        Debug.Log("シーン移動");
+#endif
+
+        //シーン移動処理
+        Invoke("NextScene", 1.5f);
+    }
+
+    /// <summary>
+    /// シーン移動処理
+    /// </summary>
+    private void NextScene()
+    {
+        /* フェード処理 (黒)  
+            ( "シーン名",フェードの色, 速さ);  */
+        Initiate.DoneFading();
+        Initiate.Fade("IGC", Color.black, 1.5f);
     }
 }

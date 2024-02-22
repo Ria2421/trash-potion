@@ -5,7 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/miyake/Scenes/Title.unity
     guid: 1f8581bf5b906e94f9da9fa86488c94e
   - enabled: 1

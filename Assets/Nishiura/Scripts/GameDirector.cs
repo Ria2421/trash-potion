@@ -9,6 +9,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Cinemachine;
+using UnityEngine.UIElements;
+using Newtonsoft.Json;
 
 public class GameDirector : MonoBehaviour
 {
@@ -36,19 +38,21 @@ public class GameDirector : MonoBehaviour
 
     //0:Wall 1:NormalTile 2:GoalTile 3:1P'sGoal 4:2P's Goal
     //フィールド
-    int[,] tileData = new int[,]
+    TileData[][] tileData;
+
+    int[][] initTileData = new int[][]
     {
-        {0,0,0,0,0,0,0,0,0,0,0},//手前
-        {0,2,1,1,1,1,1,1,1,2,0},
-        {0,1,1,1,1,1,1,1,1,1,0},
-        {0,1,1,3,3,1,3,3,1,1,0},
-        {0,1,1,3,1,1,1,3,1,1,0},
-        {0,1,1,1,1,1,1,1,1,1,0},
-        {0,1,1,3,1,1,1,3,1,1,0},
-        {0,1,1,3,3,1,3,3,1,1,0},
-        {0,1,1,1,1,1,1,1,1,1,0},
-        {0,2,1,1,1,1,1,1,1,2,0},
-        {0,0,0,0,0,0,0,0,0,0,0},
+        new int[] {0,0,0,0,0,0,0,0,0,0,0},//手前
+        new int[] {0,2,1,1,1,1,1,1,1,2,0},
+        new int[] {0,1,1,1,1,1,1,1,1,1,0},
+        new int[] {0,1,1,3,3,1,3,3,1,1,0},
+        new int[] {0,1,1,3,1,1,1,3,1,1,0},
+        new int[] {0,1,1,1,1,1,1,1,1,1,0},
+        new int[] {0,1,1,3,1,1,1,3,1,1,0},
+        new int[] {0,1,1,3,3,1,3,3,1,1,0},
+        new int[] {0,1,1,1,1,1,1,1,1,1,0},
+        new int[] {0,2,1,1,1,1,1,1,1,2,0},
+        new int[] {0,0,0,0,0,0,0,0,0,0,0},
     };
 
     //プレイヤー初期配置
@@ -85,6 +89,20 @@ public class GameDirector : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        tileData = new TileData [initTileData.Length] [];
+
+        for (int i = 0;i < initTileData.Length;i++)
+        {
+            tileData[i] = new TileData[initTileData[i].Length];
+
+            for(int j = 0;j < initTileData[i].Length;j++)
+            {
+                tileData[i][j] = new TileData(initTileData[i][j]);
+            }
+        }
+
+        string json = JsonConvert.SerializeObject(tileData);
+
         //画面上のオブジェクト取得
         buttonTurnEnd = GameObject.Find("EndButton");
         brewingButton = GameObject.Find("BrewingButton");
@@ -96,7 +114,7 @@ public class GameDirector : MonoBehaviour
         }
         
         //txtInfo.GetComponent<Text>().text = "";
-        unitData = new List<GameObject>[tileData.GetLength(0), tileData.GetLength(1)];
+        unitData = new List<GameObject>[tileData.Length, tileData[0].Length];
 
         //プレイヤー設定
         player = new Player[4];     //人数
@@ -106,12 +124,12 @@ public class GameDirector : MonoBehaviour
         player[3] = new Player(4);
 
         //タイル初期化
-        for (int i = 0; i<tileData.GetLength(0); i++)
+        for (int i = 0; i<tileData.Length; i++)
         {
-            for (int j = 0; j < tileData.GetLength(1); j++)
+            for (int j = 0; j < tileData[0].Length; j++)
             {
-                float x =j - (tileData.GetLength(1) /2 - 0.5f);
-                float z = i - (tileData.GetLength(0) / 2 - 0.5f);
+                float x =j - (tileData[0].Length / 2 - 0.5f);
+                float z = i - (tileData.Length / 2 - 0.5f);
 
                 //タイル配置
                 string resname = "";
@@ -120,7 +138,7 @@ public class GameDirector : MonoBehaviour
                 int p3 = 0;
                 int p4 = 0;
 
-                int no = tileData[i,j];
+                int no = tileData[i][j].tNo;
                 if (4 == no || 8 == no) no = 5;
 
                 resname = "Cube (" + no + ")";
@@ -292,8 +310,8 @@ public class GameDirector : MonoBehaviour
                 {
                     Vector3 pos = hit.collider.gameObject.transform.position;
 
-                    int x = (int)(pos.x + (tileData.GetLength(1) / 2 - 0.5f));
-                    int z = (int)(pos.z + (tileData.GetLength(0) / 2 - 0.5f));
+                    int x = (int)(pos.x + (tileData[0].Length / 2 - 0.5f));
+                    int z = (int)(pos.z + (tileData.Length / 2 - 0.5f));
 
                     if (0 < unitData[z, x].Count && player[nowTurn].PlayerNo == unitData[z, x][0].GetComponent<UnitController>().PlayerNo)
                     { //ユニット選択
@@ -326,42 +344,6 @@ public class GameDirector : MonoBehaviour
 
     void FieldUpdateMode()
     {
-        //for(int i = 0; i <unitData.GetLength(0); i++)
-        //{
-        //    for (int j = 0; j < unitData.GetLength(0); j++)
-        //    {
-        //        //ゴール時削除
-        //        if(1 == unitData[i,j].Count && player[nowTurn].PlayerNo*4 == tileData[i,j])
-        //        {
-        //            if(UnitController.TYPE_BLUE == unitData[i, j][0].GetComponent<UnitController>().Type) 
-        //            {//青だとwin
-        //                player[nowTurn].IsClear = true;
-        //            }
-        //            Destroy(unitData[i, j][0]);
-        //            unitData[i, j].RemoveAt(0);
-        //        }
-        //        //重複時、ユニットを削除
-        //        if (1 < unitData[i, j].Count)
-        //        {
-        //            unitData[i, j][1].GetComponent<UnitController>().Select(false);
-
-        //            if (UnitController.TYPE_RED == unitData[i, j][0].GetComponent<UnitController>().Type)
-        //            {//赤ユニット時処理
-        //                player[nowTurn].Hp--;
-        //                waitTime = 1.5f;
-        //            }
-        //            else
-        //            {//青ユニット時処理
-        //                player[nowTurn].Score++;
-        //                waitTime = 1.5f;
-        //            }
-
-        //            Destroy(unitData[i, j][0]);
-        //            unitData[i, j].RemoveAt(0);
-        //        }
-        //    }
-        //}
-
         nextMode = MODE.TURN_CHANGE;
     }
 
@@ -419,9 +401,12 @@ public class GameDirector : MonoBehaviour
         int dx = Mathf.Abs(oldx - x);
         int dz = Mathf.Abs(oldz - z);
 
-        //Debug.Log("dx:" + dx);
-        //Debug.Log("dz:" + dz);
-        //Debug.Log("合計:" + (dx + dz));
+        Debug.Log("dx:" + dx);
+        Debug.Log("dz:" + dz);
+        Debug.Log("合計:" + (dx + dz));
+
+        Debug.Log("x:" + x);
+        Debug.Log("z:" + z);
 
         // 斜め進行不可
         if (dx + dz > 2 || dx > 1 || dz > 1)
@@ -433,9 +418,9 @@ public class GameDirector : MonoBehaviour
         }
 
         // 壁以外
-        if (1 == tileData[z, x]
-           || 2 == tileData[z, x]
-           || player[nowTurn].PlayerNo * 4 == tileData[z, x])
+        if (1 == tileData[z][x].tNo
+           || 2 == tileData[z][x].tNo
+           || player[nowTurn].PlayerNo * 4 == tileData[z][x].tNo)
         {
             if (0 == unitData[z, x].Count)
             { // 誰もいないマス

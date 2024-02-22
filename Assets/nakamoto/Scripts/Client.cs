@@ -268,6 +268,6 @@ public class Client : MonoBehaviour
         /* フェード処理 (黒)  
             ( "シーン名",フェードの色, 速さ);  */
         Initiate.DoneFading();
-        Initiate.Fade("IGC", Color.black, 1.5f);
+        Initiate.Fade("ModeSelection", Color.black, 1.5f);
     }
 }

@@ -86,7 +86,6 @@ public class GameDirector : MonoBehaviour
     void Start()
     {
         //画面上のオブジェクト取得
-        txtInfo = GameObject.Find("Info");
         buttonTurnEnd = GameObject.Find("EndButton");
         brewingButton = GameObject.Find("BrewingButton");
         cameraManager = GameObject.Find("CameraManager").GetComponent<MoveCameraManager>();
@@ -96,7 +95,7 @@ public class GameDirector : MonoBehaviour
             camera[i-1] = GameObject.Find("VCam"+ i ).GetComponent<CinemachineVirtualCamera>();
         }
         
-        txtInfo.GetComponent<Text>().text = "";
+        //txtInfo.GetComponent<Text>().text = "";
         unitData = new List<GameObject>[tileData.GetLength(0), tileData.GetLength(1)];
 
         //プレイヤー設定

@@ -483,6 +483,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayer: 0101
+  nextMode: 0
 --- !u!4 &796362334
 Transform:
   m_ObjectHideFlags: 0

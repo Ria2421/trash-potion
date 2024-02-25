@@ -40,6 +40,7 @@ public class GameDirector : MonoBehaviour
     //フィールド
     TileData[][] tileData;
 
+    // タイル配置設定
     int[][] initTileData = new int[][]
     {
         new int[] {0,0,0,0,0,0,0,0,0,0,0},//手前
@@ -89,8 +90,10 @@ public class GameDirector : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // タイル配置情報分の配列を生成
         tileData = new TileData [initTileData.Length] [];
 
+        // タイルデータに配置位置を代入
         for (int i = 0;i < initTileData.Length;i++)
         {
             tileData[i] = new TileData[initTileData[i].Length];
@@ -101,7 +104,14 @@ public class GameDirector : MonoBehaviour
             }
         }
 
-        string json = JsonConvert.SerializeObject(tileData);
+        // タイルデータにプレイヤー情報を代入
+        for (int i = 0; i < initTileData.Length; i++)
+        {
+            for (int j = 0; j < initTileData[i].Length; j++)
+            {
+                tileData[i][j].pNo = initUnitData[i, j];
+            }
+        }
 
         //画面上のオブジェクト取得
         buttonTurnEnd = GameObject.Find("EndButton");
@@ -154,13 +164,13 @@ public class GameDirector : MonoBehaviour
                 //int playerType = UnitController.TYPE_BLUE;
                 //List<int> unitrnd = new List<int>();
 
-                if (1 == initUnitData[i, j])
+                if (1 == tileData[i][j].pNo)
                 { //1Pユニット配置
                     resname = "Unit1";
                     playerType = UnitController.TYPE_RED;
                     p1++;
                 }
-                else if (2 == initUnitData[i, j])
+                else if (2 == tileData[i][j].pNo)
                 { //2Pユニット配置
                     resname = "Unit2";
                     playerType = UnitController.TYPE_BLUE;
@@ -168,13 +178,13 @@ public class GameDirector : MonoBehaviour
                     // オブジェクトの向き
                     //angle.y = 180;
                 }
-                else if (3 == initUnitData[i, j])
+                else if (3 == tileData[i][j].pNo)
                 { //3Pユニット配置
                     resname = "Unit3";
                     playerType = UnitController.TYPE_YELLOW;
                     p3++;
                 }
-                else if (4 == initUnitData[i, j])
+                else if (4 == tileData[i][j].pNo)
                 { //4Pユニット配置
                     resname = "Unit4";
                     playerType = UnitController.TYPE_GREEN;

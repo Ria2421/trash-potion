@@ -294,7 +294,7 @@ public class GameDirector : MonoBehaviour
 
         if(MODE.WAIT_TURN_START == next)
         {
-            buttonTurnEnd.SetActive(true);
+            //buttonTurnEnd.SetActive(true);
         }
         else if (MODE.MOVE_SELECT == next)
         {
@@ -346,7 +346,7 @@ public class GameDirector : MonoBehaviour
                         selectUnit.GetComponent<UnitController>().Select();
                     }
                     else if (null != selectUnit)
-                    {//移動先タイル選択
+                    { //移動先タイル選択
                         if (movableTile(oldX, oldY, x, z))
                         {
                             isMoved = true;
@@ -365,42 +365,6 @@ public class GameDirector : MonoBehaviour
 
     void FieldUpdateMode()
     {
-        //for(int i = 0; i <unitData.GetLength(0); i++)
-        //{
-        //    for (int j = 0; j < unitData.GetLength(0); j++)
-        //    {
-        //        //ゴール時削除
-        //        if(1 == unitData[i,j].Count && player[nowTurn].PlayerNo*4 == tileData[i,j])
-        //        {
-        //            if(UnitController.TYPE_BLUE == unitData[i, j][0].GetComponent<UnitController>().Type) 
-        //            {//青だとwin
-        //                player[nowTurn].IsClear = true;
-        //            }
-        //            Destroy(unitData[i, j][0]);
-        //            unitData[i, j].RemoveAt(0);
-        //        }
-        //        //重複時、ユニットを削除
-        //        if (1 < unitData[i, j].Count)
-        //        {
-        //            unitData[i, j][1].GetComponent<UnitController>().Select(false);
-
-        //            if (UnitController.TYPE_RED == unitData[i, j][0].GetComponent<UnitController>().Type)
-        //            {//赤ユニット時処理
-        //                player[nowTurn].Hp--;
-        //                waitTime = 1.5f;
-        //            }
-        //            else
-        //            {//青ユニット時処理
-        //                player[nowTurn].Score++;
-        //                waitTime = 1.5f;
-        //            }
-
-        //            Destroy(unitData[i, j][0]);
-        //            unitData[i, j].RemoveAt(0);
-        //        }
-        //    }
-        //}
-
         nextMode = MODE.TURN_CHANGE;
     }
 
@@ -431,7 +395,7 @@ public class GameDirector : MonoBehaviour
     }
 
     int getNextTurn()
-    {//次ターンを取得
+    { //次ターンを取得
         int ret = nowTurn;
 
         ret++;
@@ -479,11 +443,11 @@ public class GameDirector : MonoBehaviour
            || player[nowTurn].PlayerNo * 4 == tileData[z, x].tNo)
         {
             if (0 == unitData[z, x].Count)
-            { // 誰もいないマス
+            { //誰もいないマス
                 ret = true;
             }
             else
-            {// 誰かいるマス
+            { //誰かいるマス
                 if (unitData[z, x][0].GetComponent<UnitController>().PlayerNo != player[nowTurn].PlayerNo)
                 {// 敵だった場合
                     ret = true;
@@ -510,17 +474,10 @@ public class GameDirector : MonoBehaviour
 
     public void TurnEnd()
     {
-        if (MODE.WAIT_TURN_START == nowMode)
-        { //ターンスタート
-
-            buttonTurnEnd.SetActive(false);
-            nextMode = MODE.MOVE_SELECT;
-        }
-        else if(MODE.WAIT_TURN_END == nowMode)
-        { //ターン終了
-            cameraManager.MoveButton();
-            nextMode = MODE.WAIT_TURN_START;
-        }
+        buttonTurnEnd.SetActive(false);
+        cameraManager.MoveButton();
+        //nextMode = MODE.WAIT_TURN_START;
+        nextMode = MODE.MOVE_SELECT;
     }
 
     public void Brewing()

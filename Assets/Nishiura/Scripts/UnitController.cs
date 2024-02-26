@@ -19,7 +19,7 @@ public class UnitController : MonoBehaviour
     public int PlayerNo;
     public int Type;
     
-   void OnColliderEnable()
+    void OnColliderEnable()
     {
         GetComponent<BoxCollider>().center = new Vector3(0f, -2f, 0f);
         GetComponent<BoxCollider>().enabled = true;

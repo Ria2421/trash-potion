@@ -21,10 +21,10 @@ public class MoveCameraManager : MonoBehaviour
     GameObject Icon4P;
 
     //フレームのゲームオブジェクト
-    GameObject Flame1;
-    GameObject Flame2;
-    GameObject Flame3;
-    GameObject Flame4;
+    public GameObject Flame1;
+    public GameObject Flame2;
+    public GameObject Flame3;
+    public GameObject Flame4;
 
     //ボタンのゲームオブジェクト
     GameObject moveButton;
@@ -83,25 +83,11 @@ public class MoveCameraManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (Input.GetKeyDown(KeyCode.RightShift))
-        //{
-        //    upCamera = false;
-        //    cameraShift++;
-        //    if (cameraShift > 3) cameraShift = 0;
-        //}
-
-        //if (Input.GetKeyDown(KeyCode.LeftShift))
-        //{
-        //    upCamera = false;
-        //    cameraShift--;
-        //    if (cameraShift < 0) cameraShift = 3;
-        //}
-
         //現在のラウンド数を表示
         turnCnt.GetComponent<Text>().text = "ラウンド" + turnNum.ToString();
 
         if (Input.GetKeyDown(KeyCode.Tab))
-        {//TABを押した際、カメラを俯瞰に
+        { //TABを押した際、カメラを俯瞰に
             if (tabCnt == 0)
             {
                 upCamera = true;
@@ -116,7 +102,6 @@ public class MoveCameraManager : MonoBehaviour
                 Flame4.SetActive(true);
                 moveButton.SetActive(false);
                 brewingButton.SetActive(false);
-
             }
             else if (tabCnt == 1)
             {
@@ -192,7 +177,7 @@ public class MoveCameraManager : MonoBehaviour
     }
 
     public void MoveButton()
-    {//プレイヤー間のカメラ移動ボタン
+    { //プレイヤー間のカメラ移動ボタン
 
         if (moveCnt == 0)
         {
@@ -208,7 +193,6 @@ public class MoveCameraManager : MonoBehaviour
             Flame4.SetActive(true);
             moveButton.SetActive(false);
             brewingButton.SetActive(false);
-
         }
         else if (moveCnt == 1)
         {

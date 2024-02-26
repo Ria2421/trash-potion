@@ -1,6 +1,7 @@
 //
 // ゲームディレクタースクリプト
-// Name:西浦晃太 Date:2/8
+// Name:西浦晃太 Date:2/87
+// Update:02/26
 //
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,7 @@ public class GameDirector : MonoBehaviour
     MODE nowMode;
     public MODE nextMode;
 
-    //0:Wall 1:NormalTile 2:GoalTile 3:1P'sGoal 4:2P's Goal
+    //0:Wall 1:NormalTile 2:SpawnPoint 3:Object1 4: -
     //フィールド
 
     TileData[,] tileData;
@@ -92,7 +93,6 @@ public class GameDirector : MonoBehaviour
         get { return isMoved ;}
     }
 
-
     // Start is called before the first frame update
     void Start()
     {
@@ -121,7 +121,7 @@ public class GameDirector : MonoBehaviour
         buttonTurnEnd = GameObject.Find("EndButton");
         cameraManager = GameObject.Find("CameraManager").GetComponent<MoveCameraManager>();
 
-        for (int i = 1; i<6;i++)
+        for (int i = 1; i < 6; i++)
         {
             camera[i-1] = GameObject.Find("VCam"+ i ).GetComponent<CinemachineVirtualCamera>();
         }
@@ -164,8 +164,6 @@ public class GameDirector : MonoBehaviour
                 //プレイヤー毎設定
                 Vector3 angle = new Vector3(0, 0, 0);
                 int playerType = UnitController.TYPE_RED;
-                //int playerType = UnitController.TYPE_BLUE;
-                //List<int> unitrnd = new List<int>();
 
                 if (1 == tileData[i, j].pNo)
                 { //1Pユニット配置
@@ -198,13 +196,6 @@ public class GameDirector : MonoBehaviour
                     resname = "";
                 }
 
-                ////赤ユニット配置判定
-                //if (-1 < unitrnd.IndexOf(unitNum))
-                //{
-                //    resname = "Unit2";
-                //    playerType = UnitController.TYPE_RED;
-                //}
-
                 GameObject unit = resourcesInstantiate(resname, new Vector3(x, 0.6f, z), Quaternion.Euler(angle));
 
                 if (null != unit)
@@ -212,22 +203,23 @@ public class GameDirector : MonoBehaviour
                     unit.GetComponent<UnitController>().PlayerNo = initUnitData[i, j];
                     unit.GetComponent<UnitController>().Type = playerType;
                     camera[playerType -1].Follow = unit.transform;
-                    if(playerType ==1 )
-                    { // Case Player1
+
+                    if(playerType == 1 )
+                    { //Case Player1
                         CinemachineTransposer cinemachineTransposer = camera[0].GetCinemachineComponent<CinemachineTransposer>();
                         cinemachineTransposer.m_FollowOffset.x = 0.0f;
                         cinemachineTransposer.m_FollowOffset.y = 0.6f;
                         cinemachineTransposer.m_FollowOffset.z = -2.0f;
                     }
                     else if (playerType == 2)
-                    { // Case Player2
+                    { //Case Player2
                         CinemachineTransposer cinemachineTransposer = camera[1].GetCinemachineComponent<CinemachineTransposer>();
                         cinemachineTransposer.m_FollowOffset.x = 0.0f;
                         cinemachineTransposer.m_FollowOffset.y = 0.6f;
                         cinemachineTransposer.m_FollowOffset.z = 2.5f;
                     }
                     else if (playerType == 3)
-                    { // Case Player3
+                    { //Case Player3
                         CinemachineTransposer cinemachineTransposer = camera[2].GetCinemachineComponent<CinemachineTransposer>();
                         cinemachineTransposer.m_FollowOffset.x = 0.0f;
                         cinemachineTransposer.m_FollowOffset.y = 0.6f;
@@ -240,7 +232,6 @@ public class GameDirector : MonoBehaviour
                         cinemachineTransposer.m_FollowOffset.y = 0.6f;
                         cinemachineTransposer.m_FollowOffset.z = 2.5f;
                     }
-
                     unitData[i, j].Add(unit);
                 }
             }
@@ -290,11 +281,8 @@ public class GameDirector : MonoBehaviour
     /// <param name="next"></param>
     void InitMode(MODE next)
     {
-        //updateHp();
-
         if(MODE.WAIT_TURN_START == next)
         {
-            //buttonTurnEnd.SetActive(true);
         }
         else if (MODE.MOVE_SELECT == next)
         {
@@ -307,6 +295,7 @@ public class GameDirector : MonoBehaviour
         }
         else if (MODE.FIELD_UPDATE == next)
         {
+            buttonTurnEnd.SetActive(false);
         }
 
         nowMode = next;
@@ -335,6 +324,13 @@ public class GameDirector : MonoBehaviour
 
                     if (0 < unitData[z, x].Count && player[nowTurn].PlayerNo == unitData[z, x][0].GetComponent<UnitController>().PlayerNo)
                     { //ユニット選択
+
+                        //移動の際ポーション使用を無効に
+                        cameraManager.Flame1.SetActive(false);
+                        cameraManager.Flame2.SetActive(false);
+                        cameraManager.Flame3.SetActive(false);
+                        cameraManager.Flame4.SetActive(false);
+
                         if (null != selectUnit)
                         {
                             selectUnit.GetComponent<UnitController>().Select(false);
@@ -374,24 +370,12 @@ public class GameDirector : MonoBehaviour
     void TurnChangeMode()
     {
         nextMode = MODE.NONE;
-
-        //if (player[nowTurn].IsClear || 4 <= player[nowTurn].Score)
-        //{ //I win
-        //    txtInfo.GetComponent<Text>().text = player[nowTurn].GetPlayerName() + "の勝ち";
-        //}
-        //else if (1 > player[nowTurn].Hp)
-        //{ //I lose
-        //    txtInfo.GetComponent<Text>().text = player[getNextTurn()].GetPlayerName() + "の勝ち";
-        //}
-        //else
-        //{
         nextMode = MODE.MOVE_SELECT;
 
         int oldTurn = nowTurn;
         nowTurn = getNextTurn();
 
         nextMode = MODE.WAIT_TURN_END;
-        //}
     }
 
     int getNextTurn()

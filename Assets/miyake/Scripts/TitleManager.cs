@@ -41,6 +41,7 @@ public class TitleManager : MonoBehaviour
             {
                 selectObject = eventSystem.currentSelectedGameObject.gameObject;
             }
+
             //‚à‚µƒ{ƒ^ƒ“‚ª‘I‘ð‚³‚ê‚Ä‚¢‚½‚ç
             if(this.gameObject == selectObject)
             {

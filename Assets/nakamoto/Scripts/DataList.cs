@@ -55,3 +55,10 @@ class UserDataList
     // 戦績変数追加予定 //
     //////////////////////
 }
+
+class TileData
+{
+    public TileData(int no) { tNo = no; }
+    public int tNo;                          // タイルの種類No
+    public int pNo;                          // プレイヤーの種類No
+}

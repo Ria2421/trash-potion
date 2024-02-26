@@ -8,12 +8,23 @@ using UnityEngine.SceneManagement;
 
 public class TitleManager : MonoBehaviour
 {
-    [SerializeField] EventSystem eventSystem;      //イベントシステム
-    bool select = false;            //ボタンが選択されたらtrue
-    public GameObject arrow;        //カーソル
+    //イベントシステム
+    [SerializeField] EventSystem eventSystem;     
+
+    //ボタンが選択されたらtrue
+    bool select = false;      
+    
+    //カーソル    
+    public GameObject arrow;        
+
     GameObject selectObject;
-    [SerializeField] Text start;          //startの変数
-    [SerializeField] Text quit;           //qiotの変数
+    
+    //startの変数
+    [SerializeField] Text start;      
+    
+    //quitの変数
+    [SerializeField] Text quit;    
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -25,8 +36,7 @@ public class TitleManager : MonoBehaviour
     void Update()
     {
         if(select == false)
-        {
-            
+        {           
             if(eventSystem.currentSelectedGameObject != null)
             {
                 selectObject = eventSystem.currentSelectedGameObject.gameObject;
@@ -53,6 +63,7 @@ public class TitleManager : MonoBehaviour
             {
                 selectObject = eventSystem.currentSelectedGameObject.gameObject;
             }
+
             //もしボタンが選択から外れたら
             if (this.gameObject != selectObject)
             {

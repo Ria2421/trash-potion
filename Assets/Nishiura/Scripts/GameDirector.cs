@@ -38,22 +38,22 @@ public class GameDirector : MonoBehaviour
 
     //0:Wall 1:NormalTile 2:GoalTile 3:1P'sGoal 4:2P's Goal
     //フィールド
-    TileData[][] tileData;
+    TileData[,] tileData;
 
     // タイル配置設定
-    int[][] initTileData = new int[][]
+    int[,] initTileData = new int[,]
     {
-        new int[] {0,0,0,0,0,0,0,0,0,0,0},//手前
-        new int[] {0,2,1,1,1,1,1,1,1,2,0},
-        new int[] {0,1,1,1,1,1,1,1,1,1,0},
-        new int[] {0,1,1,3,3,1,3,3,1,1,0},
-        new int[] {0,1,1,3,1,1,1,3,1,1,0},
-        new int[] {0,1,1,1,1,1,1,1,1,1,0},
-        new int[] {0,1,1,3,1,1,1,3,1,1,0},
-        new int[] {0,1,1,3,3,1,3,3,1,1,0},
-        new int[] {0,1,1,1,1,1,1,1,1,1,0},
-        new int[] {0,2,1,1,1,1,1,1,1,2,0},
-        new int[] {0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0},//手前
+        {0,2,1,1,1,1,1,1,1,2,0},
+        {0,1,1,1,1,1,1,1,1,1,0},
+        {0,1,1,3,3,1,3,3,1,1,0},
+        {0,1,1,3,1,1,1,3,1,1,0},
+        {0,1,1,1,1,1,1,1,1,1,0},
+        {0,1,1,3,1,1,1,3,1,1,0},
+        {0,1,1,3,3,1,3,3,1,1,0},
+        {0,1,1,1,1,1,1,1,1,1,0},
+        {0,2,1,1,1,1,1,1,1,2,0},
+        {0,0,0,0,0,0,0,0,0,0,0},
     };
 
     //プレイヤー初期配置
@@ -91,25 +91,23 @@ public class GameDirector : MonoBehaviour
     void Start()
     {
         // タイル配置情報分の配列を生成
-        tileData = new TileData [initTileData.Length] [];
+        tileData = new TileData [initTileData.GetLength(0), initTileData.GetLength(1)];
 
         // タイルデータに配置位置を代入
-        for (int i = 0;i < initTileData.Length;i++)
+        for (int i = 0;i < initTileData.GetLength(0); i++)
         {
-            tileData[i] = new TileData[initTileData[i].Length];
-
-            for(int j = 0;j < initTileData[i].Length;j++)
+            for(int j = 0;j < initTileData.GetLength(1); j++)
             {
-                tileData[i][j] = new TileData(initTileData[i][j]);
+                tileData[i,j] = new TileData(initTileData[i, j]);
             }
         }
 
         // タイルデータにプレイヤー情報を代入
-        for (int i = 0; i < initTileData.Length; i++)
+        for (int i = 0; i < initTileData.GetLength(0); i++)
         {
-            for (int j = 0; j < initTileData[i].Length; j++)
+            for (int j = 0; j < initTileData.GetLength(1); j++)
             {
-                tileData[i][j].pNo = initUnitData[i, j];
+                tileData[i, j].pNo = initUnitData[i, j];
             }
         }
 
@@ -124,7 +122,7 @@ public class GameDirector : MonoBehaviour
         }
         
         //txtInfo.GetComponent<Text>().text = "";
-        unitData = new List<GameObject>[tileData.Length, tileData[0].Length];
+        unitData = new List<GameObject>[initTileData.GetLength(0), initTileData.GetLength(1)];
 
         //プレイヤー設定
         player = new Player[4];     //人数
@@ -134,12 +132,12 @@ public class GameDirector : MonoBehaviour
         player[3] = new Player(4);
 
         //タイル初期化
-        for (int i = 0; i<tileData.Length; i++)
+        for (int i = 0; i< tileData.GetLength(0); i++)
         {
-            for (int j = 0; j < tileData[0].Length; j++)
+            for (int j = 0; j < tileData.GetLength(1); j++)
             {
-                float x =j - (tileData[0].Length / 2 - 0.5f);
-                float z = i - (tileData.Length / 2 - 0.5f);
+                float x =j - (tileData.GetLength(1) / 2 - 0.5f);
+                float z = i - (initTileData.GetLength(0) / 2 - 0.5f);
 
                 //タイル配置
                 string resname = "";
@@ -148,7 +146,7 @@ public class GameDirector : MonoBehaviour
                 int p3 = 0;
                 int p4 = 0;
 
-                int no = tileData[i][j].tNo;
+                int no = tileData[i, j].tNo;
                 if (4 == no || 8 == no) no = 5;
 
                 resname = "Cube (" + no + ")";
@@ -164,13 +162,13 @@ public class GameDirector : MonoBehaviour
                 //int playerType = UnitController.TYPE_BLUE;
                 //List<int> unitrnd = new List<int>();
 
-                if (1 == tileData[i][j].pNo)
+                if (1 == tileData[i, j].pNo)
                 { //1Pユニット配置
                     resname = "Unit1";
                     playerType = UnitController.TYPE_RED;
                     p1++;
                 }
-                else if (2 == tileData[i][j].pNo)
+                else if (2 == tileData[i, j].pNo)
                 { //2Pユニット配置
                     resname = "Unit2";
                     playerType = UnitController.TYPE_BLUE;
@@ -178,13 +176,13 @@ public class GameDirector : MonoBehaviour
                     // オブジェクトの向き
                     //angle.y = 180;
                 }
-                else if (3 == tileData[i][j].pNo)
+                else if (3 == tileData[i, j].pNo)
                 { //3Pユニット配置
                     resname = "Unit3";
                     playerType = UnitController.TYPE_YELLOW;
                     p3++;
                 }
-                else if (4 == tileData[i][j].pNo)
+                else if (4 == tileData[i, j].pNo)
                 { //4Pユニット配置
                     resname = "Unit4";
                     playerType = UnitController.TYPE_GREEN;
@@ -320,8 +318,8 @@ public class GameDirector : MonoBehaviour
                 {
                     Vector3 pos = hit.collider.gameObject.transform.position;
 
-                    int x = (int)(pos.x + (tileData[0].Length / 2 - 0.5f));
-                    int z = (int)(pos.z + (tileData.Length / 2 - 0.5f));
+                    int x = (int)(pos.x + (tileData.GetLength(1) / 2 - 0.5f));
+                    int z = (int)(pos.z + (tileData.GetLength(0) / 2 - 0.5f));
 
                     if (0 < unitData[z, x].Count && player[nowTurn].PlayerNo == unitData[z, x][0].GetComponent<UnitController>().PlayerNo)
                     { //ユニット選択
@@ -411,10 +409,6 @@ public class GameDirector : MonoBehaviour
         int dx = Mathf.Abs(oldx - x);
         int dz = Mathf.Abs(oldz - z);
 
-        Debug.Log("dx:" + dx);
-        Debug.Log("dz:" + dz);
-        Debug.Log("合計:" + (dx + dz));
-
         Debug.Log("x:" + x);
         Debug.Log("z:" + z);
 
@@ -422,15 +416,15 @@ public class GameDirector : MonoBehaviour
         if (dx + dz > 2 || dx > 1 || dz > 1)
         {
             Debug.Log("進行不可");
-            Debug.Log("Z:" + z + " " + "X" + x);
+            Debug.Log("Z:" + z + " " + "X:" + x);
 
             return ret = false;
         }
 
         // 壁以外
-        if (1 == tileData[z][x].tNo
-           || 2 == tileData[z][x].tNo
-           || player[nowTurn].PlayerNo * 4 == tileData[z][x].tNo)
+        if (1 == tileData[z, x].tNo
+           || 2 == tileData[z, x].tNo
+           || player[nowTurn].PlayerNo * 4 == tileData[z, x].tNo)
         {
             if (0 == unitData[z, x].Count)
             { // 誰もいないマス
@@ -490,6 +484,6 @@ public class GameDirector : MonoBehaviour
     public void UsePotion()
     {
         cameraManager.MoveButton();
-        nextMode = MODE.WAIT_TURN_START;
+        nextMode = MODE.FIELD_UPDATE;
     }
 }

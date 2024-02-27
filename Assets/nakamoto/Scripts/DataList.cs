@@ -19,6 +19,7 @@ public enum EventID
     PlayerNo = 1,     // プレイヤーNo
     UserData,         // 名前・No
     UserDataList,     // 全PLのUserDataのリスト
+    CompleteFlag,     // 準備完了フラグ
     InGameFlag,       // インゲームフラグ
 }
 
@@ -38,6 +39,12 @@ class UserData
     /// </summary>
     public int PlayerNo
     { get; set; }
+
+    /// <summary>
+    /// 完了フラグ
+    /// </summary>
+    public bool IsReady
+    {  get; set; }
 }
 
 /// <summary>
@@ -56,6 +63,9 @@ class UserDataList
     //////////////////////
 }
 
+/// <summary>
+/// タイルデータ構造体
+/// </summary>
 class TileData
 {
     public TileData(int no) { tNo = no; }

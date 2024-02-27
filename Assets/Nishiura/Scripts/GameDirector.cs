@@ -37,6 +37,7 @@ public class GameDirector : MonoBehaviour
     //0:Wall 1:NormalTile 2:GoalTile 3:1P'sGoal 4:2P's Goal
     //フィールド
 
+    // タイルデータ構造体の宣言
     TileData[,] tileData;
 
     // タイル配置設定

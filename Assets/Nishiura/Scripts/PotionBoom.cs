@@ -1,47 +1,52 @@
 //
 // ポーション爆発スクリプト
 // Name:西浦晃太 Date:02/26
-// Update:02/26
+// Update:02/27
 //
 using UnityEngine;
 
 public class PotionBoom : MonoBehaviour
 {
-    public int potionType = 0;
-    float waitTimer = 1.5f;
-
-    GameObject potion;
+    public int potionType = 0;  //ポーションの種類
+    float waitTimer = 1.5f;     //待機時間
+    GameDirector gameDirector;
+    int[] type = { 2 };
 
     private void Start()
     {
-        potion = GameObject.FindWithTag("Potion");
+        gameDirector = GameObject.Find("GameDirector").GetComponent<GameDirector>();
     }
 
-    // ウェイトの処理
-    bool isWait()
+    void Update()
     {
-        bool ret = false;
-
-
-        // タイマー
-        if (0 < waitTimer)
-        {
-            waitTimer -= Time.deltaTime;
-            ret = true;
+        if (Input.GetKeyDown(KeyCode.Space))
+        { //指定番号のプレイヤーを殺害(番号はサーバから取得)
+            BoomPotion(type);
         }
-
-        return ret;
     }
 
     /// <summary>
     /// 爆発処理
     /// </summary>
-    public void Boom()
+    /// <param name="unitType"></param>
+    void BoomPotion(int[] unitType)
     {
-        potion.transform.position += new Vector3(0f,100f,0f);
+        this.gameObject.transform.position += new Vector3(0f, -50f, 0f);
 
-        if (isWait()) return;
+        Invoke("PotionKill",1.5f);
 
-        Destroy(potion);
+        for(int i = 0; i < unitType.Length; i++)
+        {
+            gameDirector.DestroyUnit(unitType[i]);           
+        }
+    }
+
+    /// <summary>
+    /// ポーションオブジェクト破壊処理
+    /// </summary>
+    void PotionKill()
+    {
+        //ポーションを破壊
+        Destroy(this.gameObject);
     }
 }

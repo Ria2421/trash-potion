@@ -475,4 +475,25 @@ public class GameDirector : MonoBehaviour
         cameraManager.MoveButton();
         nextMode = MODE.FIELD_UPDATE;
     }
+
+    public void DestroyUnit(int unitType)
+    {
+        GameObject Unit;
+        for (int i = 0; i < unitData.GetLength(0); i++)
+        {
+            for (int j = 0; j < unitData.GetLength(1); j++)
+            {
+                if (unitData[i, j].Count > 0)
+                {
+                    Unit = unitData[i, j][0];
+
+                    if(Unit.GetComponent<UnitController>().Type == unitType)
+                    {
+                        Destroy(Unit);
+                        return;
+                    }
+                }
+            }
+        }
+    }
 }

@@ -1,3 +1,8 @@
+//
+//フィールドに設置したポーションを回転させる為のスクリプト
+//Author:Miura Yuki Date:2024/2/22
+//
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

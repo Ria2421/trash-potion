@@ -18,7 +18,14 @@ public class UnitController : MonoBehaviour
     //Ç«ÇøÇÁÇÃÉvÉåÉCÉÑÅ[Ç©
     public int PlayerNo;
     public int Type;
-    
+
+    public Animator animator;
+
+    private void Start()
+    {
+        animator = GetComponent<Animator>();
+    }
+
     void OnColliderEnable()
     {
         GetComponent<BoxCollider>().center = new Vector3(0f, -2f, 0f);
@@ -43,7 +50,7 @@ public class UnitController : MonoBehaviour
 
         if (!select)
         {
-            pos = new Vector3(transform.position.x, 0.6f, transform.position.z);
+            pos = new Vector3(transform.position.x, 0.1f, transform.position.z);
         }
 
         transform.position = pos;

@@ -49,6 +49,21 @@ public class GameDirector : MonoBehaviour
         TURN_CHANGE,
     }
 
+    /// <summary>
+    /// プレイヤー状態
+    /// </summary>
+    public enum PLAYERSTATE
+    {
+        NONE = 0,
+        NORMAL_STATE,       //通常状態
+        PARALYSIS_STATE,    //マヒ状態
+        FRIZE_STATE,        //氷結状態
+        CURSED_STATE,       //呪い状態
+        FLAME_STATE,        //炎上状態
+        MUSCLE_STATE,       //筋力上昇状態
+        INVICIBLE_STATE,    //無敵状態
+    }
+
     //MODE遷移
     MODE nowMode;
     public MODE nextMode;
@@ -192,7 +207,7 @@ public class GameDirector : MonoBehaviour
                     playerType = UnitController.TYPE_BLUE;
                     p2++;
                     // オブジェクトの向き
-                    //angle.y = 180;
+                    angle.y = 180;
                 }
                 else if (3 == tileData[i, j].pNo)
                 { //3Pユニット配置
@@ -205,13 +220,14 @@ public class GameDirector : MonoBehaviour
                     resname = "Unit4";
                     playerType = UnitController.TYPE_GREEN;
                     p4++;
+                    angle.y = 180;
                 }
                 else
                 {
                     resname = "";
                 }
 
-                GameObject unit = resourcesInstantiate(resname, new Vector3(x, 0.6f, z), Quaternion.Euler(angle));
+                GameObject unit = resourcesInstantiate(resname, new Vector3(x, 0.1f, z), Quaternion.Euler(angle));
 
                 if (null != unit)
                 {
@@ -366,7 +382,7 @@ public class GameDirector : MonoBehaviour
                         {
                             isMoved = true;
                             unitData[oldY, oldX].Clear();
-                            pos.y += 0.6f;
+                            pos.y += 0.1f;
                             selectUnit.transform.position = pos;
                             unitData[z, x].Add(selectUnit);
                             unitData[z, x][0].GetComponent<UnitController>().OffColliderEnable();
@@ -478,7 +494,7 @@ public class GameDirector : MonoBehaviour
     {
         int rndPotion = r.Next(4);
 
-        //if(isGetted[nowPlayerType, 0] == true && isGetted[nowPlayerType, 1] == true && isGetted[nowPlayerType, 2] == true && isGetted[nowPlayerType, 3] == true )
+        //if (isGetted[nowPlayerType, 0] == true && isGetted[nowPlayerType, 1] == true && isGetted[nowPlayerType, 2] == true && isGetted[nowPlayerType, 3] == true)
         //{ //すべてのポーション枠が埋まっていた場合の処理
         //    Debug.Log("枠が埋まっています");
         //    return;
@@ -522,6 +538,7 @@ public class GameDirector : MonoBehaviour
     /// </summary>
     public void UsePotion()
     {
+        GameObject.Find("Unit" + (nowPlayerType+1)+ "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);
         //cameraManager.MoveButton();
         nextMode = MODE.FIELD_UPDATE;
     }

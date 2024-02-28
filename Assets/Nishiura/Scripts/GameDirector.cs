@@ -71,6 +71,7 @@ public class GameDirector : MonoBehaviour
     //0:Wall 1:NormalTile 2:SpawnPoint 3:Object1 4: -
     //フィールド
 
+    // タイルデータ構造体の宣言
     TileData[,] tileData;
 
     // タイル配置設定

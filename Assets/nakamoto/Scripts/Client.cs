@@ -2,7 +2,8 @@
 //
 //  とらっしゅぽーしょん！クライアント [ Client.cs ]
 // Author:Kenta Nakamoto
-// Data 2024/02/08
+// Data:2024/02/08
+// Update:2024/02/28
 //
 //---------------------------------------------------------------
 using System.Collections;
@@ -15,6 +16,7 @@ using System.Text;
 using System;
 using UnityEngine.UI;
 using System.Linq;
+using System.Threading;
 
 public class Client : MonoBehaviour
 {
@@ -30,6 +32,11 @@ public class Client : MonoBehaviour
     /// 接続先IPアドレス
     /// </summary>
     private const string ipAddress = "127.0.0.1";
+
+    /// <summary>
+    /// ポート番号
+    /// </summary>
+    private const int portNum = 20001;
 
     /// <summary>
     /// 送受信サイズ
@@ -52,14 +59,29 @@ public class Client : MonoBehaviour
     private UserDataList userDataList;
 
     /// <summary>
-    /// 接続時の表示テキスト
+    /// マッチング中テキスト
     /// </summary>
-    [SerializeField] Text connectText;
+    [SerializeField] GameObject matchingText;
 
     /// <summary>
-    /// プレイヤー番号表示テキスト
+    /// 待機中UI
     /// </summary>
-    [SerializeField] Text playerText;
+    [SerializeField] GameObject readyUI;
+
+    /// <summary>
+    /// 自機を指す矢印のオブジェクト
+    /// </summary>
+    [SerializeField] GameObject[] arrowYouObjs;
+
+    /// <summary>
+    /// 全プレイヤーの名前格納 
+    /// </summary>
+    [SerializeField] GameObject[] playerNames;
+
+    /// <summary>
+    /// 全プレイヤーの待機状態格納用
+    /// </summary>
+    [SerializeField] GameObject[] playerStatus;
 
     /// <summary>
     /// 名前入力用UI
@@ -67,19 +89,14 @@ public class Client : MonoBehaviour
     [SerializeField] GameObject nameInput;
 
     /// <summary>
-    /// プレイヤーネーム表示用
-    /// </summary>
-    [SerializeField] GameObject playerName;
-
-    /// <summary>
-    /// 表示用プレイヤーオブジェ
-    /// </summary>
-    [SerializeField] GameObject playerObj;
-
-    /// <summary>
-    /// 準備完了ボタン格納用
+    /// 準備完了ボタン
     /// </summary>
     [SerializeField] GameObject completeButton;
+
+    /// <summary>
+    /// メインスレッドに処理実行を依頼するもの
+    /// </summary>
+    SynchronizationContext context;
 
     //------------------------------------------------------------------------------
     // メソッド ------------------------------------------
@@ -87,8 +104,10 @@ public class Client : MonoBehaviour
     // Start is called before the first frame update
     async void Start()
     {
-        // クライアント処理
-        await StartClient(ipAddress, 20001);
+        context = SynchronizationContext.Current;
+
+        // 接続処理の実行
+        await StartClient(ipAddress, portNum);
     }
 
     /// <summary>
@@ -110,8 +129,7 @@ public class Client : MonoBehaviour
             tcpClient.ReceiveTimeout = 1000;
 
             // サーバーへ接続要求
-            await tcpClient.ConnectAsync(ipaddress, port);
-            connectText.text = "接続完了";
+            await tcpClient.ConnectAsync(ipAddress, port);
 
             // サーバーからPL番号を受信待機
             byte[] recvBuffer = new byte[dataSize];                                    // 送受信データ格納用
@@ -123,27 +141,104 @@ public class Client : MonoBehaviour
 
             // 受信データから文字列を取り出す
             byte[] bufferJson = recvBuffer.Skip(1).ToArray();                            // 1バイト目をスキップ
-            string recevieString = Encoding.UTF8.GetString(bufferJson, 0, length-1);     // 受信データを文字列に変換
-
-            // 何Pか表示
-            playerText.text = "あなたは" + recevieString[0] + "Pです";
+            string recevieString = Encoding.UTF8.GetString(bufferJson, 0, length - 1);   // 受信データを文字列に変換
 
             // 自分のPL Noを保存
             myNo = int.Parse(recevieString[0].ToString());
 
-            // 入力フィールドの有効化
-            nameInput.SetActive(true);
+            // マッチングテキストを非表示
+            matchingText.SetActive(false);
+
+            // 待機中UIを表示
+            readyUI.SetActive(true);
+
+            // 自分のPL番号の上に矢印表示
+            arrowYouObjs[myNo - 1].SetActive(true);
+
+            // 受信用スレッドの起動
+            Thread thread = new Thread(new ParameterizedThreadStart(RecvProc));
+            thread.Start(tcpClient);
+#if DEBUG
+            // 準備ボタン等の有効化
+            Debug.Log("待機画面表示");
+#endif
         }
         catch (Exception ex)
         {
             // エラー発生時
             Debug.Log(ex);
-            connectText.text = "接続失敗";
         }
     }
 
     /// <summary>
-    /// ユーザーデータ送信処理
+    /// 受信用スレッド
+    /// </summary>
+    /// <param name="arg"></param>
+    async void RecvProc(object arg)
+    {
+        TcpClient tcpClient = (TcpClient)arg;
+
+        NetworkStream stream = tcpClient.GetStream();
+
+        while (true)
+        {
+            // 受信待機する
+            byte[] recvBuffer = new byte[dataSize];
+            int length = await stream.ReadAsync(recvBuffer, 0, recvBuffer.Length);
+
+            // 接続切断チェック
+            if(length <= 0)
+            {
+                
+            }
+
+            // 受信データからイベントIDを取り出す
+            int eventID = recvBuffer[0];
+
+            // 受信データからJSON文字列を取り出す
+            byte[] bufferJson = recvBuffer.Skip(1).ToArray();     // 1バイト目をスキップ
+            string jsonString = System.Text.Encoding.UTF8.GetString(bufferJson, 0, length - 1);
+
+            context.Post(_ =>
+            {
+                switch (eventID)
+                {
+                    case 2: // 各PLの名前表示処理
+
+                        // Jsonデシリアライズ
+                        UserData userData = JsonConvert.DeserializeObject<UserData>(jsonString);
+
+                        // 送信されてきたPLNoの名前をクライアントのテキストに反映させる
+                        playerNames[userData.PlayerNo - 1].GetComponent<Text>().text = userData.UserName;
+
+                        break;
+
+                    case 4: // 各PLの準備完了表示処理
+
+                        // Jsonデシリアライズ
+                        userData = JsonConvert.DeserializeObject<UserData>(jsonString);
+
+                        // 完了表示
+                        playerStatus[userData.PlayerNo - 1].GetComponent<Text>().text = "準備完了";
+
+                        break;
+
+                    case 5: // インゲーム処理
+                        NextScene();
+                        break;
+
+                    default: 
+                        break;
+                }
+            }, null);
+        }
+
+        // 通信を切断
+        tcpClient.Close();
+    }
+
+    /// <summary>
+    /// ユーザー名送信処理
     /// </summary>
     public async void sendUserData()
     {
@@ -164,50 +259,7 @@ public class Client : MonoBehaviour
         // 入力フィールドの無効化
         nameInput.SetActive(false);
 
-        // 送信待機文字表示
-        connectText.text = "送信中...";
-
-        // サーバーからPLデータリストの受信 ----------------------------------------------------------------------------------------------
-
-        byte[] recvBuffer = new byte[dataSize];                                    // 送受信データ格納用
-        stream = tcpClient.GetStream();                                            // クライアントのデータ送受信に使うNetworkStreamを取得
-        int length = await stream.ReadAsync(recvBuffer, 0, recvBuffer.Length);     // 受信データのバイト数を取得
-
-        // 受信データからイベントIDを取り出す
-        int eventID = recvBuffer[0];
-
-        // 受信データから文字列を取り出す
-        byte[] bufferJson = recvBuffer.Skip(1).ToArray();                              // 1バイト目をスキップ
-        string recevieString = Encoding.UTF8.GetString(bufferJson, 0, length - 1);     // 受信データを文字列に変換
-
-        // Jsonデシリアライズ
-        userDataList = JsonConvert.DeserializeObject<UserDataList>(recevieString);
-
-        // データ受信表示
-        connectText.text = "データ送受信完了";
-
-        // プレイヤー一覧の表示
-        OutputPlayer();
-    }
-
-    /// <summary>
-    /// プレイヤー一覧の表示処理
-    /// </summary>
-    private void OutputPlayer()
-    {
-        // プレイヤーオブジェ・名前の表示
-        playerObj.SetActive(true);
-        playerName.SetActive(true);
-
-        // プレイヤー名の反映
-        for (int i = 0; i < userDataList.userList.Length; i++)
-        {
-            // 各Noプレイヤー名をテキストに適用
-            string nameObj = (i + 1).ToString() + "PName";
-            GameObject.Find(nameObj).GetComponent<Text>().text = userDataList.userList[i].UserName;
-        }
-
-        // 準備完了ボタンの表示
+        // 準備完了ボタンの有効化
         completeButton.SetActive(true);
     }
 
@@ -221,43 +273,21 @@ public class Client : MonoBehaviour
         completeButton.SetActive(false);
 
         UserData userData = new UserData();
-        userData.UserName = nameInput.GetComponent<InputField>().text;   // 入力された名前を格納
-        userData.PlayerNo = myNo;                                        // 自分のプレイヤー番号を格納
+        userData.IsReady = true;                 // 準備完了フラグをtrueに
+        userData.PlayerNo = myNo;                // 自分のプレイヤー番号を格納
 
         // 送信データをJSONシリアライズ
         string json = JsonConvert.SerializeObject(userData);
 
         // 送信処理
-        byte[] buffer = Encoding.UTF8.GetBytes(json);                  // JSONをbyteに変換
-        buffer = buffer.Prepend((byte)EventID.InGameFlag).ToArray();   // 送信データの先頭にイベントIDを付与
-        await stream.WriteAsync(buffer, 0, buffer.Length);             // JSON送信処理
-
-        // 送信待機文字表示
-        connectText.text = "完了待機中...";
-
-        // 完了フラグ受信処理 -------------------------------------------------------------------------------------------------------------
-
-        byte[] recvBuffer = new byte[dataSize];                                    // 送受信データ格納用
-        stream = tcpClient.GetStream();                                            // クライアントのデータ送受信に使うNetworkStreamを取得
-        int length = await stream.ReadAsync(recvBuffer, 0, recvBuffer.Length);     // 受信データのバイト数を取得
-
-        // 受信データからイベントIDを取り出す
-        int eventID = recvBuffer[0];
-
-        // 受信データから文字列を取り出す
-        byte[] bufferJson = recvBuffer.Skip(1).ToArray();                              // 1バイト目をスキップ
-        string recevieString = Encoding.UTF8.GetString(bufferJson, 0, length - 1);     // 受信データを文字列に変換
-
-        // データ受信表示
-        connectText.text = recevieString;
+        byte[] buffer = Encoding.UTF8.GetBytes(json);                    // JSONをbyteに変換
+        buffer = buffer.Prepend((byte)EventID.CompleteFlag).ToArray();   // 送信データの先頭にイベントIDを付与
+        await stream.WriteAsync(buffer, 0, buffer.Length);               // JSON送信処理
 
 #if DEBUG
-        // 状況表示
-        Debug.Log("シーン移動");
+        // 送信待機文字表示
+        Debug.Log("準備完了送信");
 #endif
-
-        //シーン移動処理
-        Invoke("NextScene", 1.5f);
     }
 
     /// <summary>

@@ -2,7 +2,8 @@
 //
 //  とらっしゅぽーしょん！クライアント [ Client.cs ]
 // Author:Kenta Nakamoto
-// Data 2024/02/08
+// Data:2024/02/08
+// Update:2024/02/28
 //
 //---------------------------------------------------------------
 using System.Collections;
@@ -58,11 +59,6 @@ public class Client : MonoBehaviour
     private UserDataList userDataList;
 
     /// <summary>
-    /// 名前入力用UI
-    /// </summary>
-    [SerializeField] GameObject nameInput;
-
-    /// <summary>
     /// マッチング中テキスト
     /// </summary>
     [SerializeField] GameObject matchingText;
@@ -88,6 +84,11 @@ public class Client : MonoBehaviour
     [SerializeField] GameObject[] playerStatus;
 
     /// <summary>
+    /// 名前入力用UI
+    /// </summary>
+    [SerializeField] GameObject nameInput;
+
+    /// <summary>
     /// 準備完了ボタン
     /// </summary>
     [SerializeField] GameObject completeButton;
@@ -103,6 +104,7 @@ public class Client : MonoBehaviour
     // Start is called before the first frame update
     async void Start()
     {
+        context = SynchronizationContext.Current;
 
         // 接続処理の実行
         await StartClient(ipAddress, portNum);
@@ -129,10 +131,6 @@ public class Client : MonoBehaviour
             // サーバーへ接続要求
             await tcpClient.ConnectAsync(ipAddress, port);
 
-            // 受信用スレッドの起動
-            Thread thread = new Thread(new ParameterizedThreadStart(RecvProc));
-            thread.Start(tcpClient);
-
             // サーバーからPL番号を受信待機
             byte[] recvBuffer = new byte[dataSize];                                    // 送受信データ格納用
             stream = tcpClient.GetStream();                                            // クライアントのデータ送受信に使うNetworkStreamを取得
@@ -157,6 +155,9 @@ public class Client : MonoBehaviour
             // 自分のPL番号の上に矢印表示
             arrowYouObjs[myNo - 1].SetActive(true);
 
+            // 受信用スレッドの起動
+            Thread thread = new Thread(new ParameterizedThreadStart(RecvProc));
+            thread.Start(tcpClient);
 #if DEBUG
             // 準備ボタン等の有効化
             Debug.Log("待機画面表示");
@@ -237,7 +238,7 @@ public class Client : MonoBehaviour
     }
 
     /// <summary>
-    /// ユーザーデータ送信処理
+    /// ユーザー名送信処理
     /// </summary>
     public async void sendUserData()
     {

@@ -1,3 +1,9 @@
+//
+//
+//ボタンスクリプト
+//Author：高宮祐翔
+//Date:2/21
+//
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -35,17 +41,26 @@ public class ButtonPushScript :
         ButtonPushSE();
     }
 
+    /// <summary>
+    /// Buttonにマウスカーソルに置かれた時
+    /// </summary>
+    /// <param name="eventData"></param>
     void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
     {
         if (!button.interactable) { return; }
         transform.DOScale(1.2f, 0.24f).SetEase(Ease.OutCubic).SetLink(gameObject);
     }
+    /// <summary>
+    /// Buttonからマウスカーソルが離れた時
+    /// </summary>
+    /// <param name="eventData"></param>
     void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
     {
         if (!button.interactable) { return; }
         transform.DOScale(1f, 0.24f).SetEase(Ease.OutCubic).SetLink(gameObject);
     }
 
+    //ボタンを押した時
     void ButtonPushSE()
     {
         if(Input.GetMouseButtonDown(0))

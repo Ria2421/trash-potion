@@ -1,3 +1,9 @@
+//======================================================
+//ポーションを上から降らす
+//Author：高宮祐翔
+//Date/2/20
+//
+//=======================================================
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

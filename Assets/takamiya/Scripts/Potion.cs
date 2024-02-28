@@ -1,3 +1,9 @@
+//
+//ポーションを上から落とすスクリプト
+//Author：高宮祐翔
+//Date:2/19
+//
+//
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

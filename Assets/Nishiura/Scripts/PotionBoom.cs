@@ -7,10 +7,10 @@ using UnityEngine;
 
 public class PotionBoom : MonoBehaviour
 {
-    public int potionType = 0;  //ポーションの種類
-    float waitTimer = 1.5f;     //待機時間
+    public int potionType = 0;            //ポーションの種類
+    public GameObject explosionPrefab;    //爆発エフェクトのプレハブ
     GameDirector gameDirector;
-    int[] type = { 2 };
+    int[] type = {2};
 
     private void Start()
     {
@@ -30,10 +30,13 @@ public class PotionBoom : MonoBehaviour
     /// </summary>
     /// <param name="unitType"></param>
     void BoomPotion(int[] unitType)
-    {
+    { 
+        GameObject explosion = Instantiate(explosionPrefab, this.transform.position, Quaternion.identity);
+        explosion.transform.position += new Vector3(0f, 0.5f, 0f);
+
         this.gameObject.transform.position += new Vector3(0f, -50f, 0f);
 
-        Invoke("PotionKill",1.5f);
+        Invoke("PotionKill",0.2f);
 
         for(int i = 0; i < unitType.Length; i++)
         {

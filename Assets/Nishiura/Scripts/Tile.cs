@@ -7,8 +7,6 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
-    Color color;
-
     /// <summary>
     /// ‰Â“®ˆæƒ^ƒCƒ‹•ÏFŠÖ”
     /// </summary>

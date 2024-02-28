@@ -57,7 +57,7 @@ public class MoveCameraManager : MonoBehaviour
         Flame4 = GameObject.Find("4PFlames"); 
 
         //ボタンのゲームオブジェクトを取得
-        moveButton = GameObject.Find("MoveButton");
+        //moveButton = GameObject.Find("MoveButton");
         brewingButton = GameObject.Find("BrewingButton");
 
         //カメラ優先度の初期値を設定
@@ -68,16 +68,16 @@ public class MoveCameraManager : MonoBehaviour
         vcam5.Priority = 0;
 
         //各種ゲームオブジェクトの初期設定
-        Icon1P.SetActive(false);
-        Icon2P.SetActive(false);
-        Icon3P.SetActive(false);
-        Icon4P.SetActive(false);
-        Flame1.SetActive(false);
-        Flame2.SetActive(false);
-        Flame3.SetActive(false);
-        Flame4.SetActive(false);
-        moveButton.SetActive(true);
-        brewingButton.SetActive(true);
+        //Icon1P.SetActive(false);
+        //Icon2P.SetActive(false);
+        //Icon3P.SetActive(false);
+        //Icon4P.SetActive(false);
+        //Flame1.SetActive(false);
+        //Flame2.SetActive(false);
+        //Flame3.SetActive(false);
+        //Flame4.SetActive(false);
+        //moveButton.SetActive(true);
+        //brewingButton.SetActive(true);
     }
 
     // Update is called once per frame
@@ -92,16 +92,16 @@ public class MoveCameraManager : MonoBehaviour
             {
                 upCamera = true;
                 tabCnt = 1;
-                Icon1P.SetActive(true);
-                Icon2P.SetActive(true);
-                Icon3P.SetActive(true);
-                Icon4P.SetActive(true);
-                Flame1.SetActive(true);
-                Flame2.SetActive(true);
-                Flame3.SetActive(true);
-                Flame4.SetActive(true);
-                moveButton.SetActive(false);
-                brewingButton.SetActive(false);
+                //Icon1P.SetActive(true);
+                //Icon2P.SetActive(true);
+                //Icon3P.SetActive(true);
+                //Icon4P.SetActive(true);
+                //Flame1.SetActive(true);
+                //Flame2.SetActive(true);
+                //Flame3.SetActive(true);
+                //Flame4.SetActive(true);
+                //moveButton.SetActive(false);
+                //brewingButton.SetActive(false);
             }
             else if (tabCnt == 1)
             {
@@ -109,16 +109,16 @@ public class MoveCameraManager : MonoBehaviour
                 {
                     upCamera = false;
                     tabCnt = 0;
-                    Icon1P.SetActive(false);
-                    Icon2P.SetActive(false);
-                    Icon3P.SetActive(false);
-                    Icon4P.SetActive(false);
-                    Flame1.SetActive(false);
-                    Flame2.SetActive(false);
-                    Flame3.SetActive(false);
-                    Flame4.SetActive(false);
-                    moveButton.SetActive(true);
-                    brewingButton.SetActive(true);
+                    //Icon1P.SetActive(false);
+                    //Icon2P.SetActive(false);
+                    //Icon3P.SetActive(false);
+                    //Icon4P.SetActive(false);
+                    //Flame1.SetActive(false);
+                    //Flame2.SetActive(false);
+                    //Flame3.SetActive(false);
+                    //Flame4.SetActive(false);
+                    //moveButton.SetActive(true);
+                    //brewingButton.SetActive(true);
                 }
             }
             else
@@ -176,44 +176,44 @@ public class MoveCameraManager : MonoBehaviour
         }
     }
 
-    public void MoveButton()
-    { //プレイヤー間のカメラ移動ボタン
+    //public void MoveButton()
+    //{ //プレイヤー間のカメラ移動ボタン
 
-        if (moveCnt == 0)
-        {
-            upCamera = true;
-            moveCnt = 1;
-            Icon1P.SetActive(true);
-            Icon2P.SetActive(true);
-            Icon3P.SetActive(true);
-            Icon4P.SetActive(true);
-            Flame1.SetActive(true);
-            Flame2.SetActive(true);
-            Flame3.SetActive(true);
-            Flame4.SetActive(true);
-            moveButton.SetActive(false);
-            brewingButton.SetActive(false);
-        }
-        else if (moveCnt == 1)
-        {
-            upCamera = false;
-            moveCnt = 0;
-            cameraShift++;
-            Icon1P.SetActive(false);
-            Icon2P.SetActive(false);
-            Icon3P.SetActive(false);
-            Icon4P.SetActive(false);
-            Flame1.SetActive(false);
-            Flame2.SetActive(false);
-            Flame3.SetActive(false);
-            Flame4.SetActive(false);
-            moveButton.SetActive(true);
-            brewingButton.SetActive(true);
-        }
-    }
+    //    if (moveCnt == 0)
+    //    {
+    //        upCamera = true;
+    //        moveCnt = 1;
+    //        Icon1P.SetActive(true);
+    //        Icon2P.SetActive(true);
+    //        Icon3P.SetActive(true);
+    //        Icon4P.SetActive(true);
+    //        Flame1.SetActive(true);
+    //        Flame2.SetActive(true);
+    //        Flame3.SetActive(true);
+    //        Flame4.SetActive(true);
+    //        moveButton.SetActive(false);
+    //        brewingButton.SetActive(false);
+    //    }
+    //    else if (moveCnt == 1)
+    //    {
+    //        upCamera = false;
+    //        moveCnt = 0;
+    //        cameraShift++;
+    //        Icon1P.SetActive(false);
+    //        Icon2P.SetActive(false);
+    //        Icon3P.SetActive(false);
+    //        Icon4P.SetActive(false);
+    //        Flame1.SetActive(false);
+    //        Flame2.SetActive(false);
+    //        Flame3.SetActive(false);
+    //        Flame4.SetActive(false);
+    //        moveButton.SetActive(true);
+    //        brewingButton.SetActive(true);
+    //    }
+    //}
 
-    public void CameraShift()
-    {
-        cameraShift++;
-    }
+    //public void CameraShift()
+    //{
+    //    cameraShift++;
+    //}
 }

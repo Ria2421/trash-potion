@@ -1,6 +1,7 @@
 //
 // カメラ遷移スクリプト
 // Name:西浦晃太 Date:2/15
+// Update:02/29
 //
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,17 +15,11 @@ public class MoveCameraManager : MonoBehaviour
     public CinemachineVirtualCameraBase vcam4;
     public CinemachineVirtualCameraBase vcam5;
 
-    //アイコンのゲームオブジェクト
-    GameObject Icon1P;
-    GameObject Icon2P;
-    GameObject Icon3P;
-    GameObject Icon4P;
-
     //フレームのゲームオブジェクト
-    public GameObject Flame1;
-    public GameObject Flame2;
-    public GameObject Flame3;
-    public GameObject Flame4;
+    public GameObject Frame1;
+    public GameObject Frame2;
+    public GameObject Frame3;
+    public GameObject Frame4;
 
     //ボタンのゲームオブジェクト
     GameObject moveButton;
@@ -35,7 +30,6 @@ public class MoveCameraManager : MonoBehaviour
     [SerializeField] Text turnCnt;
     int cameraShift = 0;
     bool upCamera = false;
-    int tabCnt;
     int moveCnt = 0;
     int turnNum = 1;
 
@@ -44,17 +38,11 @@ public class MoveCameraManager : MonoBehaviour
     {
         gameDirector = GameObject.Find("GameDirector").GetComponent<GameDirector>();
 
-        //アイコンのゲームオブジェクトを取得
-        Icon1P = GameObject.Find("1PIcon");
-        Icon2P = GameObject.Find("2PIcon");
-        Icon3P = GameObject.Find("3PIcon");
-        Icon4P = GameObject.Find("4PIcon");
-
         //ポーションフレームのゲームオブジェクトを取得
-        Flame1 = GameObject.Find("1PFlames");
-        Flame2 = GameObject.Find("2PFlames");
-        Flame3 = GameObject.Find("3PFlames");
-        Flame4 = GameObject.Find("4PFlames"); 
+        Frame1 = GameObject.Find("1PFrames");
+        Frame2 = GameObject.Find("2PFrames");
+        Frame3 = GameObject.Find("3PFrames");
+        Frame4 = GameObject.Find("4PFrames"); 
 
         //ボタンのゲームオブジェクトを取得
         //moveButton = GameObject.Find("MoveButton");
@@ -66,18 +54,6 @@ public class MoveCameraManager : MonoBehaviour
         vcam3.Priority = 0;
         vcam4.Priority = 0;
         vcam5.Priority = 0;
-
-        //各種ゲームオブジェクトの初期設定
-        //Icon1P.SetActive(false);
-        //Icon2P.SetActive(false);
-        //Icon3P.SetActive(false);
-        //Icon4P.SetActive(false);
-        //Flame1.SetActive(false);
-        //Flame2.SetActive(false);
-        //Flame3.SetActive(false);
-        //Flame4.SetActive(false);
-        //moveButton.SetActive(true);
-        //brewingButton.SetActive(true);
     }
 
     // Update is called once per frame
@@ -85,47 +61,6 @@ public class MoveCameraManager : MonoBehaviour
     {
         //現在のラウンド数を表示
         turnCnt.GetComponent<Text>().text = "ラウンド" + turnNum.ToString();
-
-        if (Input.GetKeyDown(KeyCode.Tab))
-        { //TABを押した際、カメラを俯瞰に
-            if (tabCnt == 0)
-            {
-                upCamera = true;
-                tabCnt = 1;
-                //Icon1P.SetActive(true);
-                //Icon2P.SetActive(true);
-                //Icon3P.SetActive(true);
-                //Icon4P.SetActive(true);
-                //Flame1.SetActive(true);
-                //Flame2.SetActive(true);
-                //Flame3.SetActive(true);
-                //Flame4.SetActive(true);
-                //moveButton.SetActive(false);
-                //brewingButton.SetActive(false);
-            }
-            else if (tabCnt == 1)
-            {
-                if (gameDirector.IsMoved == true)
-                {
-                    upCamera = false;
-                    tabCnt = 0;
-                    //Icon1P.SetActive(false);
-                    //Icon2P.SetActive(false);
-                    //Icon3P.SetActive(false);
-                    //Icon4P.SetActive(false);
-                    //Flame1.SetActive(false);
-                    //Flame2.SetActive(false);
-                    //Flame3.SetActive(false);
-                    //Flame4.SetActive(false);
-                    //moveButton.SetActive(true);
-                    //brewingButton.SetActive(true);
-                }
-            }
-            else
-            {
-                tabCnt = 0;
-            }
-        }
 
         if (cameraShift > 3)
         {
@@ -175,45 +110,4 @@ public class MoveCameraManager : MonoBehaviour
             vcam5.Priority = 1;
         }
     }
-
-    //public void MoveButton()
-    //{ //プレイヤー間のカメラ移動ボタン
-
-    //    if (moveCnt == 0)
-    //    {
-    //        upCamera = true;
-    //        moveCnt = 1;
-    //        Icon1P.SetActive(true);
-    //        Icon2P.SetActive(true);
-    //        Icon3P.SetActive(true);
-    //        Icon4P.SetActive(true);
-    //        Flame1.SetActive(true);
-    //        Flame2.SetActive(true);
-    //        Flame3.SetActive(true);
-    //        Flame4.SetActive(true);
-    //        moveButton.SetActive(false);
-    //        brewingButton.SetActive(false);
-    //    }
-    //    else if (moveCnt == 1)
-    //    {
-    //        upCamera = false;
-    //        moveCnt = 0;
-    //        cameraShift++;
-    //        Icon1P.SetActive(false);
-    //        Icon2P.SetActive(false);
-    //        Icon3P.SetActive(false);
-    //        Icon4P.SetActive(false);
-    //        Flame1.SetActive(false);
-    //        Flame2.SetActive(false);
-    //        Flame3.SetActive(false);
-    //        Flame4.SetActive(false);
-    //        moveButton.SetActive(true);
-    //        brewingButton.SetActive(true);
-    //    }
-    //}
-
-    //public void CameraShift()
-    //{
-    //    cameraShift++;
-    //}
 }

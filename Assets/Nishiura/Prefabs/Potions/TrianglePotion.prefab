@@ -100,6 +100,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 6094752528704048917}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: efcbae66555c20248be44fbe3b99d028,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9004683286142910152}
   m_SourcePrefab: {fileID: 100100000, guid: efcbae66555c20248be44fbe3b99d028, type: 3}
 --- !u!1 &478315575707777601 stripped
 GameObject:
@@ -155,3 +159,17 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.025, y: 0.025, z: 0.025}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &9004683286142910152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 478315575707777601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d9349266b2f0d44baa6a1341748f938, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  potionType: 1
+  explosionPrefab: {fileID: 100002, guid: 0f636752f9528854abba636cfbede33d, type: 3}

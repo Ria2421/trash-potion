@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 1558}
   - component: {fileID: 1557}
   m_Layer: 5
-  m_Name: PotionFlame
+  m_Name: PotionFrame4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -238,7 +238,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 4608ce56cef88b34fa7cc6ec7ee58c3f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c22a7817f1fb6a245aa80949a4492dc1, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -679,7 +679,7 @@ GameObject:
   - component: {fileID: 270895308}
   - component: {fileID: 270895307}
   m_Layer: 5
-  m_Name: BoomPotionFlame
+  m_Name: PotionFrame1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -781,7 +781,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 1d8af3485037fbc4ba435e720233a2a1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 81a2253c3c4645a44ae8a9e018f4d015, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1301,7 +1301,7 @@ GameObject:
   - component: {fileID: 531241316}
   - component: {fileID: 531241315}
   m_Layer: 5
-  m_Name: BuffPotionFlame
+  m_Name: PotionFrame3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1403,7 +1403,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: adf34c71b466eaa44bfa1a1d375b7f80, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b9c3ddeee01ea3f4a995319916db594f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1431,7 +1431,7 @@ GameObject:
   m_Component:
   - component: {fileID: 538768316}
   m_Layer: 5
-  m_Name: 3PFlames
+  m_Name: 3PFrames
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1451,9 +1451,9 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 984417719}
+  - {fileID: 1151133541}
   - {fileID: 1736417855}
   - {fileID: 1106237595}
-  - {fileID: 1151133541}
   m_Father: {fileID: 1778619628}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &541852659
@@ -1662,7 +1662,7 @@ GameObject:
   - component: {fileID: 572404515}
   - component: {fileID: 572404514}
   m_Layer: 5
-  m_Name: BuffPotionFlame
+  m_Name: PotionFrame3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1764,7 +1764,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: adf34c71b466eaa44bfa1a1d375b7f80, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b9c3ddeee01ea3f4a995319916db594f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1867,7 +1867,7 @@ GameObject:
   m_Component:
   - component: {fileID: 694292211}
   m_Layer: 5
-  m_Name: 4PFlames
+  m_Name: 4PFrames
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1887,9 +1887,9 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 270895306}
+  - {fileID: 1509403180}
   - {fileID: 531241314}
   - {fileID: 1323990755}
-  - {fileID: 1509403180}
   m_Father: {fileID: 1778619628}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &700382641
@@ -1905,7 +1905,7 @@ GameObject:
   - component: {fileID: 700382644}
   - component: {fileID: 700382643}
   m_Layer: 5
-  m_Name: DebuffPotionFlame
+  m_Name: PotionFrame2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2007,7 +2007,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 90c88522b848ea04389d01b664312a55, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 29d89c0067875f444a33a3c7bd45ca31, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2340,7 +2340,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73f5d1575c0374b4197c47469f49fa5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isDead: 
+  nextMode: 0
   BoomPotion:
   - {fileID: 1602972190}
   - {fileID: 1555606357}
@@ -2361,7 +2361,6 @@ MonoBehaviour:
   - {fileID: 620446818}
   - {fileID: 2017676542}
   - {fileID: 460402072}
-  nextMode: 0
 --- !u!4 &796362334
 Transform:
   m_ObjectHideFlags: 0
@@ -2465,7 +2464,7 @@ GameObject:
   - component: {fileID: 984417721}
   - component: {fileID: 984417720}
   m_Layer: 5
-  m_Name: BoomPotionFlame
+  m_Name: PotionFrame1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2567,7 +2566,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 1d8af3485037fbc4ba435e720233a2a1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 81a2253c3c4645a44ae8a9e018f4d015, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2748,7 +2747,7 @@ GameObject:
   - component: {fileID: 1106237597}
   - component: {fileID: 1106237596}
   m_Layer: 5
-  m_Name: PotionFlame
+  m_Name: PotionFrame4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2850,7 +2849,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 4608ce56cef88b34fa7cc6ec7ee58c3f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c22a7817f1fb6a245aa80949a4492dc1, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2956,7 +2955,7 @@ GameObject:
   - component: {fileID: 1151133543}
   - component: {fileID: 1151133542}
   m_Layer: 5
-  m_Name: DebuffPotionFlame
+  m_Name: PotionFrame2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3058,7 +3057,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 90c88522b848ea04389d01b664312a55, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 29d89c0067875f444a33a3c7bd45ca31, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3089,7 +3088,7 @@ GameObject:
   - component: {fileID: 1323990757}
   - component: {fileID: 1323990756}
   m_Layer: 5
-  m_Name: PotionFlame
+  m_Name: PotionFrame4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3191,7 +3190,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 4608ce56cef88b34fa7cc6ec7ee58c3f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c22a7817f1fb6a245aa80949a4492dc1, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3222,7 +3221,7 @@ GameObject:
   - component: {fileID: 1348127808}
   - component: {fileID: 1348127807}
   m_Layer: 5
-  m_Name: BoomPotionFlame
+  m_Name: PotionFrame1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3324,7 +3323,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 1d8af3485037fbc4ba435e720233a2a1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 81a2253c3c4645a44ae8a9e018f4d015, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3487,7 +3486,7 @@ GameObject:
   - component: {fileID: 1509403182}
   - component: {fileID: 1509403181}
   m_Layer: 5
-  m_Name: DebuffPotionFlame
+  m_Name: PotionFrame2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3589,7 +3588,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 90c88522b848ea04389d01b664312a55, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 29d89c0067875f444a33a3c7bd45ca31, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3695,7 +3694,7 @@ GameObject:
   - component: {fileID: 1556147087}
   - component: {fileID: 1556147086}
   m_Layer: 5
-  m_Name: BoomPotionFlame
+  m_Name: PotionFrame1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3797,7 +3796,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 1d8af3485037fbc4ba435e720233a2a1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 81a2253c3c4645a44ae8a9e018f4d015, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4035,7 +4034,7 @@ GameObject:
   - component: {fileID: 1665006192}
   - component: {fileID: 1665006191}
   m_Layer: 5
-  m_Name: PotionFlame
+  m_Name: PotionFrame4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4137,7 +4136,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 4608ce56cef88b34fa7cc6ec7ee58c3f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c22a7817f1fb6a245aa80949a4492dc1, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4243,7 +4242,7 @@ GameObject:
   - component: {fileID: 1736417857}
   - component: {fileID: 1736417856}
   m_Layer: 5
-  m_Name: BuffPotionFlame
+  m_Name: PotionFrame3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4345,7 +4344,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: adf34c71b466eaa44bfa1a1d375b7f80, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b9c3ddeee01ea3f4a995319916db594f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4485,7 +4484,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1827228233}
   m_Layer: 5
-  m_Name: 1PFlames
+  m_Name: 1PFrames
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4505,9 +4504,9 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1556147085}
+  - {fileID: 700382642}
   - {fileID: 2096394128}
   - {fileID: 1556}
-  - {fileID: 700382642}
   m_Father: {fileID: 1778619628}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1918009104
@@ -4520,7 +4519,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1918009105}
   m_Layer: 5
-  m_Name: 2PFlames
+  m_Name: 2PFrames
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4540,9 +4539,9 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1348127806}
+  - {fileID: 1990819765}
   - {fileID: 572404513}
   - {fileID: 1665006190}
-  - {fileID: 1990819765}
   m_Father: {fileID: 1778619628}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1990819764
@@ -4558,7 +4557,7 @@ GameObject:
   - component: {fileID: 1990819767}
   - component: {fileID: 1990819766}
   m_Layer: 5
-  m_Name: DebuffPotionFlame
+  m_Name: PotionFrame2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4660,7 +4659,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 90c88522b848ea04389d01b664312a55, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 29d89c0067875f444a33a3c7bd45ca31, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4841,7 +4840,7 @@ GameObject:
   - component: {fileID: 2096394130}
   - component: {fileID: 2096394129}
   m_Layer: 5
-  m_Name: BuffPotionFlame
+  m_Name: PotionFrame3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4943,7 +4942,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: adf34c71b466eaa44bfa1a1d375b7f80, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b9c3ddeee01ea3f4a995319916db594f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

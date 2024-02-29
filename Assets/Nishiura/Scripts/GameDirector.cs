@@ -13,10 +13,69 @@ using Cinemachine;
 
 public class GameDirector : MonoBehaviour
 {
+    // フィールド
+
+    //Player
+    public bool[] isDead;                                                   //死亡判定変数
+    Player[] player;                                                        //プレイヤー
+    int nowTurn;                                                            //現在のターン
+    //CinemachineVirtualCamera[] camera = new CinemachineVirtualCamera[5];    //個々プレイヤー視点用カメラ
+    MoveCameraManager cameraManager;
+
+    //ポーションのアイコン
+    [SerializeField] GameObject[] BoomPotion;
+    [SerializeField] GameObject[] BuffPotion;
+    [SerializeField] GameObject[] DebuffPotion;
+    [SerializeField] GameObject[] Potion;
+
+    //プレイヤータイプ
+    int playerType = UnitController.TYPE_RED;
+    int nowPlayerType = 0;
+
+    //ランダム変数
+    System.Random r = new System.Random();
+
+    //ポーション所持判断用変数
+    bool[,] isGetted = new bool[4,4];
+
     /// <summary>
     /// タイル配置設定
     /// </summary>
-    // 0:Wall 1:NormalTile 2:SpawnPoint 3:Object1 4: -
+    public enum MODE
+    {
+        NONE = -1,
+        WAIT_TURN_START,
+        MOVE_SELECT,
+        FIELD_UPDATE,
+        WAIT_TURN_END,
+        TURN_CHANGE,
+    }
+
+    /// <summary>
+    /// プレイヤー状態
+    /// </summary>
+    public enum PLAYERSTATE
+    {
+        NONE = 0,
+        NORMAL_STATE,       //通常状態
+        PARALYSIS_STATE,    //マヒ状態
+        FRIZE_STATE,        //氷結状態
+        CURSED_STATE,       //呪い状態
+        FLAME_STATE,        //炎上状態
+        MUSCLE_STATE,       //筋力上昇状態
+        INVICIBLE_STATE,    //無敵状態
+    }
+
+    //MODE遷移
+    MODE nowMode;
+    public MODE nextMode;
+
+    //0:Wall 1:NormalTile 2:SpawnPoint 3:Object1 4: -
+
+    // タイルデータ構造体の宣言
+    TileData[,] tileData;
+
+    // タイル配置設定
     int[,] initTileData = new int[,]
     {
         {0,0,0,0,0,0,0,0,0,0,0},//手前
@@ -148,7 +207,12 @@ public class GameDirector : MonoBehaviour
         get { return isMoved; }
     }
 
-    // Start is called before the first frame update
+    //--------------------------------------------------------------------------------------------
+    // メソッド -----------------------------------------------------------
+
+    /// <summary>
+    /// 初期化処理
+    /// </summary>
     void Start()
     {
         for (int i = 0; i < player.Length; i++)

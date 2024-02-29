@@ -1,6 +1,6 @@
 //---------------------------------------------------------------
 //
-//  とらっしゅぽーしょん！クライアント [ Client.cs ]
+// ネットワークマネージャー [NetworkManager.cs ]
 // Author:Kenta Nakamoto
 // Data:2024/02/08
 // Update:2024/02/28
@@ -18,7 +18,7 @@ using UnityEngine.UI;
 using System.Linq;
 using System.Threading;
 
-public class Client : MonoBehaviour
+public class NetworkManager : MonoBehaviour
 {
     //------------------------------------------------------------------------------
     // フィールド ----------------------------------------
@@ -26,37 +26,33 @@ public class Client : MonoBehaviour
     /// <summary>
     /// クライアント作成
     /// </summary>
-    private TcpClient tcpClient;
+    TcpClient tcpClient;
 
     /// <summary>
     /// 接続先IPアドレス
     /// </summary>
-    private const string ipAddress = "127.0.0.1";
+    const string ipAddress = "127.0.0.1";
 
     /// <summary>
     /// ポート番号
     /// </summary>
-    private const int portNum = 20001;
+    const int portNum = 20001;
 
     /// <summary>
     /// 送受信サイズ
     /// </summary>
-    private const int dataSize = 1024;
+    const int dataSize = 1024;
 
     /// <summary>
     /// 接続情報格納用
     /// </summary>
-    private NetworkStream stream;
+    public static NetworkStream stream;
 
     /// <summary>
     /// 自分のプレイヤー番号
     /// </summary>
-    private int myNo;
-
-    /// <summary>
-    /// 全プレイヤーのデータリスト
-    /// </summary>
-    private UserDataList userDataList;
+    public static int MyNo
+    {  get; private set; }
 
     /// <summary>
     /// マッチング中テキスト
@@ -101,13 +97,18 @@ public class Client : MonoBehaviour
     //------------------------------------------------------------------------------
     // メソッド ------------------------------------------
 
-    // Start is called before the first frame update
+    /// <summary>
+    /// 初期関数
+    /// </summary>
     async void Start()
     {
         context = SynchronizationContext.Current;
 
         // 接続処理の実行
         await StartClient(ipAddress, portNum);
+
+        // シーン遷移時にNetworkManagerを破棄しないように設定
+        DontDestroyOnLoad(gameObject);
     }
 
     /// <summary>
@@ -144,7 +145,7 @@ public class Client : MonoBehaviour
             string recevieString = Encoding.UTF8.GetString(bufferJson, 0, length - 1);   // 受信データを文字列に変換
 
             // 自分のPL Noを保存
-            myNo = int.Parse(recevieString[0].ToString());
+            MyNo = int.Parse(recevieString[0].ToString());
 
             // マッチングテキストを非表示
             matchingText.SetActive(false);
@@ -153,7 +154,7 @@ public class Client : MonoBehaviour
             readyUI.SetActive(true);
 
             // 自分のPL番号の上に矢印表示
-            arrowYouObjs[myNo - 1].SetActive(true);
+            arrowYouObjs[MyNo - 1].SetActive(true);
 
             // 受信用スレッドの起動
             Thread thread = new Thread(new ParameterizedThreadStart(RecvProc));
@@ -203,7 +204,7 @@ public class Client : MonoBehaviour
             {
                 switch (eventID)
                 {
-                    case 2: // 各PLの名前表示処理
+                    case (int)EventID.UserData: // 各PLの名前表示処理
 
                         // Jsonデシリアライズ
                         UserData userData = JsonConvert.DeserializeObject<UserData>(jsonString);
@@ -213,7 +214,7 @@ public class Client : MonoBehaviour
 
                         break;
 
-                    case 4: // 各PLの準備完了表示処理
+                    case (int)EventID.CompleteFlag: // 各PLの準備完了表示処理
 
                         // Jsonデシリアライズ
                         userData = JsonConvert.DeserializeObject<UserData>(jsonString);
@@ -223,8 +224,12 @@ public class Client : MonoBehaviour
 
                         break;
 
-                    case 5: // インゲーム処理
-                        NextScene();
+                    case (int)EventID.InSelectFlag: // 選択画面遷移処理
+                        NextScene("ModeSelection");
+                        break;
+
+                    case (int)EventID.InGameFlag: // ゲーム画面遷移処理
+                        NextScene("IGC");
                         break;
 
                     default: 
@@ -242,11 +247,10 @@ public class Client : MonoBehaviour
     /// </summary>
     public async void sendUserData()
     {
-        // 送信用ユーザーデータの作成 ---------------------------------------------------------------------------
-
+        //送信用ユーザーデータの作成
         UserData userData = new UserData();
         userData.UserName = nameInput.GetComponent<InputField>().text;   // 入力された名前を格納
-        userData.PlayerNo = myNo;                                        // 自分のプレイヤー番号を格納
+        userData.PlayerNo = MyNo;                                        // 自分のプレイヤー番号を格納
 
         // 送信データをJSONシリアライズ
         string json = JsonConvert.SerializeObject(userData);
@@ -267,14 +271,13 @@ public class Client : MonoBehaviour
     /// 準備完了フラグ送信処理
     /// </summary>
     public async void SendComplete()
-    {   // 準備完了フラグ送信処理 -------------------------------------------------------------------------------------------------------------
-
+    {
         // 準備完了ボタンの非表示
         completeButton.SetActive(false);
 
         UserData userData = new UserData();
         userData.IsReady = true;                 // 準備完了フラグをtrueに
-        userData.PlayerNo = myNo;                // 自分のプレイヤー番号を格納
+        userData.PlayerNo = MyNo;                // 自分のプレイヤー番号を格納
 
         // 送信データをJSONシリアライズ
         string json = JsonConvert.SerializeObject(userData);
@@ -291,13 +294,14 @@ public class Client : MonoBehaviour
     }
 
     /// <summary>
-    /// シーン移動処理
+    /// シーン遷移処理
     /// </summary>
-    private void NextScene()
+    /// <param name="sceneName"> 遷移したいシーン名 </param>
+    private void NextScene(string sceneName)
     {
         /* フェード処理 (黒)  
             ( "シーン名",フェードの色, 速さ);  */
         Initiate.DoneFading();
-        Initiate.Fade("ModeSelection", Color.black, 1.5f);
+        Initiate.Fade(sceneName, Color.black, 1.5f);
     }
 }

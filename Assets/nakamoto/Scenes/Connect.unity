@@ -609,13 +609,19 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 42fb6814eda289c47805a681119f7b86,
         type: 3}
       propertyPath: m_Name
-      value: Arrow
+      value: 1PArrow
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 42fb6814eda289c47805a681119f7b86, type: 3}
+--- !u!1 &233159224 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 42fb6814eda289c47805a681119f7b86,
+    type: 3}
+  m_PrefabInstance: {fileID: 233159223}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &325919788
 GameObject:
   m_ObjectHideFlags: 0
@@ -896,13 +902,19 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 42fb6814eda289c47805a681119f7b86,
         type: 3}
       propertyPath: m_Name
-      value: Arrow
+      value: 3PArrow
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 42fb6814eda289c47805a681119f7b86, type: 3}
+--- !u!1 &455829125 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 42fb6814eda289c47805a681119f7b86,
+    type: 3}
+  m_PrefabInstance: {fileID: 455829124}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &532426321
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2057,7 +2069,7 @@ GameObject:
   - component: {fileID: 1272812307}
   - component: {fileID: 1272812308}
   m_Layer: 0
-  m_Name: ConnectManager
+  m_Name: NetworkManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2087,16 +2099,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1272812306}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c02cb05748dc240438244f79e6a028b0, type: 3}
+  m_Script: {fileID: 11500000, guid: b92d9454d91805f438ae2b7f88caa0e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   matchingText: {fileID: 2068321070}
   readyUI: {fileID: 1220505161}
   arrowYouObjs:
-  - {fileID: 1294874287}
-  - {fileID: 391241814}
-  - {fileID: 416645899}
-  - {fileID: 1777862022}
+  - {fileID: 233159224}
+  - {fileID: 1967711479}
+  - {fileID: 455829125}
+  - {fileID: 1972241662}
   playerNames:
   - {fileID: 1014855889}
   - {fileID: 1996686809}
@@ -3220,13 +3232,19 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 42fb6814eda289c47805a681119f7b86,
         type: 3}
       propertyPath: m_Name
-      value: Arrow
+      value: 2PArrow
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 42fb6814eda289c47805a681119f7b86, type: 3}
+--- !u!1 &1967711479 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 42fb6814eda289c47805a681119f7b86,
+    type: 3}
+  m_PrefabInstance: {fileID: 1967711478}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1972241661
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3308,13 +3326,19 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 42fb6814eda289c47805a681119f7b86,
         type: 3}
       propertyPath: m_Name
-      value: Arrow
+      value: 4PArrow
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 42fb6814eda289c47805a681119f7b86, type: 3}
+--- !u!1 &1972241662 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 42fb6814eda289c47805a681119f7b86,
+    type: 3}
+  m_PrefabInstance: {fileID: 1972241661}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1996686809
 GameObject:
   m_ObjectHideFlags: 0

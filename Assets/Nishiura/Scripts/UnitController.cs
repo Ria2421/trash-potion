@@ -1,6 +1,7 @@
 //
 // プレイヤーコントロールスクリプト
 // Name:西浦晃太 Date:2/8
+// Update:02/29
 //
 using Unity.VisualScripting;
 using UnityEngine;

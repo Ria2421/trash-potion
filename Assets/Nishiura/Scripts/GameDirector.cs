@@ -1,7 +1,7 @@
 //
 // ゲームディレクタースクリプト
 // Name:西浦晃太 Date:02/07
-// Update:02/28
+// Update:02/29
 //
 using System;
 using System.Collections.Generic;
@@ -13,6 +13,8 @@ using Cinemachine;
 
 public class GameDirector : MonoBehaviour
 {
+    // フィールド
+
     //Player
     public bool[] isDead;                                                   //死亡判定変数
     Player[] player;                                                        //プレイヤー
@@ -37,7 +39,7 @@ public class GameDirector : MonoBehaviour
     bool[,] isGetted = new bool[4,4];
 
     /// <summary>
-    /// ゲームモード
+    /// タイル配置設定
     /// </summary>
     public enum MODE
     {
@@ -69,7 +71,6 @@ public class GameDirector : MonoBehaviour
     public MODE nextMode;
 
     //0:Wall 1:NormalTile 2:SpawnPoint 3:Object1 4: -
-    //フィールド
 
     // タイルデータ構造体の宣言
     TileData[,] tileData;
@@ -90,7 +91,9 @@ public class GameDirector : MonoBehaviour
         {0,0,0,0,0,0,0,0,0,0,0},
     };
 
-    //プレイヤー初期配置
+    /// <summary>
+    /// プレイヤー初期配置
+    /// </summary>
     int[,] initUnitData = new int[,]
     {
         {0,0,0,0,0,0,0,0,0,0,0},//手前
@@ -106,27 +109,123 @@ public class GameDirector : MonoBehaviour
         {0,0,0,0,0,0,0,0,0,0,0},
     };
 
-    //フィールド上のプレイヤー
+    /// <summary>
+    /// ゲームモード
+    /// </summary>
+    public enum MODE
+    {
+        NONE = -1,
+        WAIT_TURN_START,
+        MOVE_SELECT,
+        FIELD_UPDATE,
+        WAIT_TURN_END,
+        TURN_CHANGE,
+    }
+
+    ///========================================
+    ///
+    /// フィールド
+    /// 
+    ///========================================
+
+    /// <summary>
+    /// プレイヤー 配列
+    /// </summary>
+    Player[] player = new Player[playerNum];
+
+    /// <summary>
+    /// プレイヤー人数
+    /// </summary>
+    const int playerNum = 4;
+
+    /// <summary>
+    /// フィールド上のプレイヤーリスト
+    /// </summary>
     List<GameObject>[,] unitData;
 
-    //プレイヤー選択モードで使う
+    /// <summary>
+    /// 選択ユニット
+    /// </summary>
     GameObject selectUnit;
     int oldX, oldY;
 
-    //ボタン等のオブジェクト
-    //GameObject buttonTurnEnd;
-
-    //プレイヤーの移動判定変数
+    /// <summary>
+    /// プレイヤーの移動判定変数
+    /// </summary>
     bool isMoved = false;
+
+    /// <summary>
+    /// プレイヤータイプ
+    /// </summary>
+    int playerType = UnitController.TYPE_RED;
+
+    /// <summary>
+    /// 現在のターンのプレイヤータイプ
+    /// </summary>
+    int nowPlayerType = 0;
+
+    /// <summary>
+    /// タイルデータ構造体の宣言
+    /// </summary>
+    TileData[,] tileData;
+
+    /// <summary>
+    /// 現在のターン
+    /// </summary>
+    int nowTurn;
+
+    /// <summary>
+    /// カメラ移動スクリプト
+    /// </summary>
+    MoveCameraManager cameraManager;
+
+    /// <summary>
+    /// 現在のモード
+    /// </summary>
+    MODE nowMode;
+
+    /// <summary>
+    /// 次のモード
+    /// </summary>
+    public MODE nextMode;
+
+    /// <summary>
+    /// 各ポーションのアイコン
+    /// </summary>
+    [SerializeField] GameObject[] BoomPotion;
+    [SerializeField] GameObject[] BuffPotion;
+    [SerializeField] GameObject[] DebuffPotion;
+    [SerializeField] GameObject[] Potion;
+
+    /// <summary>
+    /// (仮)ポーションランダム生成変数
+    /// </summary>
+    System.Random r = new System.Random();
 
     public bool IsMoved
     { //移動判定のプロパティ
         get { return isMoved; }
     }
 
-    // Start is called before the first frame update
+    //--------------------------------------------------------------------------------------------
+    // メソッド -----------------------------------------------------------
+
+    /// <summary>
+    /// 初期化処理
+    /// </summary>
     void Start()
     {
+        for (int i = 0; i < player.Length; i++)
+        { //配列分のプレイヤーの構造体を生成
+            player[i] = new Player();
+        }
+
+        for (int i = 0; i < player.Length; i++)
+        { //プレイヤー初期値設定
+            player[i].PlayerState = PLAYERSTATE.NORMAL_STATE;
+            player[i].PlayerNo = i + 1;
+        }
+
         // タイル配置情報分の配列を生成
         tileData = new TileData[initTileData.GetLength(0), initTileData.GetLength(1)];
 
@@ -147,25 +246,7 @@ public class GameDirector : MonoBehaviour
                 tileData[i, j].pNo = initUnitData[i, j];
             }
         }
-
-        //画面上のオブジェクト取得
-        //buttonTurnEnd = GameObject.Find("EndButton");
-        //cameraManager = GameObject.Find("CameraManager").GetComponent<MoveCameraManager>();
-
-        //for (int i = 1; i < 6; i++)
-        //{
-        //    camera[i - 1] = GameObject.Find("VCam" + i).GetComponent<CinemachineVirtualCamera>();
-        //}
-
-        //txtInfo.GetComponent<Text>().text = "";
         unitData = new List<GameObject>[tileData.GetLength(0), tileData.GetLength(1)];
-
-        //プレイヤー設定
-        player = new Player[4];     //人数
-        player[0] = new Player(1);
-        player[1] = new Player(2);
-        player[2] = new Player(3);
-        player[3] = new Player(4);
 
         //タイル初期化
         for (int i = 0; i < tileData.GetLength(0); i++)
@@ -177,10 +258,6 @@ public class GameDirector : MonoBehaviour
 
                 //タイル配置
                 string resname = "";
-                int p1 = 0;
-                int p2 = 0;
-                int p3 = 0;
-                int p4 = 0;
 
                 int no = tileData[i, j].tNo;
                 if (4 == no || 8 == no) no = 5;
@@ -200,27 +277,22 @@ public class GameDirector : MonoBehaviour
                 { //1Pユニット配置
                     resname = "Unit1";
                     playerType = UnitController.TYPE_RED;
-                    p1++;
                 }
                 else if (2 == tileData[i, j].pNo)
                 { //2Pユニット配置
                     resname = "Unit2";
                     playerType = UnitController.TYPE_BLUE;
-                    p2++;
-                    // オブジェクトの向き
-                    angle.y = 180;
+                    angle.y = 180;        // オブジェクトの向き
                 }
                 else if (3 == tileData[i, j].pNo)
                 { //3Pユニット配置
                     resname = "Unit3";
                     playerType = UnitController.TYPE_YELLOW;
-                    p3++;
                 }
                 else if (4 == tileData[i, j].pNo)
                 { //4Pユニット配置
                     resname = "Unit4";
                     playerType = UnitController.TYPE_GREEN;
-                    p4++;
                     angle.y = 180;
                 }
                 else
@@ -234,36 +306,6 @@ public class GameDirector : MonoBehaviour
                 {
                     unit.GetComponent<UnitController>().PlayerNo = initUnitData[i, j];
                     unit.GetComponent<UnitController>().Type = playerType;
-                    //camera[playerType - 1].Follow = unit.transform;
-
-                    //if (playerType == 1)
-                    //{ //Case Player1
-                    //    CinemachineTransposer cinemachineTransposer = camera[0].GetCinemachineComponent<CinemachineTransposer>();
-                    //    cinemachineTransposer.m_FollowOffset.x = 0.0f;
-                    //    cinemachineTransposer.m_FollowOffset.y = 0.6f;
-                    //    cinemachineTransposer.m_FollowOffset.z = -2.0f;
-                    //}
-                    //else if (playerType == 2)
-                    //{ //Case Player2
-                    //    CinemachineTransposer cinemachineTransposer = camera[1].GetCinemachineComponent<CinemachineTransposer>();
-                    //    cinemachineTransposer.m_FollowOffset.x = 0.0f;
-                    //    cinemachineTransposer.m_FollowOffset.y = 0.6f;
-                    //    cinemachineTransposer.m_FollowOffset.z = 2.5f;
-                    //}
-                    //else if (playerType == 3)
-                    //{ //Case Player3
-                    //    CinemachineTransposer cinemachineTransposer = camera[2].GetCinemachineComponent<CinemachineTransposer>();
-                    //    cinemachineTransposer.m_FollowOffset.x = 0.0f;
-                    //    cinemachineTransposer.m_FollowOffset.y = 0.6f;
-                    //    cinemachineTransposer.m_FollowOffset.z = -2.0f;
-                    //}
-                    //else if (playerType == 4)
-                    //{ //Case Player4
-                    //    CinemachineTransposer cinemachineTransposer = camera[3].GetCinemachineComponent<CinemachineTransposer>();
-                    //    cinemachineTransposer.m_FollowOffset.x = 0.0f;
-                    //    cinemachineTransposer.m_FollowOffset.y = 0.6f;
-                    //    cinemachineTransposer.m_FollowOffset.z = 2.5f;
-                    //}
                     unitData[i, j].Add(unit);
                 }
             }
@@ -275,7 +317,7 @@ public class GameDirector : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {  
+    {
         if (nowPlayerType >= 4)
         {
             nowPlayerType = 0;
@@ -284,12 +326,6 @@ public class GameDirector : MonoBehaviour
         Mode();
 
         if (MODE.NONE != nextMode) InitMode(nextMode);
-
-        //if(Input.GetKeyDown(KeyCode.Return))
-        //{
-        //    Initiate.DoneFading();
-        //    Initiate.Fade("Result", Color.black, 1.5f);
-        //}
     }
 
     /// <summary>
@@ -324,14 +360,12 @@ public class GameDirector : MonoBehaviour
         else if (MODE.MOVE_SELECT == next)
         {
             selectUnit = null;
-            //buttonTurnEnd.SetActive(false);
         }
         else if (MODE.WAIT_TURN_END == next)
         {
         }
         else if (MODE.FIELD_UPDATE == next)
         {
-            //buttonTurnEnd.SetActive(false);
         }
 
         nowMode = next;
@@ -360,13 +394,6 @@ public class GameDirector : MonoBehaviour
 
                     if (0 < unitData[z, x].Count && player[nowTurn].PlayerNo == unitData[z, x][0].GetComponent<UnitController>().PlayerNo)
                     { //ユニット選択
-
-                        ////移動の際ポーション使用を無効に
-                        //cameraManager.Flame1.SetActive(false);
-                        //cameraManager.Flame2.SetActive(false);
-                        //cameraManager.Flame3.SetActive(false);
-                        //cameraManager.Flame4.SetActive(false);
-
                         if (null != selectUnit)
                         {
                             selectUnit.GetComponent<UnitController>().Select(false);
@@ -392,7 +419,7 @@ public class GameDirector : MonoBehaviour
                         Debug.Log("現在のプレイヤー:" + nowPlayerType);
                     }
                 }
-            }  
+            }
         }
     }
 
@@ -427,6 +454,13 @@ public class GameDirector : MonoBehaviour
         return ret;
     }
 
+    /// <summary>
+    /// リソース内オブジェクト配置関数
+    /// </summary>
+    /// <param name="name">Object's Name</param>
+    /// <param name="pos">Object's Position</param>
+    /// <param name="angle">Object's Angle</param>
+    /// <returns></returns>
     GameObject resourcesInstantiate(string name, Vector3 pos, Quaternion angle)
     {
         GameObject prefab = (GameObject)Resources.Load(name);
@@ -495,42 +529,26 @@ public class GameDirector : MonoBehaviour
     {
         int rndPotion = r.Next(4);
 
-        //if (isGetted[nowPlayerType, 0] == true && isGetted[nowPlayerType, 1] == true && isGetted[nowPlayerType, 2] == true && isGetted[nowPlayerType, 3] == true)
-        //{ //すべてのポーション枠が埋まっていた場合の処理
-        //    Debug.Log("枠が埋まっています");
-        //    return;
-        //}
-
         if (rndPotion == 0)
-        { //爆発ポーション
-            if (isGetted[nowPlayerType, 0] == true) return;
-
+        { //枠1
             BoomPotion[nowPlayerType].SetActive(true);
-            isGetted[nowPlayerType,0] = true;
+            player[nowPlayerType].OwnedPotionList.Add(TYPE.BOMB);
         }
         else if (rndPotion == 1)
-        { //バフポーション
-            if (isGetted[nowPlayerType, 1] == true) return;
-
+        { //枠２
             BuffPotion[nowPlayerType].SetActive(true);
-            isGetted[nowPlayerType,1] = true;
+            player[nowPlayerType].OwnedPotionList.Add(TYPE.REFRESH);
         }
         else if (rndPotion == 2)
-        { //デバフポーション
-            if (isGetted[nowPlayerType, 2] == true) return;
-
+        { //枠３
             DebuffPotion[nowPlayerType].SetActive(true);
-            isGetted[nowPlayerType,2] = true;
+            player[nowPlayerType].OwnedPotionList.Add(TYPE.CURSE);
         }
         else if (rndPotion == 3)
-        { //フリー枠
-            if (isGetted[nowPlayerType, 3] == true) return;
-
+        { //枠４
             Potion[nowPlayerType].SetActive(true);
-            isGetted[nowPlayerType,3] = true;
+            player[nowPlayerType].OwnedPotionList.Add(TYPE.NORMAL);
         }
-
-        //cameraManager.CameraShift();
         nextMode = MODE.FIELD_UPDATE;
     }
 
@@ -539,7 +557,16 @@ public class GameDirector : MonoBehaviour
     /// </summary>
     public void UsePotion()
     {
-        GameObject.Find("Unit" + (nowPlayerType+1)+ "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);
+        GameObject flameGameobject = this.gameObject;
+
+        if (flameGameobject.name != "BuffPotionFrame")
+        {
+            GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);
+        }
+        else
+        {
+            GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isDrink", true);
+        }
         //cameraManager.MoveButton();
         nextMode = MODE.FIELD_UPDATE;
     }
@@ -568,5 +595,89 @@ public class GameDirector : MonoBehaviour
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// バフ処理
+    /// </summary>
+    /// <param name="unitType"></param>
+    public void BuffUnit(int unitType, int buffType)
+    {
+        GameObject Unit;
+        for (int i = 0; i < unitData.GetLength(0); i++)
+        {
+            for (int j = 0; j < unitData.GetLength(1); j++)
+            {
+                if (unitData[i, j].Count > 0)
+                {
+                    Unit = unitData[i, j][0];
+
+                    if (Unit.GetComponent<UnitController>().Type == unitType)
+                    {
+                        switch (buffType)
+                        { //バフポーション別処理
+                            case 5: //リフレッシュポーションの処理
+                                break;
+                            case 6: //無敵ポーションの処理
+                                player[unitType].PlayerState = PLAYERSTATE.INVICIBLE_STATE;
+                                break;
+                            case 7: //筋力ポーションの処理
+                                player[unitType].PlayerState = PLAYERSTATE.MUSCLE_STATE;
+                                break;
+                        }
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// デバフ処理
+    /// </summary>
+    /// <param name="unitType"></param>
+    public void DebuffUnit(int unitType, int debuffType)
+    {
+        GameObject Unit;
+        for (int i = 0; i < unitData.GetLength(0); i++)
+        {
+            for (int j = 0; j < unitData.GetLength(1); j++)
+            {
+                if (unitData[i, j].Count > 0)
+                {
+                    Unit = unitData[i, j][0];
+
+                    if (Unit.GetComponent<UnitController>().Type == unitType)
+                    {
+                        switch (debuffType)
+                        { //バフポーション別処理
+                            case 8: //超スッパイポーションの処理
+                                GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isParalysis", true);
+                                player[unitType].PlayerState = PLAYERSTATE.PARALYSIS_STATE;
+                                break;
+
+                            case 9: //瓶詰めの呪いの処理
+                                GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isCurse", true);
+                                player[unitType].PlayerState = PLAYERSTATE.CURSED_STATE;
+                                break;
+
+                            case 10: //アイスポーションの処理
+                                GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isFrost", true);
+                                player[unitType].PlayerState = PLAYERSTATE.FROZEN_STATE;
+                                break;
+                        }
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// ポーション被弾処理
+    /// </summary>
+    void PotionHit()
+    {
+
     }
 }

@@ -1,19 +1,21 @@
 //
 // ポーション爆発スクリプト
 // Name:西浦晃太 Date:02/26
-// Update:02/27
+// Update:02/29
 //
 using UnityEngine;
+using static TMPro.Examples.ObjectSpin;
 
 public class PotionBoom : MonoBehaviour
 {
-    public int potionType = 0;            //ポーションの種類
     public GameObject explosionPrefab;    //爆発エフェクトのプレハブ
     GameDirector gameDirector;
     int[] type = {2};
+    PotionType potionType;
 
-    private void Start()
+    void Start()
     {
+        potionType = new PotionType();
         gameDirector = GameObject.Find("GameDirector").GetComponent<GameDirector>();
     }
 
@@ -40,7 +42,43 @@ public class PotionBoom : MonoBehaviour
 
         for(int i = 0; i < unitType.Length; i++)
         {
-            gameDirector.DestroyUnit(unitType[i]);           
+            switch(potionType.PotionTypes)
+            { //ポーション別処理
+                case TYPE.BOMB: //ボムの場合
+                    gameDirector.DestroyUnit(unitType[i]);
+                    break;
+
+                case TYPE.CRUSTER: //クラスターの場合
+                    gameDirector.DestroyUnit(unitType[i]);
+                    break;
+
+                case TYPE.REFRESH: //リフレッシュの場合
+                    gameDirector.BuffUnit(unitType[i], (int)TYPE.REFRESH);
+                    break;
+
+                case TYPE.INVISIBLE: //無敵の場合
+                    gameDirector.BuffUnit(unitType[i], (int)TYPE.INVISIBLE);
+                    break;
+
+                case TYPE.MUSCLE: //筋力の場合
+                    gameDirector.BuffUnit(unitType[i], (int)TYPE.MUSCLE);
+                    break;
+
+                case TYPE.ICE: //アイスの場合
+                    gameDirector.DebuffUnit(unitType[i], (int)TYPE.ICE);
+                    break;
+
+                case TYPE.CURSE: //呪いの場合
+                    gameDirector.DebuffUnit(unitType[i], (int)TYPE.CURSE);
+                    break;
+
+                case TYPE.SOUR: //スッパイ場合
+                    gameDirector.DebuffUnit(unitType[i], (int)TYPE.SOUR);
+                    break;
+
+                default:
+                    break;
+            }
         }
     }
 

@@ -18,7 +18,9 @@ public class TitleManager : MonoBehaviour
     public GameObject arrow;        
 
     GameObject selectObject;
-    
+
+    GameObject networkManager;
+
     //startの変数
     [SerializeField] Text start;      
     
@@ -30,6 +32,11 @@ public class TitleManager : MonoBehaviour
     {
         start.color = Color.black;
         quit.color = Color.black;
+
+        if(networkManager = GameObject.Find("NetworkManager"))
+        {   // NetworkManagerオブジェクトが存在する時は破棄
+            Destroy(networkManager);
+        }
     }
 
     // Update is called once per frame

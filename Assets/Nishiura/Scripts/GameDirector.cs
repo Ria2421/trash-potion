@@ -13,6 +13,8 @@ using Cinemachine;
 
 public class GameDirector : MonoBehaviour
 {
+    // フィールド
+
     //Player
     public bool[] isDead;                                                   //死亡判定変数
     Player[] player;                                                        //プレイヤー
@@ -69,7 +71,6 @@ public class GameDirector : MonoBehaviour
     public MODE nextMode;
 
     //0:Wall 1:NormalTile 2:SpawnPoint 3:Object1 4: -
-    //フィールド
 
     // タイルデータ構造体の宣言
     TileData[,] tileData;
@@ -124,7 +125,12 @@ public class GameDirector : MonoBehaviour
         get { return isMoved; }
     }
 
-    // Start is called before the first frame update
+    //--------------------------------------------------------------------------------------------
+    // メソッド -----------------------------------------------------------
+
+    /// <summary>
+    /// 初期化処理
+    /// </summary>
     void Start()
     {
         // タイル配置情報分の配列を生成

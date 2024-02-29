@@ -20,6 +20,7 @@ public enum EventID
     UserData,         // 名前・No
     UserDataList,     // 全PLのUserDataのリスト
     CompleteFlag,     // 準備完了フラグ
+    InSelectFlag,     // モード選択画面遷移フラグ
     InGameFlag,       // インゲームフラグ
 }
 

@@ -1,5 +1,4 @@
 //
-//
 //ボタンスクリプト
 //Author：高宮祐翔
 //Date:2/21
@@ -70,7 +69,7 @@ IPointerEnterHandler,
             // 送信処理
             string json = "";
             byte[] buffer = Encoding.UTF8.GetBytes(json);                      // JSONをbyteに変換
-            buffer = buffer.Prepend((byte)EventID.UserData).ToArray();         // 送信データの先頭にイベントIDを付与
+            buffer = buffer.Prepend((byte)EventID.InGameFlag).ToArray();       // 送信データの先頭にイベントIDを付与
             await NetworkManager.stream.WriteAsync(buffer, 0, buffer.Length);  // JSON送信処理
 
             /* フェード処理 (黒)

@@ -38,13 +38,13 @@ public class Generator : MonoBehaviour
     {
         if(NetworkManager.MyNo == 1)
         {   // 1Pの時は選択画面を表示
-            selectUI.SetActive(false);
-            waitUI.SetActive(true);
+            selectUI.SetActive(true);
+            waitUI.SetActive(false);
         }
         else
         {   // 1P以外は待機画面を表示
-            selectUI.SetActive(true);
-            waitUI.SetActive(false);
+            selectUI.SetActive(false);
+            waitUI.SetActive(true);
         }
     }
 
@@ -62,7 +62,7 @@ public class Generator : MonoBehaviour
                 );
 
             // 一定時間後にポーションの破棄
-            Destroy(potion, 3.5f);
+            Destroy(potion, 8f);
         }
     }
 }

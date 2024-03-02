@@ -11,6 +11,7 @@ using UnityEngine.UI;
 using DG.Tweening; //DOTween使用に必要
 using System.Text;
 using System.Linq;
+using System.Net.Sockets;
 
 public class ButtonPushScript :
 MonoBehaviour,
@@ -67,16 +68,14 @@ IPointerEnterHandler,
         if(Input.GetMouseButtonDown(0))
         {
             // 送信処理
-            string json = "";
+            string json = "1";
             byte[] buffer = Encoding.UTF8.GetBytes(json);                      // JSONをbyteに変換
             buffer = buffer.Prepend((byte)EventID.InGameFlag).ToArray();       // 送信データの先頭にイベントIDを付与
-            await NetworkManager.stream.WriteAsync(buffer, 0, buffer.Length);  // JSON送信処理
-
-            /* フェード処理 (黒)
-            ( "シーン名",フェードの色, 速さ);*/
-            Initiate.DoneFading();
-            Initiate.Fade("IGC", Color.black, 1.5f);
-            buttonSE.PlayOneShot(ButtonSE);
+            NetworkStream stream = NetworkManager.MyTcpClient.GetStream();
+            await stream.WriteAsync(buffer, 0, buffer.Length);                 // JSON送信処理
+#if DEBUG
+            Debug.Log("インゲーム送信");
+#endif
         }
     }
         

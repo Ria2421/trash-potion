@@ -26,7 +26,8 @@ public class NetworkManager : MonoBehaviour
     /// <summary>
     /// クライアント作成
     /// </summary>
-    TcpClient tcpClient;
+    public static TcpClient MyTcpClient
+    {  get; private set; }
 
     /// <summary>
     /// 接続先IPアドレス
@@ -46,7 +47,7 @@ public class NetworkManager : MonoBehaviour
     /// <summary>
     /// 接続情報格納用
     /// </summary>
-    public static NetworkStream stream;
+    NetworkStream stream;
 
     /// <summary>
     /// 自分のプレイヤー番号
@@ -123,18 +124,18 @@ public class NetworkManager : MonoBehaviour
         try
         {
             //クライアント作成
-            tcpClient = new TcpClient();
+            MyTcpClient = new TcpClient();
 
             // 送受信タイムアウト設定 (msec)
-            tcpClient.SendTimeout = 1000;
-            tcpClient.ReceiveTimeout = 1000;
+            MyTcpClient.SendTimeout = 1000;
+            MyTcpClient.ReceiveTimeout = 1000;
 
             // サーバーへ接続要求
-            await tcpClient.ConnectAsync(ipAddress, port);
+            await MyTcpClient.ConnectAsync(ipAddress, port);
 
             // サーバーからPL番号を受信待機
             byte[] recvBuffer = new byte[dataSize];                                    // 送受信データ格納用
-            stream = tcpClient.GetStream();                                            // クライアントのデータ送受信に使うNetworkStreamを取得
+            stream = MyTcpClient.GetStream();                                            // クライアントのデータ送受信に使うNetworkStreamを取得
             int length = await stream.ReadAsync(recvBuffer, 0, recvBuffer.Length);     // 受信データのバイト数を取得
 
             // 受信データからイベントIDを取り出す
@@ -158,7 +159,7 @@ public class NetworkManager : MonoBehaviour
 
             // 受信用スレッドの起動
             Thread thread = new Thread(new ParameterizedThreadStart(RecvProc));
-            thread.Start(tcpClient);
+            thread.Start(MyTcpClient);
 #if DEBUG
             // 準備ボタン等の有効化
             Debug.Log("待機画面表示");

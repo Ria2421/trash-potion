@@ -10,6 +10,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
+using static System.Net.Mime.MediaTypeNames;
 using static UnityEditor.PlayerSettings;
 
 public class GameDirector : MonoBehaviour
@@ -59,6 +60,7 @@ public class GameDirector : MonoBehaviour
         NONE = -1,
         WAIT_TURN_START,
         MOVE_SELECT,
+        POTION_THROW,
         FIELD_UPDATE,
         WAIT_TURN_END,
         TURN_CHANGE,
@@ -295,6 +297,10 @@ public class GameDirector : MonoBehaviour
         else if (MODE.TURN_CHANGE == nowMode)
         {
             TurnChangeMode();
+        }
+        else if (MODE.POTION_THROW == nowMode)
+        {
+            ThrowPotion();
         }
     }
 
@@ -547,7 +553,7 @@ public class GameDirector : MonoBehaviour
                 }
             }
         }
-        nextMode = MODE.FIELD_UPDATE;
+        //nextMode = MODE.FIELD_UPDATE;
     }
 
     /// <summary>
@@ -619,7 +625,6 @@ public class GameDirector : MonoBehaviour
                 }
             }
         }
-        nextMode = MODE.FIELD_UPDATE;
     }
 
     /// <summary>
@@ -730,19 +735,34 @@ public class GameDirector : MonoBehaviour
     /// </summary>
     void ThrowPotion()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-
+        nowMode = MODE.POTION_THROW;
+        string resname = "BombPotion";
         Vector3 pos = SerchUnit((nowPlayerType + 1));
 
         int x = (int)(pos.x + (tileData.GetLength(1) / 2 - 0.5f));
         int z = (int)(pos.z + (tileData.GetLength(0) / 2 - 0.5f));
 
         unitData[z, x][0].GetComponent<UnitController>().ThrowSelect();
-        selectUnit = unitData[z, x][0];
-
         unitData[z, x][0].GetComponent<UnitController>().OnThrowColliderEnable();
-        nextMode = MODE.FIELD_UPDATE;
+
+        if (Input.GetMouseButtonDown(0))
+        { //クリック時、投擲位置を設定
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit, 100))
+            {
+                if (null != hit.collider.gameObject)
+                {
+                    Vector3 selectPos = hit.collider.gameObject.transform.position;
+
+                    int selectX = (int)(selectPos.x + (tileData.GetLength(1) / 2 - 0.5f));
+                    int selectZ = (int)(selectPos.z + (tileData.GetLength(0) / 2 - 0.5f));
+
+                    resourcesInstantiate(resname, selectPos, Quaternion.Euler(0,0,0));
+                }
+            }
+        }
     }
 
     /// <summary>

@@ -8,9 +8,24 @@ using static TMPro.Examples.ObjectSpin;
 
 public class PotionBoom : MonoBehaviour
 {
-    public GameObject explosionPrefab;    //爆発エフェクトのプレハブ
+    /// <summary>
+    /// 爆発エフェクトのプレハブ
+    /// </summary>
+    public GameObject explosionPrefab; 
+
+    /// <summary>
+    /// ゲームディレクター
+    /// </summary>
     GameDirector gameDirector;
+
+    /// <summary>
+    /// 死亡するプレイヤータイプ
+    /// </summary>
     int[] type = {2};
+
+    /// <summary>
+    /// ポーションの種類
+    /// </summary>
     PotionType potionType;
 
     void Start()
@@ -44,36 +59,36 @@ public class PotionBoom : MonoBehaviour
         {
             switch(potionType.PotionTypes)
             { //ポーション別処理
-                case TYPE.BOMB: //ボムの場合
+                case TYPE.BOMB:     //ボムの場合
                     gameDirector.DestroyUnit(unitType[i]);
                     break;
 
-                case TYPE.CRUSTER: //クラスターの場合
+                case TYPE.CRUSTER:  //クラスターの場合
                     gameDirector.DestroyUnit(unitType[i]);
                     break;
 
-                case TYPE.REFRESH: //リフレッシュの場合
-                    gameDirector.BuffUnit(unitType[i], (int)TYPE.REFRESH);
+                case TYPE.REFRESH:   //リフレッシュの場合
+                    gameDirector.BuffUnit(unitType[i],TYPE.REFRESH);
                     break;
 
                 case TYPE.INVISIBLE: //無敵の場合
-                    gameDirector.BuffUnit(unitType[i], (int)TYPE.INVISIBLE);
+                    gameDirector.BuffUnit(unitType[i],TYPE.INVISIBLE);
                     break;
 
-                case TYPE.MUSCLE: //筋力の場合
-                    gameDirector.BuffUnit(unitType[i], (int)TYPE.MUSCLE);
+                case TYPE.MUSCLE:   //筋力の場合
+                    gameDirector.BuffUnit(unitType[i],TYPE.MUSCLE);
                     break;
 
-                case TYPE.ICE: //アイスの場合
-                    gameDirector.DebuffUnit(unitType[i], (int)TYPE.ICE);
+                case TYPE.ICE:      //アイスの場合
+                    gameDirector.DebuffUnit(unitType[i],TYPE.ICE);
                     break;
 
-                case TYPE.CURSE: //呪いの場合
-                    gameDirector.DebuffUnit(unitType[i], (int)TYPE.CURSE);
+                case TYPE.CURSE:    //呪いの場合
+                    gameDirector.DebuffUnit(unitType[i],TYPE.CURSE);
                     break;
 
-                case TYPE.SOUR: //スッパイ場合
-                    gameDirector.DebuffUnit(unitType[i], (int)TYPE.SOUR);
+                case TYPE.SOUR:     //スッパイ場合
+                    gameDirector.DebuffUnit(unitType[i],TYPE.SOUR);
                     break;
 
                 default:

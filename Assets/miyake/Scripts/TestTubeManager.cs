@@ -46,7 +46,7 @@ public class TestTubeManager : MonoBehaviour
         //クリックされていなければ実行
         if (!isClicked)
         {
-            slider.value += 0.3f;
+            slider.value += 0.2f;
 
             if (slider.value >= 94)
             {

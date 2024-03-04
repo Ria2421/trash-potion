@@ -16,7 +16,7 @@ PrefabInstance:
     - target: {fileID: 4451216887588439034, guid: f8a92be19b61fed42899ba63bc1bf12e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.044297345
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4451216887588439034, guid: f8a92be19b61fed42899ba63bc1bf12e,
         type: 3}
@@ -26,27 +26,27 @@ PrefabInstance:
     - target: {fileID: 4451216887588439034, guid: f8a92be19b61fed42899ba63bc1bf12e,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.064258724
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4451216887588439034, guid: f8a92be19b61fed42899ba63bc1bf12e,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.014409074
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4451216887588439034, guid: f8a92be19b61fed42899ba63bc1bf12e,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4451216887588439034, guid: f8a92be19b61fed42899ba63bc1bf12e,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.99989617
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4451216887588439034, guid: f8a92be19b61fed42899ba63bc1bf12e,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4451216887588439034, guid: f8a92be19b61fed42899ba63bc1bf12e,
         type: 3}
@@ -56,13 +56,18 @@ PrefabInstance:
     - target: {fileID: 4451216887588439034, guid: f8a92be19b61fed42899ba63bc1bf12e,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -178.349
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4451216887588439034, guid: f8a92be19b61fed42899ba63bc1bf12e,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7720800304837433728, guid: f8a92be19b61fed42899ba63bc1bf12e,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 718a0a6fbec87944185468a7518f328c, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

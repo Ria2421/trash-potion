@@ -66,9 +66,19 @@ public class NetworkManager : MonoBehaviour
     [SerializeField] GameObject readyUI;
 
     /// <summary>
+    /// 待機中オブジェ
+    /// </summary>
+    [SerializeField] GameObject readyObj;
+
+    /// <summary>
     /// 自機を指す矢印のオブジェクト
     /// </summary>
     [SerializeField] GameObject[] arrowYouObjs;
+
+    /// <summary>
+    /// 自機を示すテキスト
+    /// </summary>
+    [SerializeField] GameObject[] arrowYouTexts;
 
     /// <summary>
     /// 全プレイヤーの名前格納 
@@ -153,9 +163,11 @@ public class NetworkManager : MonoBehaviour
 
             // 待機中UIを表示
             readyUI.SetActive(true);
+            readyObj.SetActive(true);
 
             // 自分のPL番号の上に矢印表示
             arrowYouObjs[MyNo - 1].SetActive(true);
+            arrowYouTexts[MyNo - 1].SetActive(true);
 
             // 受信用スレッドの起動
             Thread thread = new Thread(new ParameterizedThreadStart(RecvProc));

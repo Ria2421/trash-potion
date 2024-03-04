@@ -23,6 +23,7 @@ public enum EventID
     CompleteFlag,     // 準備完了フラグ
     InSelectFlag,     // モード選択画面遷移フラグ
     InGameFlag,       // インゲームフラグ
+    MapData           // マップデータ
 }
 
 /// <summary>
@@ -138,4 +139,20 @@ class PotionType
     //ポーションのタイプ
    public TYPE PotionTypes
    { get; set; }
+}
+
+/// <summary>
+/// 送信マップデータ
+/// </summary>
+class MapData
+{
+    /// <summary>
+    /// 初期タイルデータ格納用
+    /// </summary>
+    public int[,] tileData;
+
+    /// <summary>
+    /// 初期ユニットデータ
+    /// </summary>
+    public int[,] unitData;
 }

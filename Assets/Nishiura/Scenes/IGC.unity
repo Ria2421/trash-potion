@@ -1088,10 +1088,10 @@ MonoBehaviour:
   vcam3: {fileID: 2129069411}
   vcam4: {fileID: 335849983}
   vcam5: {fileID: 910886918}
-  Flame1: {fileID: 0}
-  Flame2: {fileID: 0}
-  Flame3: {fileID: 0}
-  Flame4: {fileID: 0}
+  Frame1: {fileID: 0}
+  Frame2: {fileID: 0}
+  Frame3: {fileID: 0}
+  Frame4: {fileID: 0}
   turnCnt: {fileID: 432774135}
 --- !u!4 &976645100
 Transform:

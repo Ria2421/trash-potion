@@ -6,7 +6,11 @@
 using System;
 using System.Collections.Generic;
 using Unity.Burst.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
+using static UnityEditor.PlayerSettings;
 
 public class GameDirector : MonoBehaviour
 {
@@ -481,7 +485,7 @@ public class GameDirector : MonoBehaviour
     public void Brewing()
     {
         int rndPotion = r.Next(4);
-        if (player[nowPlayerType].PlayerState == PLAYERSTATE.PARALYSIS_STATE || player[nowPlayerType].PlayerState == PLAYERSTATE.FROZEN_STATE)
+        if (player[nowPlayerType].PlayerState == PLAYERSTATE.PARALYSIS_STATE || player[nowPlayerType].PlayerState == PLAYERSTATE.FROZEN_STATE || player[nowPlayerType].IsDead == true)
         { //しびれていた場合または凍っていた場合
             Debug.Log((nowPlayerType + 1) + "Pはしびれている。ポーションが作れない！");
         }
@@ -549,39 +553,70 @@ public class GameDirector : MonoBehaviour
     /// <summary>
     /// ポーション使用ボタン
     /// </summary>
-    public void UsePotion()
+    public void UsePotion(int buttonNum)
     {
-        GameObject flameGameobject = this.gameObject;
-
-        if (player[nowPlayerType].PlayerState == PLAYERSTATE.FROZEN_STATE)
+        if (player[nowPlayerType].PlayerState == PLAYERSTATE.FROZEN_STATE || player[nowPlayerType].IsDead == true)
         { //凍っていた場合
             Debug.Log((nowPlayerType + 1) + "Pは凍っている。ポーションは使えない！");
         }
         else
         {
-            if (flameGameobject.name == "PotionFrame1")
-            {
-                GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
-                BoomPotion[nowPlayerType].SetActive(false);                 //使用したポーションのアイコンを消す
-                player[nowPlayerType].OwnedPotionList.Remove(TYPE.BOMB);    //使用したポーションをリストから削除する
+            //枠別判定
+            if (buttonNum == 1)
+            { //1番目の場合
+                if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.BOMB))
+                {
+                    ThrowPotion();
+                    GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
+                    BoomPotion[nowPlayerType].SetActive(false);                 //使用したポーションのアイコンを消す
+                    player[nowPlayerType].OwnedPotionList.Remove(TYPE.BOMB);    //使用したポーションをリストから削除する
+                }
+                else
+                {
+                    Debug.Log((nowPlayerType + 1) + "Pはまだ1枠目のポーションを作ってない!!");
+                }
             }
-            else if (flameGameobject.name == "PotionFrame2")
-            {
-                GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
-                BuffPotion[nowPlayerType].SetActive(false);                    //使用したポーションのアイコンを消す
-                player[nowPlayerType].OwnedPotionList.Remove(TYPE.REFRESH);    //使用したポーションをリストから削除する
+            else if (buttonNum == 2)
+            { //２番目の場合
+                if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.CURSE))
+                {
+                    ThrowPotion();
+                    GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
+                    DebuffPotion[nowPlayerType].SetActive(false);                //使用したポーションのアイコンを消す
+                    player[nowPlayerType].OwnedPotionList.Remove(TYPE.CURSE);    //使用したポーションをリストから削除する
+                }
+                else
+                {
+                    Debug.Log((nowPlayerType + 1) + "Pはまだ2枠目のポーションを作ってない!!");
+                }
             }
-            else if (flameGameobject.name == "PotionFrame3")
-            {
-                GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
-                DebuffPotion[nowPlayerType].SetActive(false);                //使用したポーションのアイコンを消す
-                player[nowPlayerType].OwnedPotionList.Remove(TYPE.CURSE);    //使用したポーションをリストから削除する
+            else if (buttonNum == 3)
+            { //３番目の場合
+                if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.REFRESH))
+                {
+                    ThrowPotion();
+                    GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
+                    BuffPotion[nowPlayerType].SetActive(false);                    //使用したポーションのアイコンを消す
+                    player[nowPlayerType].OwnedPotionList.Remove(TYPE.REFRESH);    //使用したポーションをリストから削除する
+                }
+                else
+                {
+                    Debug.Log((nowPlayerType + 1) + "Pはまだ3枠目のポーションを作ってない!!");
+                }
             }
-            else if (flameGameobject.name == "PotionFrame4")
-            {
-                GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
-                Potion[nowPlayerType].SetActive(false);                       //使用したポーションのアイコンを消す 
-                player[nowPlayerType].OwnedPotionList.Remove(TYPE.NORMAL);    //使用したポーションをリストから削除する
+            else if (buttonNum == 4)
+            { //４番目の場合
+                if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.NORMAL))
+                {
+                    ThrowPotion();
+                    GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
+                    Potion[nowPlayerType].SetActive(false);                       //使用したポーションのアイコンを消す 
+                    player[nowPlayerType].OwnedPotionList.Remove(TYPE.NORMAL);    //使用したポーションをリストから削除する
+                }
+                else
+                {
+                    Debug.Log((nowPlayerType + 1) + "Pはまだ４枠目のポーションを作ってない!!");
+                }
             }
         }
         nextMode = MODE.FIELD_UPDATE;
@@ -603,9 +638,9 @@ public class GameDirector : MonoBehaviour
                     Unit = unitData[i, j][0];
 
                     if (Unit.GetComponent<UnitController>().Type == unitType)
-                    {
+                    { //当該ユニットを殺す
                         Destroy(Unit);
-                        player[unitType].IsDead= true;
+                        player[unitType].IsDead = true;
                         return;
                     }
                 }
@@ -617,7 +652,7 @@ public class GameDirector : MonoBehaviour
     /// バフ処理
     /// </summary>
     /// <param name="unitType"></param>
-    public void BuffUnit(int unitType, int buffType)
+    public void BuffUnit(int unitType, TYPE buffType)
     {
         GameObject Unit;
         for (int i = 0; i < unitData.GetLength(0); i++)
@@ -632,12 +667,13 @@ public class GameDirector : MonoBehaviour
                     {
                         switch (buffType)
                         { //バフポーション別処理
-                            case 5: //リフレッシュポーションの処理
+                            case TYPE.REFRESH: //リフレッシュポーションの処理
+                                player[unitType].PlayerState = PLAYERSTATE.NORMAL_STATE;
                                 break;
-                            case 6: //無敵ポーションの処理
+                            case TYPE.INVISIBLE: //無敵ポーションの処理
                                 player[unitType].PlayerState = PLAYERSTATE.INVICIBLE_STATE;
                                 break;
-                            case 7: //筋力ポーションの処理
+                            case TYPE.MUSCLE: //筋力ポーションの処理
                                 player[unitType].PlayerState = PLAYERSTATE.MUSCLE_STATE;
                                 break;
                         }
@@ -652,7 +688,7 @@ public class GameDirector : MonoBehaviour
     /// デバフ処理
     /// </summary>
     /// <param name="unitType"></param>
-    public void DebuffUnit(int unitType, int debuffType)
+    public void DebuffUnit(int unitType, TYPE debuffType)
     {
         GameObject Unit;
         for (int i = 0; i < unitData.GetLength(0); i++)
@@ -667,17 +703,17 @@ public class GameDirector : MonoBehaviour
                     {
                         switch (debuffType)
                         { //バフポーション別処理
-                            case 8: //超スッパイポーションの処理
+                            case TYPE.SOUR: //超スッパイポーションの処理
                                 GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isParalysis", true);
                                 player[unitType].PlayerState = PLAYERSTATE.PARALYSIS_STATE;
                                 break;
 
-                            case 9: //瓶詰めの呪いの処理
+                            case TYPE.CURSE: //瓶詰めの呪いの処理
                                 GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isCurse", true);
                                 player[unitType].PlayerState = PLAYERSTATE.CURSED_STATE;
                                 break;
 
-                            case 10: //アイスポーションの処理
+                            case TYPE.ICE: //アイスポーションの処理
                                 GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isFrost", true);
                                 player[unitType].PlayerState = PLAYERSTATE.FROZEN_STATE;
                                 break;
@@ -687,5 +723,51 @@ public class GameDirector : MonoBehaviour
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// ポーション投擲処理
+    /// </summary>
+    void ThrowPotion()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        Vector3 pos = SerchUnit((nowPlayerType + 1));
+
+        int x = (int)(pos.x + (tileData.GetLength(1) / 2 - 0.5f));
+        int z = (int)(pos.z + (tileData.GetLength(0) / 2 - 0.5f));
+
+        unitData[z, x][0].GetComponent<UnitController>().ThrowSelect();
+        selectUnit = unitData[z, x][0];
+
+        unitData[z, x][0].GetComponent<UnitController>().OnThrowColliderEnable();
+        nextMode = MODE.FIELD_UPDATE;
+    }
+
+    /// <summary>
+    /// ユニット指定処理
+    /// </summary>
+    /// <param name="unitType"></param>
+    public Vector3 SerchUnit(int unitType)
+    {
+        GameObject Unit;
+        for (int i = 0; i < unitData.GetLength(0); i++)
+        {
+            for (int j = 0; j < unitData.GetLength(1); j++)
+            {
+                if (unitData[i, j].Count > 0)
+                {
+                    Unit = unitData[i, j][0];
+
+                    if (Unit.GetComponent<UnitController>().Type == unitType)
+                    {
+                        Vector3 pos = Unit.transform.position;
+                        return pos;
+                    }
+                }
+            }
+        }
+        return new Vector3(0, 0, 0);
     }
 }

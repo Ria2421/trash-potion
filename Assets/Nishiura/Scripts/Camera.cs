@@ -8,20 +8,26 @@ using UnityEngine.UI;
 using Cinemachine;
 public class MoveCameraManager : MonoBehaviour
 {
-    //カメラ
+    /// <summary>
+    /// 各プレイヤーTPSカメラ
+    /// </summary>
     public CinemachineVirtualCameraBase vcam1;
     public CinemachineVirtualCameraBase vcam2;
     public CinemachineVirtualCameraBase vcam3;
     public CinemachineVirtualCameraBase vcam4;
     public CinemachineVirtualCameraBase vcam5;
 
-    //フレームのゲームオブジェクト
+    /// <summary>
+    /// フレームのゲームオブジェクト
+    /// </summary>
     public GameObject Frame1;
     public GameObject Frame2;
     public GameObject Frame3;
     public GameObject Frame4;
 
-    //ボタンのゲームオブジェクト
+    /// <summary>
+    /// ボタンのゲームオブジェクト
+    /// </summary>
     GameObject moveButton;
     GameObject brewingButton;
 

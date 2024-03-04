@@ -1,14 +1,21 @@
 //
 // プレイヤーコントロールスクリプト
 // Name:西浦晃太 Date:2/8
-// Update:02/29
+// Update:03/02
 //
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class UnitController : MonoBehaviour
 {
-    //プレーヤーのタイプ
+    /// <summary>
+    /// ポーション投擲範囲用ゲームオブジェクト
+    /// </summary>
+    [SerializeField] GameObject colliderObj;
+
+    /// <summary>
+    /// プレーヤーのタイプ
+    /// </summary>
     public const int TYPE_RED = 1;
     public const int TYPE_BLUE = 2;
     public const int TYPE_YELLOW = 3;
@@ -16,10 +23,15 @@ public class UnitController : MonoBehaviour
 
     const float SELECT_POS_Y = 2;
 
-    //どちらのプレイヤーか
+    /// <summary>
+    /// どちらのプレイヤーか
+    /// </summary>
     public int PlayerNo;
     public int Type;
 
+    /// <summary>
+    /// アニメータ
+    /// </summary>
     public Animator animator;
 
     private void Start()
@@ -27,15 +39,38 @@ public class UnitController : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
+    /// <summary>
+    /// 移動範囲表示関数
+    /// </summary>
     void OnColliderEnable()
     {
         GetComponent<BoxCollider>().center = new Vector3(0f, -2f, 0f);
         GetComponent<BoxCollider>().enabled = true;
     }
 
+    /// <summary>
+    /// 投擲範囲表示関数
+    /// </summary>
+    public void OnThrowColliderEnable()
+    {
+        colliderObj.GetComponent<BoxCollider>().center = new Vector3(0f, 0f, 0f);
+        colliderObj.GetComponent<BoxCollider>().enabled = true;
+    }
+
+    /// <summary>
+    /// 移動範囲非表示関数
+    /// </summary>
     public void OffColliderEnable()
     {
         GetComponent<BoxCollider>().center = new Vector3(0f, 100f,0f);
+    }
+
+    /// <summary>
+    /// 投擲範囲非表示関数
+    /// </summary>
+    public void OffThrowColliderEnable()
+    {
+        colliderObj.GetComponent<BoxCollider>().center = new Vector3(0f, 100f, 0f);
     }
 
     /// <summary>
@@ -48,6 +83,21 @@ public class UnitController : MonoBehaviour
         float ret = 0;
         Vector3 pos = new Vector3(transform.position.x, SELECT_POS_Y, transform.position.z);
         OnColliderEnable();
+
+        if (!select)
+        {
+            pos = new Vector3(transform.position.x, 0.1f, transform.position.z);
+        }
+
+        transform.position = pos;
+        return ret;
+    }
+
+    public float ThrowSelect(bool select =true)
+    {
+        float ret = 0;
+        Vector3 pos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        OnThrowColliderEnable();
 
         if (!select)
         {

@@ -11,10 +11,12 @@ public class FootPrintsAnimation : MonoBehaviour
 {
     public GameObject leftFootPrint;        //左足
     public GameObject rightFootPrint;       //右足
+    bool isMove;                            //動いたかどうか判別する変数
 
     // Start is called before the first frame update
     void Start()
     {
+        isMove = false;
         //0.7秒間隔で呼ばれ続ける
         InvokeRepeating("Animation",1.0f,0.7f);
     }
@@ -28,15 +30,19 @@ public class FootPrintsAnimation : MonoBehaviour
     //アニメーション処理
     void Animation()
     {
-        if(leftFootPrint.activeSelf)
-        {//左足が表示されているとき
-            leftFootPrint.SetActive(false);
-            rightFootPrint.SetActive(true);
+        if (isMove)
+        {
+            leftFootPrint.transform.position = new Vector3(-0.2f, 1.2f, -1);
+            rightFootPrint.transform.position = new Vector3(0.2f, 0.7f, -1);
+
+            isMove = false;
         }
         else
         {
-            leftFootPrint.SetActive(true);
-            rightFootPrint.SetActive(false);
+            leftFootPrint.transform.position = new Vector3(-0.3f, 0.9f, -1);
+            rightFootPrint.transform.position = new Vector3(0.3f, 1.12f, -1);
+
+            isMove = true;
         }
     }
 }

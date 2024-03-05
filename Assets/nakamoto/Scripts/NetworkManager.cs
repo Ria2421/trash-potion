@@ -53,7 +53,19 @@ public class NetworkManager : MonoBehaviour
     /// 自分のプレイヤー番号
     /// </summary>
     public static int MyNo
+    {  get; set; }          // 本稼働時は{ get; private set; }
+
+    /// <summary>
+    /// マップデータ
+    /// </summary>
+    public static int[,] InitTileData
     {  get; private set; }
+
+    /// <summary>
+    /// ユニット配置データ
+    /// </summary>
+    public static int[,] InitUnitData
+    { get; private set; }
 
     /// <summary>
     /// マッチング中テキスト
@@ -217,7 +229,8 @@ public class NetworkManager : MonoBehaviour
             {
                 switch (eventID)
                 {
-                    case (int)EventID.UserData: // 各PLの名前表示処理
+                    case (int)EventID.UserData: 
+                        // 各PLの名前表示処理
 
                         // Jsonデシリアライズ
                         UserData userData = JsonConvert.DeserializeObject<UserData>(jsonString);
@@ -227,7 +240,8 @@ public class NetworkManager : MonoBehaviour
 
                         break;
 
-                    case (int)EventID.CompleteFlag: // 各PLの準備完了表示処理
+                    case (int)EventID.CompleteFlag: 
+                        // 各PLの準備完了表示処理
 
                         // Jsonデシリアライズ
                         userData = JsonConvert.DeserializeObject<UserData>(jsonString);
@@ -237,12 +251,24 @@ public class NetworkManager : MonoBehaviour
 
                         break;
 
-                    case (int)EventID.InSelectFlag: // 選択画面遷移処理
+                    case (int)EventID.InSelectFlag: 
+                        // 選択画面遷移処理
+
                         NextScene("ModeSelection");
                         break;
 
-                    case (int)EventID.InGameFlag: // ゲーム画面遷移処理
-                        NextScene("IGC");
+                    case (int)EventID.InGameFlag: 
+                        // ゲーム画面遷移処理
+
+                        // Jsonデシリアライズ
+                        List<int[,]> mapDatas = JsonConvert.DeserializeObject<List<int[,]>>(jsonString);
+
+                        // 受信マップデータを格納
+                        InitTileData = mapDatas[0];
+                        InitUnitData = mapDatas[1];
+
+                        // ゲームシーンに遷移
+                        Invoke("InGameScene", 1.5f);
                         break;
 
                     default: 
@@ -316,5 +342,13 @@ public class NetworkManager : MonoBehaviour
             ( "シーン名",フェードの色, 速さ);  */
         Initiate.DoneFading();
         Initiate.Fade(sceneName, Color.black, 1.5f);
+    }
+
+    private void InGameScene()
+    {
+        /* フェード処理 (黒)  
+            ( "シーン名",フェードの色, 速さ);  */
+        Initiate.DoneFading();
+        Initiate.Fade("IGCcopy", Color.black, 1.5f);
     }
 }

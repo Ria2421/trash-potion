@@ -40,7 +40,7 @@ IPointerEnterHandler,
     // Update is called once per frame
     void Update()
     {
-        ButtonPushSE();
+        //ButtonPushSE();
     }
 
     /// <summary>
@@ -60,23 +60,5 @@ IPointerEnterHandler,
     {
         if (!button.interactable) { return; }
         transform.DOScale(1f, 0.24f).SetEase(Ease.OutCubic).SetLink(gameObject);
-    }
-
-    //ボタンを押した時
-    async void ButtonPushSE()
-    {
-        if(Input.GetMouseButtonDown(0))
-        {
-            // 送信処理
-            string json = "1";
-            byte[] buffer = Encoding.UTF8.GetBytes(json);                      // JSONをbyteに変換
-            buffer = buffer.Prepend((byte)EventID.InGameFlag).ToArray();       // 送信データの先頭にイベントIDを付与
-            NetworkStream stream = NetworkManager.MyTcpClient.GetStream();
-            await stream.WriteAsync(buffer, 0, buffer.Length);                 // JSON送信処理
-#if DEBUG
-            Debug.Log("インゲーム送信");
-#endif
-        }
-    }
-        
+    }        
 }

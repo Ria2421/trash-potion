@@ -3,16 +3,12 @@
 // Name:西浦晃太 Date:02/07
 // Update:03/01
 //
-using System;
 using System.Collections.Generic;
-using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
-using static System.Net.Mime.MediaTypeNames;
 
-public class GameDirector : MonoBehaviour
+public class GameDirectorCopy : MonoBehaviour
 {
     /// <summary>
     /// タイル配置設定
@@ -155,6 +151,21 @@ public class GameDirector : MonoBehaviour
         get { return isMoved; }
     }
 
+    //+++++++++++++++++++++++++++++++++++++++++
+    // 生成ボタンオブジェクト
+    //+++++++++++++++++++++++++++++++++++++++++
+    [SerializeField] GameObject[] brewingButton; 
+
+    //+++++++++++++++++++++++++++++++++++++++++
+    // ターン表示テキスト
+    //+++++++++++++++++++++++++++++++++++++++++
+    [SerializeField] GameObject turnText;
+
+    //+++++++++++++++++++++++++++++++++++++++++
+    // PLNo決め打ち用
+    //+++++++++++++++++++++++++++++++++++++++++
+    [SerializeField] int plNo;
+
     ///========================================
     ///
     /// メソッド
@@ -166,6 +177,16 @@ public class GameDirector : MonoBehaviour
     /// </summary>
     void Start()
     {
+        //++++++++++++++++++++++++++++++++++++++
+        // 仮PLNoの代入
+        //++++++++++++++++++++++++++++++++++++++
+        NetworkManager.MyNo = plNo;
+
+        //++++++++++++++++++++++++++++++++++++++
+        // 該当PLNoの生成ボタンを表示
+        //++++++++++++++++++++++++++++++++++++++
+        brewingButton[NetworkManager.MyNo - 1].SetActive(true);
+
         for (int i = 0; i < player.Length; i++)
         { //配列分のプレイヤーの構造体を生成
             player[i] = new Player();
@@ -223,7 +244,6 @@ public class GameDirector : MonoBehaviour
                 //プレイヤー毎設定
                 Vector3 angle = new Vector3(0, 0, 0);
 
-
                 if (1 == tileData[i, j].pNo)
                 { //1Pユニット配置
                     resname = "Unit1";
@@ -255,7 +275,7 @@ public class GameDirector : MonoBehaviour
 
                 if (null != unit)
                 {
-                    unit.GetComponent<UnitController>().PlayerNo = initUnitData[i, j];
+                    unit.GetComponent<UnitController>().PlayerNo = NetworkManager.InitUnitData[i, j];
                     unit.GetComponent<UnitController>().Type = playerType;
                     unitData[i, j].Add(unit);
                 }
@@ -266,7 +286,9 @@ public class GameDirector : MonoBehaviour
         nextMode = MODE.MOVE_SELECT;
     }
 
-    // Update is called once per frame
+    /// <summary>
+    /// 更新処理
+    /// </summary>
     void Update()
     {
         if (nowPlayerType >= 4)
@@ -331,53 +353,89 @@ public class GameDirector : MonoBehaviour
     /// </summary>
     void SelectMode()
     {
-        if (player[nowPlayerType].PlayerState == PLAYERSTATE.FROZEN_STATE || player[nowPlayerType].PlayerState == PLAYERSTATE.CURSED_STATE || player[nowPlayerType].IsDead == true)
-        { //凍っていた場合
-            Debug.Log((nowPlayerType + 1) + "Pはうごけない！");
-            nextMode = MODE.FIELD_UPDATE;
-        }
-        else
+        //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        // 現在のPLターン表示
+        turnText.GetComponent<Text>().text = (nowPlayerType + 1).ToString() + "Pのターン";
+        //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+        //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        // 自分のターンのみ行動可能に
+        if (NetworkManager.MyNo == nowPlayerType + 1)
+        //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         {
-            if (Input.GetMouseButtonDown(0))
-            { //クリック時、ユニット選択
-                isMoved = false;
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit hit;
+            if (player[nowPlayerType].PlayerState == PLAYERSTATE.FROZEN_STATE || player[nowPlayerType].PlayerState == PLAYERSTATE.CURSED_STATE || player[nowPlayerType].IsDead == true)
+            { //凍っていた場合
+                Debug.Log((nowPlayerType + 1) + "Pはうごけない！");
+                nextMode = MODE.FIELD_UPDATE;
+            }
+            else
+            {
+                if (Input.GetMouseButtonDown(0))
+                { //クリック時、ユニット選択
+                    isMoved = false;
+                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    RaycastHit hit;
 
-                if (Physics.Raycast(ray, out hit, 100))
-                {
-                    if (null != hit.collider.gameObject)
+                    if (Physics.Raycast(ray, out hit, 100))
                     {
-                        Vector3 pos = hit.collider.gameObject.transform.position;
+                        if (null != hit.collider.gameObject)
+                        {
+                            // マウスでクリックしたタイルのposを取得
+                            Vector3 pos = hit.collider.gameObject.transform.position;
 
-                        int x = (int)(pos.x + (tileData.GetLength(1) / 2 - 0.5f));
-                        int z = (int)(pos.z + (tileData.GetLength(0) / 2 - 0.5f));
+                            // クリックしたタイルの配列番号を計算
+                            int x = (int)(pos.x + (tileData.GetLength(1) / 2 - 0.5f));
+                            int z = (int)(pos.z + (tileData.GetLength(0) / 2 - 0.5f));
 
-                        if (0 < unitData[z, x].Count && player[nowTurn].PlayerNo == unitData[z, x][0].GetComponent<UnitController>().PlayerNo)
-                        { //ユニット選択
-                            if (null != selectUnit)
-                            {
-                                selectUnit.GetComponent<UnitController>().Select(false);
+                            if (0 < unitData[z, x].Count && player[nowTurn].PlayerNo == unitData[z, x][0].GetComponent<UnitController>().PlayerNo)
+                            {   // ユニット選択(選択したマスのユニット数が0以上・現在のPLターンとクリックしたタイルのユニットのPLNoが一致してたら)
+                                
+                                if (null != selectUnit)
+                                {   // 既にユニットを選択していた場合
+                                    selectUnit.GetComponent<UnitController>().Select(false);
+                                }
+
+                                // 選択したユニットのGameObject情報を取得
+                                selectUnit = unitData[z, x][0];
+
+                                // 選択時の座標を保存
+                                oldX = x;
+                                oldY = z;
+
+                                // 選択ユニットを選択状態(持ち上がった状態)に変更
+                                selectUnit.GetComponent<UnitController>().Select();
+
+                                // 現PLターンの「選択した」という情報をサーバーに送る //
                             }
-                            selectUnit = unitData[z, x][0];
-                            oldX = x;
-                            oldY = z;
+                            else if (null != selectUnit)
+                            {   //移動先タイル選択(ユニットが選択されていた場合)
 
-                            selectUnit.GetComponent<UnitController>().Select();
-                        }
-                        else if (null != selectUnit)
-                        { //移動先タイル選択
-                            if (movableTile(oldX, oldY, x, z))
-                            {
-                                isMoved = true;
-                                unitData[oldY, oldX].Clear();
-                                pos.y += 0.1f;
-                                selectUnit.transform.position = pos;
-                                unitData[z, x].Add(selectUnit);
-                                unitData[z, x][0].GetComponent<UnitController>().OffColliderEnable();
-                                nextMode = MODE.FIELD_UPDATE;
+                                if (movableTile(oldX, oldY, x, z))
+                                {   // 移動判定が通った場合
+
+                                    // 現PLターンの「移動した」という情報(移動先のタイル)をサーバーに送る //
+                                    // 全クライアントに移動情報を渡した後に画面に反映させる //
+
+                                    isMoved = true;
+
+                                    // 前回いたタイルの位置のユニットデータを削除
+                                    unitData[oldY, oldX].Clear();
+
+                                    // ユニットを選択したタイルのposに移動
+                                    pos.y += 0.1f;
+                                    selectUnit.transform.position = pos;
+
+                                    // 現在位置のunitDataに移動させたユニットを追加
+                                    unitData[z, x].Add(selectUnit);
+
+                                    // 移動判定コライダーをオフに
+                                    unitData[z, x][0].GetComponent<UnitController>().OffColliderEnable();
+
+                                    // 次のターンへ
+                                    nextMode = MODE.FIELD_UPDATE;
+                                }
+                                Debug.Log("現在のプレイヤー:" + nowPlayerType);
                             }
-                            Debug.Log("現在のプレイヤー:" + nowPlayerType);
                         }
                     }
                 }
@@ -479,7 +537,7 @@ public class GameDirector : MonoBehaviour
     /// <summary>
     /// ターン終了ボタン
     /// </summary>
-    public void TurnEnd()
+    public void TurnEnda()
     {
         nextMode = MODE.MOVE_SELECT;
     }
@@ -489,69 +547,76 @@ public class GameDirector : MonoBehaviour
     /// </summary>
     public void Brewing()
     {
-        int rndPotion = r.Next(4);
-        if (player[nowPlayerType].PlayerState == PLAYERSTATE.PARALYSIS_STATE || player[nowPlayerType].PlayerState == PLAYERSTATE.FROZEN_STATE || player[nowPlayerType].IsDead == true)
-        { //しびれていた場合または凍っていた場合
-            Debug.Log((nowPlayerType + 1) + "Pはしびれている。ポーションが作れない！");
-        }
-        else
+        //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        // 自分のターン以外生成可能に
+        if (NetworkManager.MyNo != nowPlayerType + 1)
+        //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         {
-            if (player[nowPlayerType].OwnedPotionList?.Count >= 4)
-            { //枠が埋まっていた場合
-                Debug.Log((nowPlayerType + 1) + "Pのポーション枠は満杯だ！！");
+            int rndPotion = r.Next(4);
+            if (player[nowPlayerType].PlayerState == PLAYERSTATE.PARALYSIS_STATE || player[nowPlayerType].PlayerState == PLAYERSTATE.FROZEN_STATE || player[nowPlayerType].IsDead == true)
+            { //しびれていた場合または凍っていた場合
+                Debug.Log((nowPlayerType + 1) + "Pはしびれている。ポーションが作れない！");
             }
             else
             {
-                if (rndPotion == 0)
-                { //枠1
-                    if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.BOMB))
-                    { //すでに同じポーションを所持していた場合
-                        Debug.Log((nowPlayerType + 1) + "Pのボムすでにあるよ");
-                    }
-                    else
-                    {
-                        BoomPotion[nowPlayerType].SetActive(true);
-                        player[nowPlayerType].OwnedPotionList.Add(TYPE.BOMB);
-                    }
+                if (player[nowPlayerType].OwnedPotionList?.Count >= 4)
+                { //枠が埋まっていた場合
+                    Debug.Log((nowPlayerType + 1) + "Pのポーション枠は満杯だ！！");
                 }
-                else if (rndPotion == 1)
-                { //枠２
-                    if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.REFRESH))
-                    { //すでに同じポーションを所持していた場合
-                        Debug.Log((nowPlayerType + 1) + "Pのバフすでにあるよ");
+                else
+                {
+                    if (rndPotion == 0)
+                    { //枠1
+                        if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.BOMB))
+                        { //すでに同じポーションを所持していた場合
+                            Debug.Log((nowPlayerType + 1) + "Pのボムすでにあるよ");
+                        }
+                        else
+                        {
+                            BoomPotion[nowPlayerType].SetActive(true);
+                            player[nowPlayerType].OwnedPotionList.Add(TYPE.BOMB);
+                        }
                     }
-                    else
-                    {
-                        BuffPotion[nowPlayerType].SetActive(true);
-                        player[nowPlayerType].OwnedPotionList.Add(TYPE.REFRESH);
+                    else if (rndPotion == 1)
+                    { //枠２
+                        if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.REFRESH))
+                        { //すでに同じポーションを所持していた場合
+                            Debug.Log((nowPlayerType + 1) + "Pのバフすでにあるよ");
+                        }
+                        else
+                        {
+                            BuffPotion[nowPlayerType].SetActive(true);
+                            player[nowPlayerType].OwnedPotionList.Add(TYPE.REFRESH);
+                        }
                     }
-                }
-                else if (rndPotion == 2)
-                { //枠３
-                    if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.CURSE))
-                    { //すでに同じポーションを所持していた場合
-                        Debug.Log((nowPlayerType + 1) + "Pの呪すでにあるよ");
+                    else if (rndPotion == 2)
+                    { //枠３
+                        if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.CURSE))
+                        { //すでに同じポーションを所持していた場合
+                            Debug.Log((nowPlayerType + 1) + "Pの呪すでにあるよ");
+                        }
+                        else
+                        {
+                            DebuffPotion[nowPlayerType].SetActive(true);
+                            player[nowPlayerType].OwnedPotionList.Add(TYPE.CURSE);
+                        }
                     }
-                    else
-                    {
-                        DebuffPotion[nowPlayerType].SetActive(true);
-                        player[nowPlayerType].OwnedPotionList.Add(TYPE.CURSE);
-                    }
-                }
-                else if (rndPotion == 3)
-                { //枠４
-                    if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.NORMAL))
-                    { //すでに同じポーションを所持していた場合
-                        Debug.Log((nowPlayerType + 1) + "Pのノーマルすでにあるよ");
-                    }
-                    else
-                    {
-                        Potion[nowPlayerType].SetActive(true);
-                        player[nowPlayerType].OwnedPotionList.Add(TYPE.NORMAL);
+                    else if (rndPotion == 3)
+                    { //枠４
+                        if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.NORMAL))
+                        { //すでに同じポーションを所持していた場合
+                            Debug.Log((nowPlayerType + 1) + "Pのノーマルすでにあるよ");
+                        }
+                        else
+                        {
+                            Potion[nowPlayerType].SetActive(true);
+                            player[nowPlayerType].OwnedPotionList.Add(TYPE.NORMAL);
+                        }
                     }
                 }
             }
         }
+        
         //nextMode = MODE.FIELD_UPDATE;
     }
 

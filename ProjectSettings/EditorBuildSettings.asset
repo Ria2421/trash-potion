@@ -15,9 +15,15 @@ EditorBuildSettings:
     path: Assets/takamiya/Cenes/ModeSelection.unity
     guid: 316a63777e5129e4180506090673bb4a
   - enabled: 1
+    path: Assets/nakamoto/Scenes/Copy/IGCcopy.unity
+    guid: 240e2ee8f5fc6ff4087f8c28bf49deab
+  - enabled: 1
+    path: Assets/nakamoto/Scenes/Copy/UIcopy.unity
+    guid: 993b1f2e7779cc947b7f53b4a28c334d
+  - enabled: 0
     path: Assets/Nishiura/Scenes/IGC.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
-  - enabled: 1
+  - enabled: 0
     path: Assets/Nishiura/Scenes/UIScene.unity
     guid: b691c3a02ec69e54aaa05ce4f6b8631f
   m_configObjects: {}

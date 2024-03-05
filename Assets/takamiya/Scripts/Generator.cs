@@ -6,6 +6,9 @@
 //=======================================================
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Sockets;
+using System.Text;
 using UnityEngine;
 
 public class Generator : MonoBehaviour
@@ -64,5 +67,21 @@ public class Generator : MonoBehaviour
             // 一定時間後にポーションの破棄
             Destroy(potion, 8f);
         }
+    }
+
+    /// <summary>
+    /// ボタンを押した時
+    /// </summary>
+    public async void ButtonPushSE()
+    {
+        // 送信処理
+        string json = "1";
+        byte[] buffer = Encoding.UTF8.GetBytes(json);                      // JSONをbyteに変換
+        buffer = buffer.Prepend((byte)EventID.InGameFlag).ToArray();       // 送信データの先頭にイベントIDを付与
+        NetworkStream stream = NetworkManager.MyTcpClient.GetStream();
+        await stream.WriteAsync(buffer, 0, buffer.Length);                 // JSON送信処理
+#if DEBUG
+        Debug.Log("インゲーム送信");
+#endif
     }
 }

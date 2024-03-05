@@ -7,6 +7,7 @@ using DG.Tweening;
 public class RankDoScal : MonoBehaviour
 {
     
+    
     // Start is called before the first frame update
     void Start()
     {

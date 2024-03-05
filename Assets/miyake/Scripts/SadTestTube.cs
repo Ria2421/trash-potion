@@ -11,25 +11,36 @@ using UnityEngine.UI;
 public class SadTestTube : MonoBehaviour
 {
     public Slider slider;
+    public Text timerText;
     private bool isClicked;
+    bool endCountDown;
 
     void Start()
     {
         slider.value = 94;
         isClicked = false;
+        endCountDown = false;
     }
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (timerText.text == "GO!!")
         {
-            isClicked = true;
+            endCountDown = true;
         }
 
-        //クリックされていなければ実行
-        if (!isClicked)
+        if (endCountDown)
         {
-            slider.value -= 0.2f;
+            if (Input.GetMouseButtonDown(0))
+            {
+                isClicked = true;
+            }
+
+            //クリックされていなければ実行
+            if (!isClicked)
+            {
+                slider.value -= 0.2f;
+            }
         }
     }
 }

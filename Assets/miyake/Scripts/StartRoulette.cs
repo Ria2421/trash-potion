@@ -6,17 +6,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StartRoulette : MonoBehaviour
 {
+    public Text timerText;
     float randAngle = 0;        //ƒ‰ƒ“ƒ_ƒ€‚Å‰ñ“]‚·‚éŠp“x‚Ì•Ï”
+    bool endCountDown;
 
     // Start is called before the first frame update
     void Start()
     {
-        randAngle = Random.Range(-180, 180);
+        endCountDown = false;
 
-        transform.eulerAngles = new Vector3(0, 0, randAngle);
+        if (timerText.text == "GO!!")
+        {
+            endCountDown = true;
+        }
+
+        if (endCountDown)
+        {
+            randAngle = Random.Range(-180, 180);
+
+            transform.eulerAngles = new Vector3(0, 0, randAngle);
+        }
     }
 
     // Update is called once per frame

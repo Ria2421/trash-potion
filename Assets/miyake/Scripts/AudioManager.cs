@@ -1,3 +1,8 @@
+//==============================================
+//Autor:O‘î•àl
+//Day:3/5
+//BGMˆ—
+//==============================================
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

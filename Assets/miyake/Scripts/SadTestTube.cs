@@ -10,26 +10,38 @@ using UnityEngine.UI;
 
 public class SadTestTube : MonoBehaviour
 {
+    [SerializeField] float speed;
     public Slider slider;
+    public Text timerText;
     private bool isClicked;
+    bool endCountDown;
 
     void Start()
     {
         slider.value = 94;
         isClicked = false;
+        endCountDown = false;
     }
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (timerText.text == "GO!!")
         {
-            isClicked = true;
+            endCountDown = true;
         }
 
-        //クリックされていなければ実行
-        if (!isClicked)
+        if (endCountDown)
         {
-            slider.value -= 0.2f;
+            if (Input.GetMouseButtonUp(0))
+            {
+                isClicked = true;
+            }
+
+            //クリックされていなければ実行
+            if (Input.GetMouseButton(0))
+            {
+                slider.value -= speed;
+            }
         }
     }
 }

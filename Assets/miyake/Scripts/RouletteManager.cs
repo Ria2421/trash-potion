@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RouletteManager : MonoBehaviour
 {
@@ -15,25 +16,35 @@ public class RouletteManager : MonoBehaviour
     public GameObject good;
     public GameObject bad;
     public GameObject roulette;            //ルーレット本体
+    public Text timerText;
     float angle = 0;                       //回転の角度の変数
+    bool endCountDown;
 
     // Start is called before the first frame update
     void Start()
     {
         //フレームレートを60に固定
         Application.targetFrameRate = 60;
+        endCountDown = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //ルーレットを回転
-        transform.Rotate(0, 0, rouletteSpeed);
+        if (timerText.text == "GO!!")
+        {
+            endCountDown = true;
+        }
+        if (endCountDown) 
+        { 
+            //ルーレットを回転
+            transform.Rotate(0, 0, rouletteSpeed);
 
-        if (Input.GetMouseButtonDown(0))
-        {//左クリックされたら
-            rouletteSpeed = 0;
-            Judge();
+            if (Input.GetMouseButtonDown(0))
+            {//左クリックされたら
+                rouletteSpeed = 0;
+                Judge();
+            }
         }
     }
 

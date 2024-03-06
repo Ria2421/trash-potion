@@ -3,7 +3,7 @@
 // ネットワークマネージャー [NetworkManager.cs ]
 // Author:Kenta Nakamoto
 // Data:2024/02/08
-// Update:2024/02/28
+// Update:2024/03/06
 //
 //---------------------------------------------------------------
 using System.Collections;
@@ -117,6 +117,11 @@ public class NetworkManager : MonoBehaviour
     /// </summary>
     SynchronizationContext context;
 
+    /// <summary>
+    /// ゲームディレクター格納用
+    /// </summary>
+    GameDirectorCopy directorCopy;
+
     //------------------------------------------------------------------------------
     // メソッド ------------------------------------------
 
@@ -157,7 +162,7 @@ public class NetworkManager : MonoBehaviour
 
             // サーバーからPL番号を受信待機
             byte[] recvBuffer = new byte[dataSize];                                    // 送受信データ格納用
-            stream = MyTcpClient.GetStream();                                            // クライアントのデータ送受信に使うNetworkStreamを取得
+            stream = MyTcpClient.GetStream();                                          // クライアントのデータ送受信に使うNetworkStreamを取得
             int length = await stream.ReadAsync(recvBuffer, 0, recvBuffer.Length);     // 受信データのバイト数を取得
 
             // 受信データからイベントIDを取り出す
@@ -271,6 +276,34 @@ public class NetworkManager : MonoBehaviour
                         Invoke("InGameScene", 1.5f);
                         break;
 
+                    case (int)EventID.SelectUnit:
+                        // 現在ターンのユニットを選択状態へ
+
+                        // 受信データをJsonデシリアライズ
+                        SelectData selectData = JsonConvert.DeserializeObject<SelectData>(jsonString);
+
+                        //- 指定タイルに居るユニットを選択状態へ -//
+
+                        // 関数呼び出しの為、コンポーネントの取得
+                        directorCopy = GameObject.Find("GameDirector").GetComponent<GameDirectorCopy>();
+                        // 指定タイルのユニット選択処理
+                        directorCopy.SelectUnit(selectData.z, selectData.x);
+
+                        break;
+
+                    case (int)EventID.MoveUnit:
+                        // 現在ターンのユニットの移動処理
+
+                        // 受信データをJsonデシリアライズ
+                        MoveData moveData = JsonConvert.DeserializeObject<MoveData>(jsonString);
+
+                        Vector3 pos = new Vector3(moveData.posX,0,moveData.posZ);
+
+                        // 指定タイルへ現在ターンのPLオブジェクトを移動
+                        directorCopy.MoveUnit(moveData.z, moveData.x, pos);
+
+                        break;
+
                     default: 
                         break;
                 }
@@ -330,6 +363,58 @@ public class NetworkManager : MonoBehaviour
         // 送信待機文字表示
         Debug.Log("準備完了送信");
 #endif
+    }
+
+    /// <summary>
+    /// 選択したタイル座標送信処理
+    /// </summary>
+    /// <param name="z"> z座標 </param>
+    /// <param name="x"> x座標 </param>
+    public async void SendSelectUnit(int z,int x,int eventID)
+    {
+        // 送信用ユーザーデータの作成
+        SelectData selectData = new SelectData();
+        // 座標の代入
+        selectData.plNo = MyNo; // 自分のPLNo
+        selectData.z = z;       // 現在のタイル座標(z軸)
+        selectData.x = x;       // 現在のタイル座標(x軸)
+
+        // 送信データをJSONシリアライズ
+        string json = JsonConvert.SerializeObject(selectData);
+
+        // 送信処理
+        byte[] buffer = Encoding.UTF8.GetBytes(json);         // JSONをbyteに変換
+        buffer = buffer.Prepend((byte)eventID).ToArray();     // 送信データの先頭にイベントIDを付与
+        await stream.WriteAsync(buffer, 0, buffer.Length);    // JSON送信処理
+    }
+
+
+    /// <summary>
+    /// 選択した移動タイル座標送信処理
+    /// </summary>
+    /// <param name="z">タイル配列番号1</param>
+    /// <param name="x">タイル配列番号2</param>
+    /// <param name="posX">移動先タイルX座標</param>
+    /// <param name="posZ">移動先タイルZ座標</param>
+    /// <param name="eventID">送信データの種類</param>
+    public async void SendMoveUnit(int x, int z, float posX, float posZ, int eventID)
+    {
+        // 送信用ユーザーデータの作成
+        MoveData moveData = new MoveData();
+        // 座標の代入
+        moveData.plNo = MyNo; // 自分のPLNo
+        moveData.z = z;       // 現在のタイル座標(z軸)
+        moveData.x = x;       // 現在のタイル座標(x軸)
+        moveData.posX = posX; // 選択したタイル座標(x軸)
+        moveData.posZ = posZ; // 選択したタイル座標(z軸)
+
+        // 送信データをJSONシリアライズ
+        string json = JsonConvert.SerializeObject(moveData);
+
+        // 送信処理
+        byte[] buffer = Encoding.UTF8.GetBytes(json);         // JSONをbyteに変換
+        buffer = buffer.Prepend((byte)eventID).ToArray();     // 送信データの先頭にイベントIDを付与
+        await stream.WriteAsync(buffer, 0, buffer.Length);    // JSON送信処理
     }
 
     /// <summary>

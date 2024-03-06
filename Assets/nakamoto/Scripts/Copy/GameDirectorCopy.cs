@@ -1,7 +1,7 @@
 //
 // ゲームディレクタースクリプト
 // Name:西浦晃太 Date:02/07
-// Update:03/01
+// Update:03/06
 //
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -166,6 +166,16 @@ public class GameDirectorCopy : MonoBehaviour
     //+++++++++++++++++++++++++++++++++++++++++
     [SerializeField] int plNo;
 
+    //+++++++++++++++++++++++++++++++++++++++++
+    // NetworkManager格納用変数
+    //+++++++++++++++++++++++++++++++++++++++++
+    NetworkManager networkManager;
+
+    //+++++++++++++++++++++++++++++++++++++++++
+    // 指定タイルのpos格納用
+    //+++++++++++++++++++++++++++++++++++++++++
+    Vector3 tilePos;
+
     ///========================================
     ///
     /// メソッド
@@ -180,12 +190,19 @@ public class GameDirectorCopy : MonoBehaviour
         //++++++++++++++++++++++++++++++++++++++
         // 仮PLNoの代入
         //++++++++++++++++++++++++++++++++++++++
+#if DEBUG
         NetworkManager.MyNo = plNo;
+#endif
 
         //++++++++++++++++++++++++++++++++++++++
         // 該当PLNoの生成ボタンを表示
         //++++++++++++++++++++++++++++++++++++++
         brewingButton[NetworkManager.MyNo - 1].SetActive(true);
+
+        //++++++++++++++++++++++++++++++++++++++
+        // NetworkManagerを取得
+        //++++++++++++++++++++++++++++++++++++++
+        networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
 
         for (int i = 0; i < player.Length; i++)
         { //配列分のプレイヤーの構造体を生成
@@ -381,31 +398,41 @@ public class GameDirectorCopy : MonoBehaviour
                         if (null != hit.collider.gameObject)
                         {
                             // マウスでクリックしたタイルのposを取得
-                            Vector3 pos = hit.collider.gameObject.transform.position;
+                            tilePos = hit.collider.gameObject.transform.position;
 
                             // クリックしたタイルの配列番号を計算
-                            int x = (int)(pos.x + (tileData.GetLength(1) / 2 - 0.5f));
-                            int z = (int)(pos.z + (tileData.GetLength(0) / 2 - 0.5f));
+                            int x = (int)(tilePos.x + (tileData.GetLength(1) / 2 - 0.5f));
+                            int z = (int)(tilePos.z + (tileData.GetLength(0) / 2 - 0.5f));
 
                             if (0 < unitData[z, x].Count && player[nowTurn].PlayerNo == unitData[z, x][0].GetComponent<UnitController>().PlayerNo)
                             {   // ユニット選択(選択したマスのユニット数が0以上・現在のPLターンとクリックしたタイルのユニットのPLNoが一致してたら)
-                                
+
                                 if (null != selectUnit)
                                 {   // 既にユニットを選択していた場合
                                     selectUnit.GetComponent<UnitController>().Select(false);
                                 }
 
-                                // 選択したユニットのGameObject情報を取得
-                                selectUnit = unitData[z, x][0];
+                                //----------------------------------------------------
 
-                                // 選択時の座標を保存
-                                oldX = x;
-                                oldY = z;
+                                //// 選択したユニットのGameObject情報を取得
+                                //selectUnit = unitData[z, x][0];
 
-                                // 選択ユニットを選択状態(持ち上がった状態)に変更
-                                selectUnit.GetComponent<UnitController>().Select();
+                                //// 選択時の座標を保存
+                                //oldX = x;
+                                //oldY = z;
 
+                                //// 選択ユニットを選択状態(持ち上がった状態)に変更
+                                //selectUnit.GetComponent<UnitController>().Select();
+
+                                //-----------------------------------------------------
+
+                                //++++++++++++++++++++++++++++++++++++++++++++++++++++//
                                 // 現PLターンの「選択した」という情報をサーバーに送る //
+                                //++++++++++++++++++++++++++++++++++++++++++++++++++++//
+                                networkManager.SendSelectUnit(z, x,(int)EventID.SelectUnit);
+#if DEBUG
+                                Debug.Log("選択情報送信完了");
+#endif
                             }
                             else if (null != selectUnit)
                             {   //移動先タイル選択(ユニットが選択されていた場合)
@@ -415,26 +442,12 @@ public class GameDirectorCopy : MonoBehaviour
 
                                     // 現PLターンの「移動した」という情報(移動先のタイル)をサーバーに送る //
                                     // 全クライアントに移動情報を渡した後に画面に反映させる //
-
-                                    isMoved = true;
-
-                                    // 前回いたタイルの位置のユニットデータを削除
-                                    unitData[oldY, oldX].Clear();
-
-                                    // ユニットを選択したタイルのposに移動
-                                    pos.y += 0.1f;
-                                    selectUnit.transform.position = pos;
-
-                                    // 現在位置のunitDataに移動させたユニットを追加
-                                    unitData[z, x].Add(selectUnit);
-
-                                    // 移動判定コライダーをオフに
-                                    unitData[z, x][0].GetComponent<UnitController>().OffColliderEnable();
-
-                                    // 次のターンへ
-                                    nextMode = MODE.FIELD_UPDATE;
+                                    networkManager.SendMoveUnit(x, z, tilePos.x, tilePos.z, (int)EventID.MoveUnit);
+#if DEBUG
+                                    Debug.Log("移動情報送信完了");
+#endif
                                 }
-                                Debug.Log("現在のプレイヤー:" + nowPlayerType);
+                                Debug.Log("現在のプレイヤー:" + (nowPlayerType + 1));
                             }
                         }
                     }
@@ -442,6 +455,54 @@ public class GameDirectorCopy : MonoBehaviour
             }
         }
     }
+
+    // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    /// <summary>
+    /// 引数座標のタイルに居るユニットを選択状態にする処理
+    /// </summary>
+    /// <param name="z"> タイルのz座標 </param>
+    /// <param name="x"> タイルのx座標 </param>
+    public void SelectUnit(int z, int x)
+    {
+        // 選択したユニットのGameObject情報を取得
+        selectUnit = unitData[z, x][0];
+
+        // 選択時の座標を保存
+        oldX = x;
+        oldY = z;
+
+        // 選択ユニットを選択状態(持ち上がった状態)に変更
+        selectUnit.GetComponent<UnitController>().Select();
+    }
+    // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    /// <summary>
+    /// 引数座標のタイルに選択されたユニットを移動する処理
+    /// </summary>
+    /// <param name="z"></param>
+    /// <param name="x"></param>
+    public void MoveUnit(int z,int x, Vector3 pos)
+    {
+        isMoved = true;
+
+        // 前回いたタイルの位置のユニットデータを削除
+        unitData[oldY, oldX].Clear();
+
+        // ユニットを選択したタイルのposに移動
+        pos.y += 0.1f;
+        selectUnit.transform.position = pos;
+
+        // 現在位置のunitDataに移動させたユニットを追加
+        unitData[z, x].Add(selectUnit);
+
+        // 移動判定コライダーをオフに
+        unitData[z, x][0].GetComponent<UnitController>().OffColliderEnable();
+
+        // 次のターンへ
+        nextMode = MODE.FIELD_UPDATE;
+    }
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     void FieldUpdateMode()
     {

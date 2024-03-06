@@ -10,48 +10,59 @@ using UnityEngine.UI;
 
 public class TestTubeManager : MonoBehaviour
 {
+    [SerializeField] float speed;
     public GameObject good;
     public GameObject veryGood;
     public GameObject Bad;
     public Slider slider;
+    public Text timerText;
     private bool maxValue;
-    private bool isClicked;
+    bool endCountDown;
 
     void Start()
     {
         slider.value = 0;
-        isClicked = false;
+        endCountDown = false;
     }
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (timerText.text == "GO!!")
         {
-            isClicked = true;
-
-            if (slider.value >= 94)
-            {
-                Bad.SetActive(true);
-            }
-            else if (slider.value >= 68 && slider.value < 84)
-            {
-                good.SetActive(true);
-            }
-            else if(slider.value >= 84 && slider.value < 94)
-            {
-                veryGood.SetActive(true);
-            }
+            endCountDown = true;
         }
 
-        //クリックされていなければ実行
-        if (!isClicked)
+        if (endCountDown)
         {
-            slider.value += 0.2f;
-
-            if (slider.value >= 94)
+            if (Input.GetMouseButtonUp(0))
             {
-                isClicked = true;
-                Bad.SetActive(true);
+                if (slider.value >= 94)
+                {
+                    Bad.SetActive(true);
+                }
+                else if (slider.value >= 68 && slider.value < 84)
+                {
+                    good.SetActive(true);
+                }
+                else if (slider.value >= 84 && slider.value < 94)
+                {
+                    veryGood.SetActive(true);
+                }
+                else if(slider.value < 68)
+                {
+                    Bad.SetActive(true);
+                }
+            }
+
+            //クリックされていなければ実行
+            if (Input.GetMouseButton(0))
+            {
+                slider.value += speed;
+
+                if (slider.value >= 94)
+                {
+                    Bad.SetActive(true);
+                }
             }
         }
     }

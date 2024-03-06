@@ -1,7 +1,7 @@
 //
 // ƒJƒƒ‰‘JˆÚƒXƒNƒŠƒvƒg
 // Name:¼‰YW‘¾ Date:2/15
-// Update:02/29
+// Update:03/05
 //
 using UnityEngine;
 using UnityEngine.UI;
@@ -36,7 +36,6 @@ public class MoveCameraManager : MonoBehaviour
     [SerializeField] Text turnCnt;
     int cameraShift = 0;
     bool upCamera = false;
-    int moveCnt = 0;
     int turnNum = 1;
 
     // Start is called before the first frame update

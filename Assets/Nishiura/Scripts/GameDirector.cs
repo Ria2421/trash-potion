@@ -1,7 +1,7 @@
 //
 // ゲームディレクタースクリプト
 // Name:西浦晃太 Date:02/07
-// Update:03/01
+// Update:03/05
 //
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
-using static System.Net.Mime.MediaTypeNames;
 using static UnityEditor.PlayerSettings;
 
 public class GameDirector : MonoBehaviour
@@ -104,9 +103,24 @@ public class GameDirector : MonoBehaviour
     bool isMoved = false;
 
     /// <summary>
+    /// 死亡人数加算変数
+    /// </summary>
+    int deadCnt;
+
+    /// <summary>
     /// プレイヤータイプ
     /// </summary>
     int playerType = UnitController.TYPE_RED;
+
+    /// <summary>
+    /// ひとつ前のプレイヤータイプ
+    /// </summary>
+    int oldType;
+
+    /// <summary>
+    /// 死亡するプレイヤータイプ
+    /// </summary>
+    int[] type = { 2 };
 
     /// <summary>
     /// 現在のターンのプレイヤータイプ
@@ -147,13 +161,34 @@ public class GameDirector : MonoBehaviour
     [SerializeField] GameObject[] Potion;
 
     /// <summary>
+    /// ゲーム終了テキスト
+    /// </summary>
+    [SerializeField] Text GameEndTXT;
+
+    /// <summary>
     /// (仮)ポーションランダム生成変数
     /// </summary>
     System.Random r = new System.Random();
 
+    /// <summary>
+    /// ポーション爆発クラス
+    /// </summary>
+    PotionBoom potionBoom;
+
+    /// <summary>
+    /// 移動判定のプロパティ
+    /// </summary>
     public bool IsMoved
-    { //移動判定のプロパティ
+    { 
         get { return isMoved; }
+    }
+
+    /// <summary>
+    /// 現在プレイヤーのターン変数のプロパティ
+    /// </summary>
+    public int NowPlayerType
+    {
+        get { return nowPlayerType; }
     }
 
     ///========================================
@@ -167,9 +202,17 @@ public class GameDirector : MonoBehaviour
     /// </summary>
     void Start()
     {
+        deadCnt = 0;
+
         for (int i = 0; i < player.Length; i++)
         { //配列分のプレイヤーの構造体を生成
-            player[i] = new Player();
+            player[i] = new Player();      
+        }
+
+        for (int i = 0; i < player.Length; i++)
+        { //各変数を初期化
+            player[i].IsThrowed= false;
+            player[i].TurnClock = 0;
         }
 
         for (int i = 0; i < player.Length; i++)
@@ -224,7 +267,6 @@ public class GameDirector : MonoBehaviour
                 //プレイヤー毎設定
                 Vector3 angle = new Vector3(0, 0, 0);
 
-
                 if (1 == tileData[i, j].pNo)
                 { //1Pユニット配置
                     resname = "Unit1";
@@ -270,11 +312,40 @@ public class GameDirector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (deadCnt >= 3)
+        {
+            GameEnd();
+        }
+
         if (nowPlayerType >= 4)
         {
             nowPlayerType = 0;
         }
 
+        oldType = nowPlayerType - 1;
+
+        if (oldType == -1)
+        {
+            oldType = 3;
+        }
+
+        if (oldType >= 4)
+        {
+            oldType = 0;
+        }
+
+        if (player[oldType].TurnClock >= 5)
+        {
+            potionBoom.BoomPotion(type);
+        }
+
+        for (int i = 0; i < player.Length; i++)
+        {
+            if (player[i].TurnClock >= 6)
+            {
+                player[i].TurnClock = 0;
+            }
+        }
         Mode();
 
         if (MODE.NONE != nextMode) InitMode(nextMode);
@@ -298,7 +369,7 @@ public class GameDirector : MonoBehaviour
         {
             TurnChangeMode();
         }
-        else if (MODE.POTION_THROW == nowMode)
+        else if (MODE.POTION_THROW== nowMode)
         {
             ThrowPotion();
         }
@@ -403,6 +474,14 @@ public class GameDirector : MonoBehaviour
         nowTurn = getNextTurn();
 
         nextMode = MODE.MOVE_SELECT;
+
+        if (player[nowPlayerType].IsThrowed)
+        { //投げてからカウント開始
+            for (int i = 0; i < player.Length; i++)
+            {
+                player[nowPlayerType].TurnClock++;
+            }
+        }
 
         nowPlayerType++;
     }
@@ -646,6 +725,7 @@ public class GameDirector : MonoBehaviour
                     { //当該ユニットを殺す
                         Destroy(Unit);
                         player[unitType].IsDead = true;
+                        deadCnt++;
                         return;
                     }
                 }
@@ -760,6 +840,10 @@ public class GameDirector : MonoBehaviour
                     int selectZ = (int)(selectPos.z + (tileData.GetLength(0) / 2 - 0.5f));
 
                     resourcesInstantiate(resname, selectPos, Quaternion.Euler(0,0,0));
+                    unitData[z, x][0].GetComponent<UnitController>().OffThrowColliderEnable();
+                    player[nowPlayerType].IsThrowed= true;
+                    potionBoom = GameObject.FindWithTag("Potion").GetComponent<PotionBoom>();
+                    nextMode = MODE.FIELD_UPDATE;
                 }
             }
         }
@@ -772,22 +856,61 @@ public class GameDirector : MonoBehaviour
     public Vector3 SerchUnit(int unitType)
     {
         GameObject Unit;
-        for (int i = 0; i < unitData.GetLength(0); i++)
+        if (player[nowPlayerType].IsDead)
         {
-            for (int j = 0; j < unitData.GetLength(1); j++)
+            return new Vector3(0, 0, 0);
+        }
+        else
+        {
+            for (int i = 0; i < unitData.GetLength(0); i++)
             {
-                if (unitData[i, j].Count > 0)
+                for (int j = 0; j < unitData.GetLength(1); j++)
                 {
-                    Unit = unitData[i, j][0];
-
-                    if (Unit.GetComponent<UnitController>().Type == unitType)
+                    if (unitData[i, j].Count > 0)
                     {
-                        Vector3 pos = Unit.transform.position;
-                        return pos;
+                        Unit = unitData[i, j][0];
+
+                        if (Unit.GetComponent<UnitController>().Type == unitType)
+                        {
+                            Vector3 pos = Unit.transform.position;
+                            return pos;
+                        }
                     }
                 }
             }
         }
         return new Vector3(0, 0, 0);
+    }
+    /// <summary>
+    /// ゲーム終了関数
+    /// </summary>
+    void GameEnd()
+    {
+        int wonPlayer = 0;  //勝者のプレイヤー番号代入用変数
+        for(int i = 0; i<4; i++)
+        {　//勝者のプレイヤーナンバーを取得
+            if (player[i].IsDead ==false)
+            { //勝ち残ったプレイヤーナンバーを代入
+                wonPlayer = (i + 1);
+            }
+            else
+            { //全員死亡していた場合
+                wonPlayer = 0;
+            }
+        }
+
+        if (wonPlayer == 0)
+        { //全員死亡していた場合
+            GameEndTXT.GetComponent<Text>().text = "引き分け";
+        }
+        else
+        { //勝者のプレイヤーナンバーを反映
+            GameEndTXT.GetComponent<Text>().text = wonPlayer.ToString() + "Pの勝ち!!!";
+        }
+
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            Initiate.Fade("Result", Color.white, 0.7f);
+        }
     }
 }

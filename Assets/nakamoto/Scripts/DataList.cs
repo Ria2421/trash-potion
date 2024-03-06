@@ -112,6 +112,14 @@ class Player
     public bool IsDead
     { get; set; }
 
+    //ポーション投擲判定
+    public bool IsThrowed
+    { get; set; }
+
+    // ポーション爆発カウントダウン
+    public int TurnClock
+    { get; set; }
+
     //ポーション所持変数
     public List<TYPE> OwnedPotionList = new List<TYPE>(4);
 }

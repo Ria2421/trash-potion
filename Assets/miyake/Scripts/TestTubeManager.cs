@@ -16,13 +16,11 @@ public class TestTubeManager : MonoBehaviour
     public Slider slider;
     public Text timerText;
     private bool maxValue;
-    private bool isClicked;
     bool endCountDown;
 
     void Start()
     {
         slider.value = 0;
-        isClicked = false;
         endCountDown = false;
     }
 
@@ -35,10 +33,8 @@ public class TestTubeManager : MonoBehaviour
 
         if (endCountDown)
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonUp(0))
             {
-                isClicked = true;
-
                 if (slider.value >= 94)
                 {
                     Bad.SetActive(true);
@@ -51,16 +47,19 @@ public class TestTubeManager : MonoBehaviour
                 {
                     veryGood.SetActive(true);
                 }
+                else if(slider.value < 68)
+                {
+                    Bad.SetActive(true);
+                }
             }
 
             //クリックされていなければ実行
-            if (!isClicked)
+            if (Input.GetMouseButton(0))
             {
                 slider.value += 0.2f;
 
                 if (slider.value >= 94)
                 {
-                    isClicked = true;
                     Bad.SetActive(true);
                 }
             }

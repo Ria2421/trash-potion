@@ -31,13 +31,13 @@ public class SadTestTube : MonoBehaviour
 
         if (endCountDown)
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonUp(0))
             {
                 isClicked = true;
             }
 
             //クリックされていなければ実行
-            if (!isClicked)
+            if (Input.GetMouseButton(0))
             {
                 slider.value -= 0.2f;
             }

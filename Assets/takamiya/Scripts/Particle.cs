@@ -11,17 +11,17 @@ using System.Timers;
 
 public class Particle : MonoBehaviour
 {
-    [SerializeField] GameObject particle;
+    [SerializeField] GameObject particle;//Prefabsの指定
 
-    [SerializeField] GameObject CrackerRight;
+    [SerializeField] GameObject CrackerRight;//右側のパーティクル
 
-    [SerializeField] GameObject CrackerLeft;
+    [SerializeField] GameObject CrackerLeft;//左側のパーティクル
 
     // Start is called before the first frame update
     void Start()
     {
-        InvokeRepeating("GenerateParticle",1.0f,1.0f);
-        InvokeRepeating("GenerateParticle2", 1.0f, 1.0f);
+        InvokeRepeating("GenerateParticle",1.0f,2.0f);
+        InvokeRepeating("GenerateParticle2", 1.0f, 2.0f);
     }
     // Update is called once per frame
     void Update()
@@ -29,19 +29,17 @@ public class Particle : MonoBehaviour
        
     }
 
+    //右側の紙吹雪を生成
     void GenerateParticle()
     {
         GameObject parent = particle;
         Instantiate(parent,CrackerRight.transform);
 
-        Destroy(parent, 5f);
     }
-
+    //左側の紙吹雪を生成
     void GenerateParticle2()
     {
         GameObject parent = particle;
         Instantiate(parent, CrackerLeft.transform);
-
-        Destroy(parent, 5f);
     }
 }

@@ -60,7 +60,7 @@ class Player
     { get; set; }
 
     //ポーション所持変数
-    public List<TYPE> OwnedPotionList = new List<TYPE>(4);
+    public List<TYPE> OwnedPotionList = new List<TYPE>(2);
 }
 
 /// <summary>
@@ -105,6 +105,7 @@ public enum EventID
     MapData,          // マップデータ
     SelectUnit,       // 自ユニット選択
     MoveUnit,         // 自ユニット移動
+    GeneratePotion,   // ポーション生成
 }
 
 /// <summary>

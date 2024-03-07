@@ -136,10 +136,13 @@ public class GameDirectorCopy : MonoBehaviour
     /// <summary>
     /// 各ポーションのアイコン
     /// </summary>
-    [SerializeField] GameObject[] BoomPotion;
-    [SerializeField] GameObject[] BuffPotion;
-    [SerializeField] GameObject[] DebuffPotion;
-    [SerializeField] GameObject[] Potion;
+    [SerializeField] GameObject[] BoomPotion1;
+    [SerializeField] GameObject[] BoomPotion2;
+    //-------------------------------------------
+    //[SerializeField] GameObject[] BuffPotion;
+    //[SerializeField] GameObject[] DebuffPotion;
+    //[SerializeField] GameObject[] Potion;
+    //-------------------------------------------
 
     /// <summary>
     /// (仮)ポーションランダム生成変数
@@ -191,7 +194,7 @@ public class GameDirectorCopy : MonoBehaviour
         // 仮PLNoの代入
         //++++++++++++++++++++++++++++++++++++++
 #if DEBUG
-        NetworkManager.MyNo = plNo;
+        //NetworkManager.MyNo = plNo;
 #endif
 
         //++++++++++++++++++++++++++++++++++++++
@@ -292,7 +295,7 @@ public class GameDirectorCopy : MonoBehaviour
 
                 if (null != unit)
                 {
-                    unit.GetComponent<UnitController>().PlayerNo = NetworkManager.InitUnitData[i, j];
+                    unit.GetComponent<UnitController>().PlayerNo = initUnitData[i, j];
                     unit.GetComponent<UnitController>().Type = playerType;
                     unitData[i, j].Add(unit);
                 }
@@ -429,7 +432,7 @@ public class GameDirectorCopy : MonoBehaviour
                                 //++++++++++++++++++++++++++++++++++++++++++++++++++++//
                                 // 現PLターンの「選択した」という情報をサーバーに送る //
                                 //++++++++++++++++++++++++++++++++++++++++++++++++++++//
-                                networkManager.SendSelectUnit(z, x,(int)EventID.SelectUnit);
+                                networkManager.SendSelectUnit(z, x);
 #if DEBUG
                                 Debug.Log("選択情報送信完了");
 #endif
@@ -442,7 +445,7 @@ public class GameDirectorCopy : MonoBehaviour
 
                                     // 現PLターンの「移動した」という情報(移動先のタイル)をサーバーに送る //
                                     // 全クライアントに移動情報を渡した後に画面に反映させる //
-                                    networkManager.SendMoveUnit(x, z, tilePos.x, tilePos.z, (int)EventID.MoveUnit);
+                                    networkManager.SendMoveUnit(x, z, tilePos.x, tilePos.z);
 #if DEBUG
                                     Debug.Log("移動情報送信完了");
 #endif
@@ -604,7 +607,7 @@ public class GameDirectorCopy : MonoBehaviour
     }
 
     /// <summary>
-    /// ポーション生成ボタン
+    /// ポーション生成情報送信ボタン
     /// </summary>
     public void Brewing()
     {
@@ -613,67 +616,21 @@ public class GameDirectorCopy : MonoBehaviour
         if (NetworkManager.MyNo != nowPlayerType + 1)
         //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         {
-            int rndPotion = r.Next(4);
+            // int rndPotion = r.Next(4);
             if (player[nowPlayerType].PlayerState == PLAYERSTATE.PARALYSIS_STATE || player[nowPlayerType].PlayerState == PLAYERSTATE.FROZEN_STATE || player[nowPlayerType].IsDead == true)
             { //しびれていた場合または凍っていた場合
-                Debug.Log((nowPlayerType + 1) + "Pはしびれている。ポーションが作れない！");
+                Debug.Log((NetworkManager.MyNo) + "Pはしびれている。ポーションが作れない！");
             }
             else
             {
-                if (player[nowPlayerType].OwnedPotionList?.Count >= 4)
+                if (player[nowPlayerType].OwnedPotionList?.Count >= 2)
                 { //枠が埋まっていた場合
-                    Debug.Log((nowPlayerType + 1) + "Pのポーション枠は満杯だ！！");
+                    Debug.Log((NetworkManager.MyNo) + "Pのポーション枠は満杯だ！！");
                 }
                 else
                 {
-                    if (rndPotion == 0)
-                    { //枠1
-                        if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.BOMB))
-                        { //すでに同じポーションを所持していた場合
-                            Debug.Log((nowPlayerType + 1) + "Pのボムすでにあるよ");
-                        }
-                        else
-                        {
-                            BoomPotion[nowPlayerType].SetActive(true);
-                            player[nowPlayerType].OwnedPotionList.Add(TYPE.BOMB);
-                        }
-                    }
-                    else if (rndPotion == 1)
-                    { //枠２
-                        if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.REFRESH))
-                        { //すでに同じポーションを所持していた場合
-                            Debug.Log((nowPlayerType + 1) + "Pのバフすでにあるよ");
-                        }
-                        else
-                        {
-                            BuffPotion[nowPlayerType].SetActive(true);
-                            player[nowPlayerType].OwnedPotionList.Add(TYPE.REFRESH);
-                        }
-                    }
-                    else if (rndPotion == 2)
-                    { //枠３
-                        if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.CURSE))
-                        { //すでに同じポーションを所持していた場合
-                            Debug.Log((nowPlayerType + 1) + "Pの呪すでにあるよ");
-                        }
-                        else
-                        {
-                            DebuffPotion[nowPlayerType].SetActive(true);
-                            player[nowPlayerType].OwnedPotionList.Add(TYPE.CURSE);
-                        }
-                    }
-                    else if (rndPotion == 3)
-                    { //枠４
-                        if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.NORMAL))
-                        { //すでに同じポーションを所持していた場合
-                            Debug.Log((nowPlayerType + 1) + "Pのノーマルすでにあるよ");
-                        }
-                        else
-                        {
-                            Potion[nowPlayerType].SetActive(true);
-                            player[nowPlayerType].OwnedPotionList.Add(TYPE.NORMAL);
-                        }
-                    }
+                    // ポーション生成情報をサーバーに送信
+                    networkManager.SendPotionGenerate();
                 }
             }
         }
@@ -681,72 +638,73 @@ public class GameDirectorCopy : MonoBehaviour
         //nextMode = MODE.FIELD_UPDATE;
     }
 
+    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    /// <summary>
+    /// ポーション生成処理
+    /// </summary>
+    /// <param name="plNo">生成したPLNo</param>
+    public void GeneratePotion(int plNo)
+    {
+        if (player[plNo - 1].OwnedPotionList.Count == 0)
+        {   // ポーションの持ち数が０個の時
+
+            // 爆破ポーション1の生成
+            BoomPotion1[plNo - 1].SetActive(true);
+            player[plNo - 1].OwnedPotionList.Add(TYPE.BOMB);
+        }
+        else if (player[plNo - 1].OwnedPotionList.Count == 1)
+        {
+            // 爆破ポーション2の生成
+            BoomPotion2[plNo - 1].SetActive(true);
+            player[plNo - 1].OwnedPotionList.Add(TYPE.BOMB);
+        }
+    }
+    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
     /// <summary>
     /// ポーション使用ボタン
     /// </summary>
     public void UsePotion(int buttonNum)
     {
-        if (player[nowPlayerType].PlayerState == PLAYERSTATE.FROZEN_STATE || player[nowPlayerType].IsDead == true)
-        { //凍っていた場合
-            Debug.Log((nowPlayerType + 1) + "Pは凍っている。ポーションは使えない！");
-        }
-        else
+        //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        // 自分のターンのみ行動可能に
+        if (NetworkManager.MyNo == nowPlayerType + 1)
+        //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         {
-            //枠別判定
-            if (buttonNum == 1)
-            { //1番目の場合
-                if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.BOMB))
-                {
-                    ThrowPotion();
-                    GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
-                    BoomPotion[nowPlayerType].SetActive(false);                 //使用したポーションのアイコンを消す
-                    player[nowPlayerType].OwnedPotionList.Remove(TYPE.BOMB);    //使用したポーションをリストから削除する
-                }
-                else
-                {
-                    Debug.Log((nowPlayerType + 1) + "Pはまだ1枠目のポーションを作ってない!!");
-                }
+            if (player[nowPlayerType].PlayerState == PLAYERSTATE.FROZEN_STATE || player[nowPlayerType].IsDead == true)
+            { //凍っていた場合
+                Debug.Log((nowPlayerType + 1) + "Pは凍っている。ポーションは使えない！");
             }
-            else if (buttonNum == 2)
-            { //２番目の場合
-                if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.CURSE))
-                {
-                    ThrowPotion();
-                    GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
-                    DebuffPotion[nowPlayerType].SetActive(false);                //使用したポーションのアイコンを消す
-                    player[nowPlayerType].OwnedPotionList.Remove(TYPE.CURSE);    //使用したポーションをリストから削除する
+            else
+            {
+                //枠別判定
+                if (buttonNum == 1)
+                { //1番目の場合
+                    if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.BOMB))
+                    {
+                        ThrowPotion();
+                        GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
+                        BoomPotion1[nowPlayerType].SetActive(false);                //使用したポーションのアイコンを消す
+                        player[nowPlayerType].OwnedPotionList.Remove(TYPE.BOMB);    //使用したポーションをリストから削除する
+                    }
+                    else
+                    {
+                        Debug.Log((nowPlayerType + 1) + "Pはまだ1枠目のポーションを作ってない!!");
+                    }
                 }
-                else
-                {
-                    Debug.Log((nowPlayerType + 1) + "Pはまだ2枠目のポーションを作ってない!!");
-                }
-            }
-            else if (buttonNum == 3)
-            { //３番目の場合
-                if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.REFRESH))
-                {
-                    ThrowPotion();
-                    GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
-                    BuffPotion[nowPlayerType].SetActive(false);                    //使用したポーションのアイコンを消す
-                    player[nowPlayerType].OwnedPotionList.Remove(TYPE.REFRESH);    //使用したポーションをリストから削除する
-                }
-                else
-                {
-                    Debug.Log((nowPlayerType + 1) + "Pはまだ3枠目のポーションを作ってない!!");
-                }
-            }
-            else if (buttonNum == 4)
-            { //４番目の場合
-                if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.NORMAL))
-                {
-                    ThrowPotion();
-                    GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
-                    Potion[nowPlayerType].SetActive(false);                       //使用したポーションのアイコンを消す 
-                    player[nowPlayerType].OwnedPotionList.Remove(TYPE.NORMAL);    //使用したポーションをリストから削除する
-                }
-                else
-                {
-                    Debug.Log((nowPlayerType + 1) + "Pはまだ４枠目のポーションを作ってない!!");
+                else if (buttonNum == 2)
+                { //２番目の場合
+                    if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.BOMB))
+                    {
+                        ThrowPotion();
+                        GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
+                        BoomPotion2[nowPlayerType].SetActive(false);                 //使用したポーションのアイコンを消す
+                        player[nowPlayerType].OwnedPotionList.Remove(TYPE.BOMB);     //使用したポーションをリストから削除する
+                    }
+                    else
+                    {
+                        Debug.Log((nowPlayerType + 1) + "Pはまだ2枠目のポーションを作ってない!!");
+                    }
                 }
             }
         }

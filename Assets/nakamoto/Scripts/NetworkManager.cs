@@ -284,8 +284,9 @@ public class NetworkManager : MonoBehaviour
 
                         //- 指定タイルに居るユニットを選択状態へ -//
 
-                        // 関数呼び出しの為、コンポーネントの取得
-                        directorCopy = GameObject.Find("GameDirector").GetComponent<GameDirectorCopy>();
+                        // ゲームディレクターの取得
+                        GetGameDirector();
+
                         // 指定タイルのユニット選択処理
                         directorCopy.SelectUnit(selectData.z, selectData.x);
 
@@ -304,6 +305,20 @@ public class NetworkManager : MonoBehaviour
 
                         break;
 
+                    case (int)EventID.GeneratePotion:
+                        // 待機PLのポーション生成情報を取得
+
+                        // ゲームディレクターの取得
+                        GetGameDirector();
+
+                        // 受信PLNoをJsonデシリアライズ
+                        int plNo = JsonConvert.DeserializeObject<int>(jsonString);
+
+                        // 指定したPLNoのポーションを生成
+                        directorCopy.GeneratePotion(plNo);
+
+                        break;
+
                     default: 
                         break;
                 }
@@ -313,6 +328,50 @@ public class NetworkManager : MonoBehaviour
         // 通信を切断
         tcpClient.Close();
     }
+
+    /// <summary>
+    /// シーン遷移処理
+    /// </summary>
+    /// <param name="sceneName"> 遷移したいシーン名 </param>
+    private void NextScene(string sceneName)
+    {
+        /* フェード処理 (黒)  
+            ( "シーン名",フェードの色, 速さ);  */
+        Initiate.DoneFading();
+        Initiate.Fade(sceneName, Color.black, 1.5f);
+    }
+
+    /// <summary>
+    /// ゲームシーン遷移処理
+    /// </summary>
+    private void InGameScene()
+    {
+        /* フェード処理 (黒)  
+            ( "シーン名",フェードの色, 速さ);  */
+        Initiate.DoneFading();
+        Initiate.Fade("IGCcopy", Color.black, 1.5f);
+    }
+
+    /// <summary>
+    /// ゲームディレクター取得関数
+    /// </summary>
+    private void GetGameDirector()
+    {
+        if (directorCopy != null)
+        {   // 取得済みの場合はreturn
+            return;
+        }
+        else
+        {   // 取得していない時のみ実行
+
+            // 関数呼び出しの為、コンポーネントの取得
+            directorCopy = GameObject.Find("GameDirector").GetComponent<GameDirectorCopy>();
+        }
+    }
+
+    //========================//
+    // 接続画面データ送信処理 //
+    //========================//
 
     /// <summary>
     /// ユーザー名送信処理
@@ -365,12 +424,19 @@ public class NetworkManager : MonoBehaviour
 #endif
     }
 
+    //========================//
+    // ゲーム内データ送信処理 //
+    //========================//
+
+    //----------------------------------------------------------------------------
+    // 移動関係のデータ送信処理 ------------------------------
+
     /// <summary>
     /// 選択したタイル座標送信処理
     /// </summary>
     /// <param name="z"> z座標 </param>
     /// <param name="x"> x座標 </param>
-    public async void SendSelectUnit(int z,int x,int eventID)
+    public async void SendSelectUnit(int z,int x)
     {
         // 送信用ユーザーデータの作成
         SelectData selectData = new SelectData();
@@ -383,11 +449,10 @@ public class NetworkManager : MonoBehaviour
         string json = JsonConvert.SerializeObject(selectData);
 
         // 送信処理
-        byte[] buffer = Encoding.UTF8.GetBytes(json);         // JSONをbyteに変換
-        buffer = buffer.Prepend((byte)eventID).ToArray();     // 送信データの先頭にイベントIDを付与
-        await stream.WriteAsync(buffer, 0, buffer.Length);    // JSON送信処理
+        byte[] buffer = Encoding.UTF8.GetBytes(json);                  // JSONをbyteに変換
+        buffer = buffer.Prepend((byte)EventID.SelectUnit).ToArray();   // 送信データの先頭にイベントIDを付与
+        await stream.WriteAsync(buffer, 0, buffer.Length);             // JSON送信処理
     }
-
 
     /// <summary>
     /// 選択した移動タイル座標送信処理
@@ -397,7 +462,7 @@ public class NetworkManager : MonoBehaviour
     /// <param name="posX">移動先タイルX座標</param>
     /// <param name="posZ">移動先タイルZ座標</param>
     /// <param name="eventID">送信データの種類</param>
-    public async void SendMoveUnit(int x, int z, float posX, float posZ, int eventID)
+    public async void SendMoveUnit(int x, int z, float posX, float posZ)
     {
         // 送信用ユーザーデータの作成
         MoveData moveData = new MoveData();
@@ -412,28 +477,26 @@ public class NetworkManager : MonoBehaviour
         string json = JsonConvert.SerializeObject(moveData);
 
         // 送信処理
-        byte[] buffer = Encoding.UTF8.GetBytes(json);         // JSONをbyteに変換
-        buffer = buffer.Prepend((byte)eventID).ToArray();     // 送信データの先頭にイベントIDを付与
-        await stream.WriteAsync(buffer, 0, buffer.Length);    // JSON送信処理
+        byte[] buffer = Encoding.UTF8.GetBytes(json);               // JSONをbyteに変換
+        buffer = buffer.Prepend((byte)EventID.MoveUnit).ToArray();  // 送信データの先頭にイベントIDを付与
+        await stream.WriteAsync(buffer, 0, buffer.Length);          // JSON送信処理
     }
+
+    //----------------------------------------------------------------------------
+    // ポーション関係のデータ送信処理 ----------------------
 
     /// <summary>
-    /// シーン遷移処理
+    /// ポーション生成情報の送信
     /// </summary>
-    /// <param name="sceneName"> 遷移したいシーン名 </param>
-    private void NextScene(string sceneName)
+    /// <param name="plNo">プレイヤーNo</param>
+    public async void SendPotionGenerate()
     {
-        /* フェード処理 (黒)  
-            ( "シーン名",フェードの色, 速さ);  */
-        Initiate.DoneFading();
-        Initiate.Fade(sceneName, Color.black, 1.5f);
-    }
+        // 送信データをJSONシリアライズ
+        string json = JsonConvert.SerializeObject(MyNo);
 
-    private void InGameScene()
-    {
-        /* フェード処理 (黒)  
-            ( "シーン名",フェードの色, 速さ);  */
-        Initiate.DoneFading();
-        Initiate.Fade("IGCcopy", Color.black, 1.5f);
+        // 送信処理
+        byte[] buffer = Encoding.UTF8.GetBytes(json);                      // JSONをbyteに変換
+        buffer = buffer.Prepend((byte)EventID.GeneratePotion).ToArray();   // 送信データの先頭にイベントIDを付与
+        await stream.WriteAsync(buffer, 0, buffer.Length);                 // JSON送信処理
     }
 }

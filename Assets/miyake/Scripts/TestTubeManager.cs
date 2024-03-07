@@ -17,52 +17,79 @@ public class TestTubeManager : MonoBehaviour
     public Text timerText;
     private bool maxValue;
     bool endCountDown;
+    public Text limitTime;              //ミニゲームの制限時間
+    int limit;                          //制限時間の変数
+    bool isLimit;                     //制限時間を超えたかどうか
 
     void Start()
     {
         slider.value = 0;
         endCountDown = false;
+        limit = 5;
+        limitTime.enabled = false;
+        isLimit = false;
+        //1秒ごとに関数を実行
+        InvokeRepeating("CountDownTimer", 3.0f, 1.0f);
     }
 
     void Update()
     {
-        if (timerText.text == "GO!!")
+        if (!isLimit)
         {
-            endCountDown = true;
+            if (timerText.text == "GO!!")
+            {
+                endCountDown = true;
+                limitTime.enabled = true;
+            }
+
+            if (endCountDown)
+            {
+                if (Input.GetMouseButtonUp(0))
+                {
+                    CancelInvoke();
+
+                    if (slider.value >= 94)
+                    {
+                        Bad.SetActive(true);
+                    }
+                    else if (slider.value >= 68 && slider.value < 84)
+                    {
+                        good.SetActive(true);
+                    }
+                    else if (slider.value >= 84 && slider.value < 94)
+                    {
+                        veryGood.SetActive(true);
+                    }
+                    else if (slider.value < 68)
+                    {
+                        Bad.SetActive(true);
+                    }
+                }
+
+                //クリックされていなければ実行
+                if (Input.GetMouseButton(0))
+                {
+                    slider.value += 0.2f;
+
+                    if (slider.value >= 94)
+                    {
+                        Bad.SetActive(true);
+                    }
+                }
+            }
         }
+    }
 
-        if (endCountDown)
+    void CountDownTimer()
+    {
+        limit--;
+        limitTime.text = limit.ToString();
+        if (limitTime.text == "-1")
         {
-            if (Input.GetMouseButtonUp(0))
-            {
-                if (slider.value >= 94)
-                {
-                    Bad.SetActive(true);
-                }
-                else if (slider.value >= 68 && slider.value < 84)
-                {
-                    good.SetActive(true);
-                }
-                else if (slider.value >= 84 && slider.value < 94)
-                {
-                    veryGood.SetActive(true);
-                }
-                else if(slider.value < 68)
-                {
-                    Bad.SetActive(true);
-                }
-            }
-
-            //クリックされていなければ実行
-            if (Input.GetMouseButton(0))
-            {
-                slider.value += 0.2f;
-
-                if (slider.value >= 94)
-                {
-                    Bad.SetActive(true);
-                }
-            }
+            Bad.SetActive(true);
+            isLimit = true;
+            CancelInvoke();
+            Destroy(limitTime);
         }
     }
 }

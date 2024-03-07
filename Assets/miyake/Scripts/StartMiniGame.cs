@@ -12,6 +12,7 @@ public class StartMiniGame : MonoBehaviour
 {
     public Text timerText;
     int timer = 0;              //カウントダウンタイマーの変数
+    public Text limitTime;      //制限時間
     int randScene = 0;          //ランダムでミニゲームの抽選するための変数
     bool isLottery;             //抽選したか
     public GameObject slideGame;        //ミニゲーム1
@@ -24,12 +25,14 @@ public class StartMiniGame : MonoBehaviour
         isLottery = false;
         timer = 3;
         timerText.enabled = false;
+        limitTime.enabled = false;
     }
 
     //シーン抽選処理
     public void StartCountDown()
     {
         timerText.enabled = true;
+        limitTime.enabled = true;
         //1秒ごとに関数を実行
         InvokeRepeating("CountDownTimer", 1.0f, 0.7f);
     }
@@ -67,8 +70,7 @@ public class StartMiniGame : MonoBehaviour
     void LotteryGame()
     {
         //1～3の数字をランダムで代入。以下で抽選
-        //randScene = Random.Range(1, 4);
-        randScene = 3;
+        randScene = Random.Range(1, 4);
 
         if (randScene == 1)
         {

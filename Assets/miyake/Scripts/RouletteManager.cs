@@ -19,6 +19,9 @@ public class RouletteManager : MonoBehaviour
     public Text timerText;
     float angle = 0;                       //回転の角度の変数
     bool endCountDown;
+    public Text limitTime;              //ミニゲームの制限時間
+    int limit;                          //制限時間の変数
+    bool isLimit;                     //制限時間を超えたかどうか
 
     // Start is called before the first frame update
     void Start()
@@ -26,24 +29,34 @@ public class RouletteManager : MonoBehaviour
         //フレームレートを60に固定
         Application.targetFrameRate = 60;
         endCountDown = false;
+        limit = 5;
+        limitTime.enabled = false;
+        isLimit = false;
+        //1秒ごとに関数を実行
+        InvokeRepeating("CountDownTimer", 3.0f, 1.0f);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (timerText.text == "GO!!")
+        if (!isLimit)
         {
-            endCountDown = true;
-        }
-        if (endCountDown) 
-        { 
-            //ルーレットを回転
-            transform.Rotate(0, 0, rouletteSpeed);
+            if (timerText.text == "GO!!")
+            {
+                endCountDown = true;
+                limitTime.enabled = true;
+            }
+            if (endCountDown)
+            {
+                //ルーレットを回転
+                transform.Rotate(0, 0,rouletteSpeed);
 
-            if (Input.GetMouseButtonDown(0))
-            {//左クリックされたら
-                rouletteSpeed = 0;
-                Judge();
+                if (Input.GetMouseButtonDown(0))
+                {//左クリックされたら
+                    rouletteSpeed = 0;
+                    Judge();
+                    CancelInvoke();
+                }
             }
         }
     }
@@ -52,18 +65,17 @@ public class RouletteManager : MonoBehaviour
     void Judge()
     {
 
-        angle = roulette.transform.eulerAngles.z;
+        angle = roulette.transform.eulerAngles.y;
+        float angleA = (174 + angle) % 360;     //大成功の端
+        float angleB = (201 + angle) % 360;     //大成功の端
+        float angleC = (133 + angle) % 360;     //成功の端
+        float angleD = (244 + angle) % 360;     //成功の端
+
 
         //大成功
-
-        float angleA = (154 + angle) % 360;
-        float angleB = (186 + angle) % 360;
-        float angleC = (110 + angle) % 360;
-        float angleD = (230 + angle) % 360;
-
         if (angleA > angleB)
         {//360度を超えていたら
-            if ((angleA <= transform.eulerAngles.z && transform.eulerAngles.z <= 360) || (0 <= transform.eulerAngles.z && transform.eulerAngles.z <= angleB))
+            if ((angleA <= transform.eulerAngles.y && transform.eulerAngles.y <= 360) || (0 <= transform.eulerAngles.y && transform.eulerAngles.y <= angleB))
             {
                 verygood.SetActive(true);
 
@@ -72,7 +84,7 @@ public class RouletteManager : MonoBehaviour
         }
         else
         {
-            if (transform.eulerAngles.z >= angleA && transform.eulerAngles.z <= angleB)
+            if (transform.eulerAngles.y >= angleA && transform.eulerAngles.y <= angleB)
             {
                 verygood.SetActive(true);
                 return;
@@ -83,7 +95,7 @@ public class RouletteManager : MonoBehaviour
         //成功
         if (angleC > angleD)
         {
-            if ((angleC <= transform.eulerAngles.z && transform.eulerAngles.z <= 360) || (0 <= transform.eulerAngles.z && transform.eulerAngles.z <= angleD))
+            if ((angleC <= transform.eulerAngles.y && transform.eulerAngles.y <= 360) || (0 <= transform.eulerAngles.y && transform.eulerAngles.y <= angleD))
             {
                 good.SetActive(true);
                 return;
@@ -91,7 +103,7 @@ public class RouletteManager : MonoBehaviour
         }
         else
         {
-            if (transform.eulerAngles.z >= angleC && transform.eulerAngles.z <= angleD)
+            if (transform.eulerAngles.y >= angleC && transform.eulerAngles.y <= angleD)
             {
                 good.SetActive(true);
                 return;
@@ -99,5 +111,18 @@ public class RouletteManager : MonoBehaviour
         }
         
         bad.SetActive(true);
+    }
+
+    void CountDownTimer()
+    {
+        limit--;
+        limitTime.text = limit.ToString();
+        if (limitTime.text == "-1")
+        {
+            bad.SetActive(true);
+            isLimit = true;
+            CancelInvoke();
+            Destroy(limitTime);
+        }
     }
 }

@@ -18,6 +18,9 @@ public class BarManager : MonoBehaviour
     private bool maxValue;
     private bool isClicked;
     bool endCountDown;
+    public Text limitTime;              //ミニゲームの制限時間
+    int limit;                          //制限時間の変数
+    bool isLimit;                     //制限時間を超えたかどうか
 
     void Start()
     {
@@ -25,60 +28,83 @@ public class BarManager : MonoBehaviour
         maxValue = false;
         isClicked = false;
         endCountDown = false;
+        limit = 5;
+        isLimit = false;
+        limitTime.enabled = false;
+        //1秒ごとに関数を実行
+        InvokeRepeating("CountDownTimer", 3.0f, 1.0f);
     }
 
     void Update()
     {
-        if (timerText.text == "GO!!")
+        if (!isLimit)
         {
-            endCountDown = true;
+            if (timerText.text == "GO!!")
+            {
+                endCountDown = true;
+                limitTime.enabled = true;
+            }
+
+            if (endCountDown)
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    CancelInvoke();
+                    isClicked = true;
+
+                    if (slider.value >= 85)
+                    {
+                        veryGood.SetActive(true);
+                    }
+                    else if (slider.value >= 50)
+                    {
+                        good.SetActive(true);
+                    }
+
+                    else if (slider.value < 50)
+                    {
+                        Bad.SetActive(true);
+                    }
+                }
+
+                //クリックされていなければ実行
+                if (!isClicked)
+                {
+                    //最大値に達した場合と、最小値に戻った場合のフラグ切替え
+                    if (slider.value == slider.maxValue)
+                    {
+                        maxValue = true;
+                    }
+
+                    if (slider.value == slider.minValue)
+                    {
+                        maxValue = false;
+                    }
+
+                    //フラグによるスライダー値の増減
+                    if (maxValue)
+                    {
+                        slider.value -= 0.5f;
+                    }
+                    else
+                    {
+                        slider.value += 0.5f;
+                    }
+                }
+            }
         }
+    }
 
-        if (endCountDown)
+    void CountDownTimer()
+    {
+        limit--;
+        limitTime.text = limit.ToString();
+        if(limitTime.text == "-1")
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                isClicked = true;
-
-                if (slider.value >= 85)
-                {
-                    veryGood.SetActive(true);
-                }
-                else if (slider.value >= 50)
-                {
-                    good.SetActive(true);
-                }
-
-                else if (slider.value < 50)
-                {
-                    Bad.SetActive(true);
-                }
-            }
-
-            //クリックされていなければ実行
-            if (!isClicked)
-            {
-                //最大値に達した場合と、最小値に戻った場合のフラグ切替え
-                if (slider.value == slider.maxValue)
-                {
-                    maxValue = true;
-                }
-
-                if (slider.value == slider.minValue)
-                {
-                    maxValue = false;
-                }
-
-                //フラグによるスライダー値の増減
-                if (maxValue)
-                {
-                    slider.value -= 0.5f;
-                }
-                else
-                {
-                    slider.value += 0.5f;
-                }
-            }
+            Bad.SetActive (true);
+            isLimit = true;
+            CancelInvoke();
+            Destroy(limitTime);
         }
     }
 }

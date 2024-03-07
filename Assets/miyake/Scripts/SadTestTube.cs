@@ -14,33 +14,58 @@ public class SadTestTube : MonoBehaviour
     public Text timerText;
     private bool isClicked;
     bool endCountDown;
+    public Text limitTime;              //ミニゲームの制限時間
+    int limit;                          //制限時間の変数
+    bool isLimit;                     //制限時間を超えたかどうか
 
     void Start()
     {
         slider.value = 94;
         isClicked = false;
         endCountDown = false;
+        limit = 5;
+        limitTime.enabled = false;
+        isLimit = false;
+        //1秒ごとに関数を実行
+        InvokeRepeating("CountDownTimer", 3.0f, 1.0f);
     }
 
     void Update()
     {
-        if (timerText.text == "GO!!")
+        if (!isLimit)
         {
-            endCountDown = true;
+            if (timerText.text == "GO!!")
+            {
+                endCountDown = true;
+                limitTime.enabled = true;
+            }
+
+            if (endCountDown)
+            {
+                if (Input.GetMouseButtonUp(0))
+                {
+                    isClicked = true;
+                    CancelInvoke();
+                }
+
+                //クリックされていなければ実行
+                if (Input.GetMouseButton(0))
+                {
+                    slider.value -= 0.2f;
+                }
+            }
         }
+    }
 
-        if (endCountDown)
+    void CountDownTimer()
+    {
+        limit--;
+        limitTime.text = limit.ToString();
+        if (limitTime.text == "-1")
         {
-            if (Input.GetMouseButtonUp(0))
-            {
-                isClicked = true;
-            }
-
-            //クリックされていなければ実行
-            if (Input.GetMouseButton(0))
-            {
-                slider.value -= 0.2f;
-            }
+            isLimit = true;
+            CancelInvoke();
+            Destroy(limitTime);
         }
     }
 }

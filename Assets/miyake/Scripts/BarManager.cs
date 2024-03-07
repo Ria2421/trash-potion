@@ -19,6 +19,7 @@ public class BarManager : MonoBehaviour
     private bool maxValue;
     private bool isClicked;
     bool endCountDown;
+    private NetworkManager networkManager;
 
     void Start()
     {
@@ -26,6 +27,9 @@ public class BarManager : MonoBehaviour
         maxValue = false;
         isClicked = false;
         endCountDown = false;
+
+        // ネットワークマネージャーの取得
+        networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
     }
 
     void Update()
@@ -42,20 +46,26 @@ public class BarManager : MonoBehaviour
                 isClicked = true;
 
                 if (slider.value >= 85)
-                {
+                {   // 大成功
                     veryGood.SetActive(true);
+                    // 生成情報の送信
+                    networkManager.SendPotionStatus((int)EventID.PotionComplete);
                 }
                 else if (slider.value >= 50)
-                {
+                {   // 成功
                     good.SetActive(true);
+                    // 生成情報の送信
+                    networkManager.SendPotionStatus((int)EventID.PotionComplete);
                 }
                 else if (slider.value < 50)
-                {
+                {   // 失敗
                     Bad.SetActive(true);
+                    // 失敗情報の送信
+                    networkManager.SendPotionStatus((int)EventID.PotionFailure);
                 }
 
                 // ミニゲームの終了
-                Invoke("MiniGameDestroy", 1f);
+                Invoke("MiniGameDestroy", 1.5f);
             }
 
             //クリックされていなければ実行

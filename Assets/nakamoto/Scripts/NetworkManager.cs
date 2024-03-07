@@ -305,8 +305,8 @@ public class NetworkManager : MonoBehaviour
 
                         break;
 
-                    case (int)EventID.GeneratedPotion:
-                        // 待機PLのポーション生成情報を取得
+                    case (int)EventID.PotionGenerate:
+                        // PLのポーション生成開始情報を取得
 
                         // ゲームディレクターの取得
                         GetGameDirector();
@@ -314,8 +314,33 @@ public class NetworkManager : MonoBehaviour
                         // 受信PLNoをJsonデシリアライズ
                         int plNo = JsonConvert.DeserializeObject<int>(jsonString);
 
+                        // ポーションステータスを生成中に変更
+                        directorCopy.ChangePotionStatus(plNo, 2);
+
+                        break;
+
+                    case (int)EventID.PotionComplete:
+                        // PLのポーション生成成功情報を取得
+
+                        // 受信PLNoをJsonデシリアライズ
+                        plNo = JsonConvert.DeserializeObject<int>(jsonString);
+
                         // 指定したPLNoのポーションを生成
                         directorCopy.GeneratePotion(plNo);
+
+                        // ポーションステータスを生成中に変更
+                        directorCopy.ChangePotionStatus(plNo, 0);
+
+                        break;
+
+                    case (int)EventID.PotionFailure:
+                        // PLのポーション生成失敗情報を取得
+
+                        // 受信PLNoをJsonデシリアライズ
+                        plNo = JsonConvert.DeserializeObject<int>(jsonString);
+
+                        // ポーションステータスを生成中に変更
+                        directorCopy.ChangePotionStatus(plNo, 1);
 
                         break;
 
@@ -488,15 +513,15 @@ public class NetworkManager : MonoBehaviour
     /// <summary>
     /// ポーション生成情報の送信
     /// </summary>
-    /// <param name="plNo">プレイヤーNo</param>
-    public async void SendPotionGenerate()
+    /// <param name="status">生成情報</param>
+    public async void SendPotionStatus(int status)
     {
         // 送信データをJSONシリアライズ
         string json = JsonConvert.SerializeObject(MyNo);
 
         // 送信処理
-        byte[] buffer = Encoding.UTF8.GetBytes(json);                      // JSONをbyteに変換
-        buffer = buffer.Prepend((byte)EventID.GeneratedPotion).ToArray();  // 送信データの先頭にイベントIDを付与
-        await stream.WriteAsync(buffer, 0, buffer.Length);                 // JSON送信処理
+        byte[] buffer = Encoding.UTF8.GetBytes(json);         // JSONをbyteに変換
+        buffer = buffer.Prepend((byte)status).ToArray();      // 送信データの先頭にイベントIDを付与
+        await stream.WriteAsync(buffer, 0, buffer.Length);    // JSON送信処理
     }
 }

@@ -18,11 +18,15 @@ public class TestTubeManager : MonoBehaviour
     public Text timerText;
     private bool maxValue;
     bool endCountDown;
+    private NetworkManager networkManager;
 
     void Start()
     {
         slider.value = 0;
         endCountDown = false;
+
+        // ネットワークマネージャーの取得
+        networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
     }
 
     void Update()
@@ -37,24 +41,32 @@ public class TestTubeManager : MonoBehaviour
             if (Input.GetMouseButtonUp(0))
             {
                 if (slider.value >= 94)
-                {
+                {   // 失敗
                     Bad.SetActive(true);
+                    // 失敗情報の送信
+                    networkManager.SendPotionStatus((int)EventID.PotionFailure);
                 }
                 else if (slider.value >= 68 && slider.value < 84)
-                {
+                {   // 成功
                     good.SetActive(true);
+                    // 生成情報の送信
+                    networkManager.SendPotionStatus((int)EventID.PotionComplete);
                 }
                 else if (slider.value >= 84 && slider.value < 94)
-                {
+                {   // 大成功
                     veryGood.SetActive(true);
+                    // 生成情報の送信
+                    networkManager.SendPotionStatus((int)EventID.PotionComplete);
                 }
                 else if(slider.value < 68)
-                {
+                {   // 失敗
                     Bad.SetActive(true);
+                    // 失敗情報の送信
+                    networkManager.SendPotionStatus((int)EventID.PotionFailure);
                 }
 
                 // ミニゲームの終了
-                Invoke("MiniGameDestroy", 1f);
+                Invoke("MiniGameDestroy", 1.5f);
             }
 
             //クリックされていなければ実行

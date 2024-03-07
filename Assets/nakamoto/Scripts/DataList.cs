@@ -105,8 +105,9 @@ public enum EventID
     MapData,          // マップデータ
     SelectUnit,       // 自ユニット選択
     MoveUnit,         // 自ユニット移動
-    StartGenerate,    // 生成開始フラグ
-    GeneratedPotion,  // ポーション生成
+    PotionGenerate,   // ポーション生成
+    PotionComplete,   // 生成成功
+    PotionFailure,    // 生成失敗
 }
 
 /// <summary>

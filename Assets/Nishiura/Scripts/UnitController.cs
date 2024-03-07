@@ -4,6 +4,8 @@
 // Update:03/02
 //
 using Unity.VisualScripting;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class UnitController : MonoBehaviour
@@ -110,5 +112,17 @@ public class UnitController : MonoBehaviour
 
         transform.position = pos;
         return ret;
+    }
+
+    /// <summary>
+    /// ìñÇΩÇËîªíË
+    /// </summary>
+    /// <param name="collision"></param>
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.tag == "Bomb")
+        {   // BombÉ^ÉOÇ…êGÇÍÇƒÇ¢ÇΩÇÁ
+
+        }
     }
 }

@@ -3,6 +3,7 @@
 // Name:西浦晃太 Date:02/07
 // Update:03/07
 //
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -138,11 +139,6 @@ public class GameDirectorCopy : MonoBehaviour
     /// </summary>
     [SerializeField] GameObject[] BoomPotion1;
     [SerializeField] GameObject[] BoomPotion2;
-    //-------------------------------------------
-    //[SerializeField] GameObject[] BuffPotion;
-    //[SerializeField] GameObject[] DebuffPotion;
-    //[SerializeField] GameObject[] Potion;
-    //-------------------------------------------
 
     /// <summary>
     /// (仮)ポーションランダム生成変数
@@ -690,13 +686,13 @@ public class GameDirectorCopy : MonoBehaviour
                     Instantiate(minigamePrefab, minigamePrefab.GetComponent<Transform>().position, Quaternion.identity);
 
                     // ポーション生成情報をサーバーに送信
-                    networkManager.SendPotionGenerate();
+                    networkManager.SendPotionStatus((int)EventID.PotionGenerate);
                 }
             }
         }
     }
 
-    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     /// <summary>
     /// ポーション生成処理
     /// </summary>
@@ -717,7 +713,62 @@ public class GameDirectorCopy : MonoBehaviour
             player[plNo - 1].OwnedPotionList.Add(TYPE.BOMB);
         }
     }
-    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    /// <summary>
+    /// 指定PLNoのポーションステータスを待機に変更処理
+    /// </summary>
+    /// <param name="plNo">プレイヤーNo</param>
+    /// <param name="staNum">ステータスNo</param>
+    IEnumerator ChangeStatusWait(int plNo, float delay) // [0.完了  1.失敗  2.生成  3.待機]
+    {
+        // 指定秒数待機後
+        yield return new WaitForSeconds(delay);
+
+        // ステータス表示を全非表示に
+        for (int i = 0; i < allPotionStatus[plNo - 1].GetLength(0); i++)
+        {
+            allPotionStatus[plNo - 1][i].SetActive(false);
+        }
+
+        if (NetworkManager.MyNo != plNo)
+        {
+            // 指定PLNoを指定ステに変更
+            allPotionStatus[plNo - 1][3].SetActive(true);
+        }
+    }
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    /// <summary>
+    /// 指定PLNoのポーションステータス変更処理
+    /// </summary>
+    /// <param name="plNo">プレイヤーNo</param>
+    /// <param name="staNum">ステータスNo</param>
+    public void ChangePotionStatus(int plNo,int staNum) // [0.完了  1.失敗  2.生成  3.待機]
+    {
+        // ステータス表示を全非表示に
+        for (int i = 0; i < allPotionStatus[plNo - 1].GetLength(0); i++)
+        {
+            allPotionStatus[plNo - 1][i].SetActive(false);
+        }
+
+        if(NetworkManager.MyNo != plNo)
+        {   // 自分のPLNo以外の時
+
+            // 指定PLNoを指定ステに変更
+            allPotionStatus[plNo - 1][staNum].SetActive(true);
+        }
+
+        if(staNum == 0 ||  staNum == 1) 
+        {   // 成功・失敗表示の場合
+
+            // 指定秒数後、指定ステから待機に戻す
+            StartCoroutine(ChangeStatusWait(plNo, 2.0f));
+        }
+    }
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     /// <summary>
     /// ポーション使用ボタン

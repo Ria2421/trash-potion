@@ -1,3 +1,8 @@
+//==============================================
+//Autor:三宅歩人
+//Day:3/5
+//ポーション生成処理
+//==============================================
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

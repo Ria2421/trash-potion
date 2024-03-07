@@ -1,14 +1,12 @@
 //
-// ゲームディレクタースクリプト
+// ゲームディレクターコピースクリプト
 // Name:西浦晃太 Date:02/07
-// Update:03/06
+// Update:03/07
 //
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.PlayerSettings;
-using UnityEngine.UIElements;
 
 public class GameDirectorCopy : MonoBehaviour
 {
@@ -177,6 +175,20 @@ public class GameDirectorCopy : MonoBehaviour
     [SerializeField] GameObject minigamePrefab;
 
     //+++++++++++++++++++++++++++++++++++++++++
+    // 各PLのポーションステータス (4種類)
+    // [0.完了  1.失敗  2.生成  3.待機]
+    //+++++++++++++++++++++++++++++++++++++++++
+    [SerializeField] GameObject[] potionStatus1;
+    [SerializeField] GameObject[] potionStatus2;
+    [SerializeField] GameObject[] potionStatus3;
+    [SerializeField] GameObject[] potionStatus4;
+
+    //+++++++++++++++++++++++++++++++++++++++++
+    // 全PLのポーションステータス格納用
+    //+++++++++++++++++++++++++++++++++++++++++
+    List<GameObject[]> allPotionStatus;
+
+    //+++++++++++++++++++++++++++++++++++++++++
     // NetworkManager格納用変数
     //+++++++++++++++++++++++++++++++++++++++++
     NetworkManager networkManager;
@@ -209,14 +221,36 @@ public class GameDirectorCopy : MonoBehaviour
         NetworkManager.MyNo = plNo;
 #endif
         //++++++++++++++++++++++++++++++++++++++
-        // 該当PLNoの生成ボタンを表示
+        // 自分の生成ボタンを表示
         //++++++++++++++++++++++++++++++++++++++
         brewingButton[NetworkManager.MyNo - 1].SetActive(true);
 
         //++++++++++++++++++++++++++++++++++++++
+        // ポーションステータスリストの作成
+        //++++++++++++++++++++++++++++++++++++++
+        allPotionStatus = new List<GameObject[]>()
+        {
+            potionStatus1,    // プレイヤー1
+            potionStatus2,    // プレイヤー2
+            potionStatus3,    // プレイヤー3
+            potionStatus4,    // プレイヤー4
+        };
+
+        //++++++++++++++++++++++++++++++++++++++
+        // 自分以外のポーションステータスを表示
+        //++++++++++++++++++++++++++++++++++++++
+        for (int i = 0; i < playerNum; i++)
+        {
+            if(i != NetworkManager.MyNo - 1)
+            {   // 自分以外のPLのポーションステータスを表示
+                allPotionStatus[i][3].SetActive(true);
+            }
+        }
+
+        //++++++++++++++++++++++++++++++++++++++
         // NetworkManagerを取得
         //++++++++++++++++++++++++++++++++++++++
-        ////networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
+        networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
 
         //++++++++++++++++++++++++++++++++++++++
         // ポーション生成フラグ
@@ -448,7 +482,7 @@ public class GameDirectorCopy : MonoBehaviour
                                 //++++++++++++++++++++++++++++++++++++++++++++++++++++//
                                 // 現PLターンの「選択した」という情報をサーバーに送る //
                                 //++++++++++++++++++++++++++++++++++++++++++++++++++++//
-                                //networkManager.SendSelectUnit(z, x);
+                                networkManager.SendSelectUnit(z, x);
 #if DEBUG
                                 Debug.Log("選択情報送信完了");
 #endif
@@ -461,7 +495,7 @@ public class GameDirectorCopy : MonoBehaviour
 
                                     // 現PLターンの「移動した」という情報(移動先のタイル)をサーバーに送る //
                                     // 全クライアントに移動情報を渡した後に画面に反映させる //
-                                    //networkManager.SendMoveUnit(x, z, tilePos.x, tilePos.z);
+                                    networkManager.SendMoveUnit(x, z, tilePos.x, tilePos.z);
 
                                     // 移動情報送信後に生成フラグをfalseに戻す
                                     generateFlag = false;
@@ -656,12 +690,10 @@ public class GameDirectorCopy : MonoBehaviour
                     Instantiate(minigamePrefab, minigamePrefab.GetComponent<Transform>().position, Quaternion.identity);
 
                     // ポーション生成情報をサーバーに送信
-                    //networkManager.SendPotionGenerate();
+                    networkManager.SendPotionGenerate();
                 }
             }
         }
-        
-        //nextMode = MODE.FIELD_UPDATE;
     }
 
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -732,6 +764,9 @@ public class GameDirectorCopy : MonoBehaviour
                         Debug.Log((nowPlayerType + 1) + "Pはまだ2枠目のポーションを作ってない!!");
                     }
                 }
+
+                // 設置後に次のPLターンへ
+                nextMode = MODE.FIELD_UPDATE;
             }
         }
     }

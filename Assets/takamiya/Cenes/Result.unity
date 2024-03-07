@@ -1940,7 +1940,7 @@ MonoBehaviour:
   - {fileID: 4881997858701097108, guid: 072b8e2061fc8644cace936b3252d4f0, type: 3}
   rankObject: {fileID: 852354928}
   congratulationObj: {fileID: 49456151}
-  PlayerID: 
+  PlayerID: 0000000001000000
 --- !u!4 &198367863 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5969298085216184768, guid: de93638c52f1b104cad3f16f97ab30bf,
@@ -3721,7 +3721,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &453035463
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11796,37 +11796,6 @@ Transform:
   - {fileID: 655639897}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1474743606
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1474743607}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1474743607
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1474743606}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.70000076, y: 2.8100014, z: -2.38}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1480233475 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5969298085216184768, guid: de93638c52f1b104cad3f16f97ab30bf,
@@ -13669,7 +13638,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1718863239
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14243,7 +14212,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1753231751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16815,4 +16784,3 @@ SceneRoots:
   - {fileID: 1237170201}
   - {fileID: 1953042640}
   - {fileID: 49456153}
-  - {fileID: 1474743607}

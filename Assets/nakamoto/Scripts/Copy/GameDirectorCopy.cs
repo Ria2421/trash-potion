@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.PlayerSettings;
+using UnityEngine.UIElements;
 
 public class GameDirectorCopy : MonoBehaviour
 {
@@ -170,6 +172,11 @@ public class GameDirectorCopy : MonoBehaviour
     [SerializeField] int plNo;
 
     //+++++++++++++++++++++++++++++++++++++++++
+    // ミニゲームプレハブ
+    //+++++++++++++++++++++++++++++++++++++++++
+    [SerializeField] GameObject minigamePrefab;
+
+    //+++++++++++++++++++++++++++++++++++++++++
     // NetworkManager格納用変数
     //+++++++++++++++++++++++++++++++++++++++++
     NetworkManager networkManager;
@@ -178,6 +185,11 @@ public class GameDirectorCopy : MonoBehaviour
     // 指定タイルのpos格納用
     //+++++++++++++++++++++++++++++++++++++++++
     Vector3 tilePos;
+
+    //+++++++++++++++++++++++++++++++++++++++++
+    // ポーション生成フラグ
+    //+++++++++++++++++++++++++++++++++++++++++
+    bool generateFlag;
 
     ///========================================
     ///
@@ -194,9 +206,8 @@ public class GameDirectorCopy : MonoBehaviour
         // 仮PLNoの代入
         //++++++++++++++++++++++++++++++++++++++
 #if DEBUG
-        //NetworkManager.MyNo = plNo;
+        NetworkManager.MyNo = plNo;
 #endif
-
         //++++++++++++++++++++++++++++++++++++++
         // 該当PLNoの生成ボタンを表示
         //++++++++++++++++++++++++++++++++++++++
@@ -205,7 +216,12 @@ public class GameDirectorCopy : MonoBehaviour
         //++++++++++++++++++++++++++++++++++++++
         // NetworkManagerを取得
         //++++++++++++++++++++++++++++++++++++++
-        networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
+        ////networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
+
+        //++++++++++++++++++++++++++++++++++++++
+        // ポーション生成フラグ
+        //++++++++++++++++++++++++++++++++++++++
+        generateFlag = false;
 
         for (int i = 0; i < player.Length; i++)
         { //配列分のプレイヤーの構造体を生成
@@ -432,7 +448,7 @@ public class GameDirectorCopy : MonoBehaviour
                                 //++++++++++++++++++++++++++++++++++++++++++++++++++++//
                                 // 現PLターンの「選択した」という情報をサーバーに送る //
                                 //++++++++++++++++++++++++++++++++++++++++++++++++++++//
-                                networkManager.SendSelectUnit(z, x);
+                                //networkManager.SendSelectUnit(z, x);
 #if DEBUG
                                 Debug.Log("選択情報送信完了");
 #endif
@@ -445,11 +461,15 @@ public class GameDirectorCopy : MonoBehaviour
 
                                     // 現PLターンの「移動した」という情報(移動先のタイル)をサーバーに送る //
                                     // 全クライアントに移動情報を渡した後に画面に反映させる //
-                                    networkManager.SendMoveUnit(x, z, tilePos.x, tilePos.z);
+                                    //networkManager.SendMoveUnit(x, z, tilePos.x, tilePos.z);
+
+                                    // 移動情報送信後に生成フラグをfalseに戻す
+                                    generateFlag = false;
 #if DEBUG
                                     Debug.Log("移動情報送信完了");
 #endif
                                 }
+
                                 Debug.Log("現在のプレイヤー:" + (nowPlayerType + 1));
                             }
                         }
@@ -613,7 +633,7 @@ public class GameDirectorCopy : MonoBehaviour
     {
         //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // 自分のターン以外生成可能に
-        if (NetworkManager.MyNo != nowPlayerType + 1)
+        if (NetworkManager.MyNo != nowPlayerType + 1 && !generateFlag)
         //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         {
             // int rndPotion = r.Next(4);
@@ -629,8 +649,14 @@ public class GameDirectorCopy : MonoBehaviour
                 }
                 else
                 {
+                    // ポーション生成フラグをtrueに
+                    generateFlag = true;
+
+                    // ミニゲームの再生(仮)
+                    Instantiate(minigamePrefab, minigamePrefab.GetComponent<Transform>().position, Quaternion.identity);
+
                     // ポーション生成情報をサーバーに送信
-                    networkManager.SendPotionGenerate();
+                    //networkManager.SendPotionGenerate();
                 }
             }
         }

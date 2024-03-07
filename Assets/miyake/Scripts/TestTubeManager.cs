@@ -52,6 +52,9 @@ public class TestTubeManager : MonoBehaviour
                 {
                     Bad.SetActive(true);
                 }
+
+                // ミニゲームの終了
+                Invoke("MiniGameDestroy", 1f);
             }
 
             //クリックされていなければ実行
@@ -65,5 +68,14 @@ public class TestTubeManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// ミニゲームの破棄
+    /// </summary>
+    private void MiniGameDestroy()
+    {
+        // ミニゲームを終了
+        Destroy(GameObject.Find("MiniGames(Clone)"));
     }
 }

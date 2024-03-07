@@ -53,6 +53,9 @@ public class BarManager : MonoBehaviour
                 {
                     Bad.SetActive(true);
                 }
+
+                // ミニゲームの終了
+                Invoke("MiniGameDestroy", 1f);
             }
 
             //クリックされていなければ実行
@@ -80,5 +83,14 @@ public class BarManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// ミニゲームの破棄
+    /// </summary>
+    private void MiniGameDestroy()
+    {
+        // ミニゲームを終了
+        Destroy(GameObject.Find("MiniGames(Clone)"));
     }
 }

@@ -24,6 +24,13 @@ public class StartMiniGame : MonoBehaviour
         isLottery = false;
         timer = 3;
         timerText.enabled = false;
+
+        //+++++++++++++++++++++++++++++++++++++++++++++++
+        // ボタン不使用
+        timerText.enabled = true;
+        //1秒ごとに関数を実行
+        InvokeRepeating("CountDownTimer", 1.0f, 0.7f);
+        //+++++++++++++++++++++++++++++++++++++++++++++++
     }
 
     //シーン抽選処理

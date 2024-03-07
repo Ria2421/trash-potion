@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &201436037839666116
 RectTransform:
   m_ObjectHideFlags: 0
@@ -413,7 +413,7 @@ GameObject:
   - component: {fileID: 3719151360348057899}
   - component: {fileID: 7744039250905252597}
   m_Layer: 5
-  m_Name: Button (Legacy)
+  m_Name: StartManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -454,7 +454,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7652427325371092500}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -484,7 +484,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7652427325371092500}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
@@ -980,13 +980,23 @@ PrefabInstance:
     - target: {fileID: 1861859700168188690, guid: 626efd72cb4a1904cb7b935b3b9a8938,
         type: 3}
       propertyPath: speed
-      value: 0.6
+      value: 0.35
       objectReference: {fileID: 0}
     - target: {fileID: 1861859700168188690, guid: 626efd72cb4a1904cb7b935b3b9a8938,
         type: 3}
       propertyPath: timerText
       value: 
       objectReference: {fileID: 7968327924135392652}
+    - target: {fileID: 2047358063935425541, guid: 626efd72cb4a1904cb7b935b3b9a8938,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.38
+      objectReference: {fileID: 0}
+    - target: {fileID: 2047358063935425541, guid: 626efd72cb4a1904cb7b935b3b9a8938,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -142
+      objectReference: {fileID: 0}
     - target: {fileID: 3181195815038235208, guid: 626efd72cb4a1904cb7b935b3b9a8938,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -1006,6 +1016,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6310264284416938489, guid: 626efd72cb4a1904cb7b935b3b9a8938,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 294.9
       objectReference: {fileID: 0}
     - target: {fileID: 7861553731597748407, guid: 626efd72cb4a1904cb7b935b3b9a8938,
         type: 3}
@@ -1140,7 +1155,7 @@ PrefabInstance:
     - target: {fileID: 9017853827714016962, guid: 626efd72cb4a1904cb7b935b3b9a8938,
         type: 3}
       propertyPath: speed
-      value: 0.6
+      value: 0.35
       objectReference: {fileID: 0}
     - target: {fileID: 9017853827714016962, guid: 626efd72cb4a1904cb7b935b3b9a8938,
         type: 3}
@@ -1320,7 +1335,7 @@ PrefabInstance:
     - target: {fileID: 792557980079201451, guid: 651ab4114a4d18c409f0ee1fc65b76b9,
         type: 3}
       propertyPath: speed
-      value: 0.8
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 792557980079201451, guid: 651ab4114a4d18c409f0ee1fc65b76b9,
         type: 3}

@@ -2072,7 +2072,9 @@ MonoBehaviour:
   - {fileID: 729988888}
   - {fileID: 1417108092}
   turnText: {fileID: 254506366}
-  plNo: 1
+  plNo: 2
+  minigamePrefab: {fileID: 3688214593435343868, guid: 578da44c0d4ecd94eaf5b0b740be356b,
+    type: 3}
 --- !u!1 &802872745
 GameObject:
   m_ObjectHideFlags: 0

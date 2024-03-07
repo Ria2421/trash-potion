@@ -305,7 +305,7 @@ public class NetworkManager : MonoBehaviour
 
                         break;
 
-                    case (int)EventID.GeneratePotion:
+                    case (int)EventID.GeneratedPotion:
                         // 待機PLのポーション生成情報を取得
 
                         // ゲームディレクターの取得
@@ -496,7 +496,7 @@ public class NetworkManager : MonoBehaviour
 
         // 送信処理
         byte[] buffer = Encoding.UTF8.GetBytes(json);                      // JSONをbyteに変換
-        buffer = buffer.Prepend((byte)EventID.GeneratePotion).ToArray();   // 送信データの先頭にイベントIDを付与
+        buffer = buffer.Prepend((byte)EventID.GeneratedPotion).ToArray();   // 送信データの先頭にイベントIDを付与
         await stream.WriteAsync(buffer, 0, buffer.Length);                 // JSON送信処理
     }
 }

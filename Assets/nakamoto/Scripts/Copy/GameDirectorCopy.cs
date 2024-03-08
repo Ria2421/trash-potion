@@ -161,6 +161,11 @@ public class GameDirectorCopy : MonoBehaviour
     [SerializeField] GameObject turnText;
 
     //+++++++++++++++++++++++++++++++++++++++++
+    // 累計ターン表示テキスト
+    //+++++++++++++++++++++++++++++++++++++++++
+    [SerializeField] Text allTurnText;
+
+    //+++++++++++++++++++++++++++++++++++++++++
     // PLNo決め打ち用
     //+++++++++++++++++++++++++++++++++++++++++
     [SerializeField] int plNo;
@@ -183,6 +188,12 @@ public class GameDirectorCopy : MonoBehaviour
     // 全PLのポーションステータス格納用
     //+++++++++++++++++++++++++++++++++++++++++
     List<GameObject[]> allPotionStatus;
+
+    //+++++++++++++++++++++++++++++++++++++++++
+    // 累計ターン格納用
+    //+++++++++++++++++++++++++++++++++++++++++
+    public static int AllTurnNum
+    { get; set; }
 
     //+++++++++++++++++++++++++++++++++++++++++
     // NetworkManager格納用変数
@@ -211,10 +222,15 @@ public class GameDirectorCopy : MonoBehaviour
     void Start()
     {
         //++++++++++++++++++++++++++++++++++++++
+        // 累計ターンの初期化
+        //++++++++++++++++++++++++++++++++++++++
+        AllTurnNum = 1;
+
+        //++++++++++++++++++++++++++++++++++++++
         // 仮PLNoの代入
         //++++++++++++++++++++++++++++++++++++++
 #if DEBUG
-        NetworkManager.MyNo = plNo;
+        //NetworkManager.MyNo = plNo;
 #endif
         //++++++++++++++++++++++++++++++++++++++
         // 自分の生成ボタンを表示
@@ -377,6 +393,10 @@ public class GameDirectorCopy : MonoBehaviour
         {
             SelectMode();
         }
+        else if(MODE.POTION_THROW == nowMode)
+        {
+            ThrowPotionMode();
+        }
         else if (MODE.FIELD_UPDATE == nowMode)
         {
             FieldUpdateMode();
@@ -384,10 +404,6 @@ public class GameDirectorCopy : MonoBehaviour
         else if (MODE.TURN_CHANGE == nowMode)
         {
             TurnChangeMode();
-        }
-        else if (MODE.POTION_THROW == nowMode)
-        {
-            ThrowPotion();
         }
     }
 
@@ -573,7 +589,18 @@ public class GameDirectorCopy : MonoBehaviour
         int oldTurn = nowTurn;
         nowTurn = getNextTurn();
 
+        //+++++++++++++++++
+        // 爆発判定
+        //+++++++++++++++++
+
+        //+++++++++++++++++
+        // 終了判定
+        //+++++++++++++++++
+
         nextMode = MODE.MOVE_SELECT;
+
+        AllTurnNum++;
+        allTurnText.text = AllTurnNum.ToString() + "ターン目"; 
 
         nowPlayerType++;
     }
@@ -771,6 +798,43 @@ public class GameDirectorCopy : MonoBehaviour
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     /// <summary>
+    /// ポーション投擲処理
+    /// </summary>
+    void ThrowPotionMode()
+    {
+        
+        
+        Vector3 pos = SerchUnit((nowPlayerType + 1));
+
+        int x = (int)(pos.x + (tileData.GetLength(1) / 2 - 0.5f));
+        int z = (int)(pos.z + (tileData.GetLength(0) / 2 - 0.5f));
+
+        unitData[z, x][0].GetComponent<UnitController>().ThrowSelect();
+        unitData[z, x][0].GetComponent<UnitController>().OnThrowColliderEnable();
+
+        if (Input.GetMouseButtonDown(0))
+        { //クリック時、投擲位置を設定
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit, 100))
+            {
+                if (null != hit.collider.gameObject)
+                {
+                    Vector3 selectPos = hit.collider.gameObject.transform.position;
+
+                    int selectX = (int)(selectPos.x + (tileData.GetLength(1) / 2 - 0.5f));
+                    int selectZ = (int)(selectPos.z + (tileData.GetLength(0) / 2 - 0.5f));
+
+                    string resname = "BombPotion";
+                    resourcesInstantiate(resname, selectPos, Quaternion.Euler(0, 0, 0));
+                    nextMode = MODE.FIELD_UPDATE;
+                }
+            }
+        }
+    }
+
+    /// <summary>
     /// ポーション使用ボタン
     /// </summary>
     public void UsePotion(int buttonNum)
@@ -791,7 +855,10 @@ public class GameDirectorCopy : MonoBehaviour
                 { //1番目の場合
                     if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.BOMB))
                     {
-                        ThrowPotion();
+                        // 投擲モードに変更
+                        nowMode = MODE.POTION_THROW;
+
+                        
                         GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
                         BoomPotion1[nowPlayerType].SetActive(false);                //使用したポーションのアイコンを消す
                         player[nowPlayerType].OwnedPotionList.Remove(TYPE.BOMB);    //使用したポーションをリストから削除する
@@ -805,7 +872,10 @@ public class GameDirectorCopy : MonoBehaviour
                 { //２番目の場合
                     if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.BOMB))
                     {
-                        ThrowPotion();
+                        // 投擲モードに変更
+                        nowMode = MODE.POTION_THROW;
+
+                        
                         GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
                         BoomPotion2[nowPlayerType].SetActive(false);                 //使用したポーションのアイコンを消す
                         player[nowPlayerType].OwnedPotionList.Remove(TYPE.BOMB);     //使用したポーションをリストから削除する
@@ -817,7 +887,7 @@ public class GameDirectorCopy : MonoBehaviour
                 }
 
                 // 設置後に次のPLターンへ
-                nextMode = MODE.FIELD_UPDATE;
+                //nextMode = MODE.FIELD_UPDATE;
             }
         }
     }
@@ -920,42 +990,6 @@ public class GameDirectorCopy : MonoBehaviour
                         }
                         return;
                     }
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// ポーション投擲処理
-    /// </summary>
-    void ThrowPotion()
-    {
-        nowMode = MODE.POTION_THROW;
-        string resname = "BombPotion";
-        Vector3 pos = SerchUnit((nowPlayerType + 1));
-
-        int x = (int)(pos.x + (tileData.GetLength(1) / 2 - 0.5f));
-        int z = (int)(pos.z + (tileData.GetLength(0) / 2 - 0.5f));
-
-        unitData[z, x][0].GetComponent<UnitController>().ThrowSelect();
-        unitData[z, x][0].GetComponent<UnitController>().OnThrowColliderEnable();
-
-        if (Input.GetMouseButtonDown(0))
-        { //クリック時、投擲位置を設定
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit, 100))
-            {
-                if (null != hit.collider.gameObject)
-                {
-                    Vector3 selectPos = hit.collider.gameObject.transform.position;
-
-                    int selectX = (int)(selectPos.x + (tileData.GetLength(1) / 2 - 0.5f));
-                    int selectZ = (int)(selectPos.z + (tileData.GetLength(0) / 2 - 0.5f));
-
-                    resourcesInstantiate(resname, selectPos, Quaternion.Euler(0,0,0));
-                    nextMode = MODE.FIELD_UPDATE;
                 }
             }
         }

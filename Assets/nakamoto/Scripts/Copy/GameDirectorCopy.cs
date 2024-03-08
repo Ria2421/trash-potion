@@ -802,8 +802,6 @@ public class GameDirectorCopy : MonoBehaviour
     /// </summary>
     void ThrowPotionMode()
     {
-        
-        
         Vector3 pos = SerchUnit((nowPlayerType + 1));
 
         int x = (int)(pos.x + (tileData.GetLength(1) / 2 - 0.5f));
@@ -855,13 +853,16 @@ public class GameDirectorCopy : MonoBehaviour
                 { //1番目の場合
                     if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.BOMB))
                     {
-                        // 投擲モードに変更
-                        nowMode = MODE.POTION_THROW;
+                        //ざんてい
+                        nextMode = MODE.FIELD_UPDATE;
 
-                        
-                        GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
-                        BoomPotion1[nowPlayerType].SetActive(false);                //使用したポーションのアイコンを消す
-                        player[nowPlayerType].OwnedPotionList.Remove(TYPE.BOMB);    //使用したポーションをリストから削除する
+                        //// 投擲モードに変更
+                        //nowMode = MODE.POTION_THROW;
+
+
+                        //GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
+                        //BoomPotion1[nowPlayerType].SetActive(false);                //使用したポーションのアイコンを消す
+                        //player[nowPlayerType].OwnedPotionList.Remove(TYPE.BOMB);    //使用したポーションをリストから削除する
                     }
                     else
                     {
@@ -872,13 +873,16 @@ public class GameDirectorCopy : MonoBehaviour
                 { //２番目の場合
                     if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.BOMB))
                     {
-                        // 投擲モードに変更
-                        nowMode = MODE.POTION_THROW;
+                        //ざんてい
+                        nextMode = MODE.FIELD_UPDATE;
 
-                        
-                        GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
-                        BoomPotion2[nowPlayerType].SetActive(false);                 //使用したポーションのアイコンを消す
-                        player[nowPlayerType].OwnedPotionList.Remove(TYPE.BOMB);     //使用したポーションをリストから削除する
+                        //// 投擲モードに変更
+                        //nowMode = MODE.POTION_THROW;
+
+
+                        //GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
+                        //BoomPotion2[nowPlayerType].SetActive(false);                 //使用したポーションのアイコンを消す
+                        //player[nowPlayerType].OwnedPotionList.Remove(TYPE.BOMB);     //使用したポーションをリストから削除する
                     }
                     else
                     {

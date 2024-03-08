@@ -41,6 +41,6 @@ public class GoInformation : MonoBehaviour
     public void HowToPlay()
     {
         Initiate.DoneFading();
-        Initiate.Fade("Information", Color.black, 1.5f);
+        Initiate.Fade("Tutorial", Color.black, 1.5f);
     }
 }

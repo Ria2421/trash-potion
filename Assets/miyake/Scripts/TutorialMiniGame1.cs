@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TutorialMiniGame : MonoBehaviour
+public class TutorialMiniGame1 : MonoBehaviour
 {
     public Text timerText;
     int timer = 0;              //カウントダウンタイマーの変数

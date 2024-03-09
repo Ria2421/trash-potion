@@ -477,20 +477,6 @@ public class GameDirectorCopy : MonoBehaviour
                                     selectUnit.GetComponent<UnitController>().Select(false);
                                 }
 
-                                //----------------------------------------------------
-
-                                //// 選択したユニットのGameObject情報を取得
-                                //selectUnit = unitData[z, x][0];
-
-                                //// 選択時の座標を保存
-                                //oldX = x;
-                                //oldY = z;
-
-                                //// 選択ユニットを選択状態(持ち上がった状態)に変更
-                                //selectUnit.GetComponent<UnitController>().Select();
-
-                                //-----------------------------------------------------
-
                                 //++++++++++++++++++++++++++++++++++++++++++++++++++++//
                                 // 現PLターンの「選択した」という情報をサーバーに送る //
                                 //++++++++++++++++++++++++++++++++++++++++++++++++++++//
@@ -593,12 +579,24 @@ public class GameDirectorCopy : MonoBehaviour
         // 爆発判定
         //+++++++++++++++++
 
+        //objectというタグ名のゲームオブジェクトを複数取得したい時
+        GameObject[] objects = GameObject.FindGameObjectsWithTag("Bomb");
+
+        // 配列の要素一つ一つに対して処理を行う
+        foreach (GameObject obj in objects)
+        {
+            // Bombのカウントダウンを下げる
+            obj.GetComponent<PotionBoom>().bombCntDown();
+        }
+        //+++++++++++++++++
+
         //+++++++++++++++++
         // 終了判定
         //+++++++++++++++++
 
         nextMode = MODE.MOVE_SELECT;
 
+        // 累計ターン表示
         AllTurnNum++;
         allTurnText.text = AllTurnNum.ToString() + "ターン目"; 
 
@@ -802,14 +800,6 @@ public class GameDirectorCopy : MonoBehaviour
     /// </summary>
     void ThrowPotionMode()
     {
-        Vector3 pos = SerchUnit((nowPlayerType + 1));
-
-        int x = (int)(pos.x + (tileData.GetLength(1) / 2 - 0.5f));
-        int z = (int)(pos.z + (tileData.GetLength(0) / 2 - 0.5f));
-
-        unitData[z, x][0].GetComponent<UnitController>().ThrowSelect();
-        unitData[z, x][0].GetComponent<UnitController>().OnThrowColliderEnable();
-
         if (Input.GetMouseButtonDown(0))
         { //クリック時、投擲位置を設定
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -821,16 +811,56 @@ public class GameDirectorCopy : MonoBehaviour
                 {
                     Vector3 selectPos = hit.collider.gameObject.transform.position;
 
-                    int selectX = (int)(selectPos.x + (tileData.GetLength(1) / 2 - 0.5f));
-                    int selectZ = (int)(selectPos.z + (tileData.GetLength(0) / 2 - 0.5f));
-
-                    string resname = "BombPotion";
-                    resourcesInstantiate(resname, selectPos, Quaternion.Euler(0, 0, 0));
-                    nextMode = MODE.FIELD_UPDATE;
+                    // 設置情報をサーバーに送信
+                    networkManager.SendThrowPos(selectPos.x, selectPos.z);
                 }
             }
         }
     }
+
+    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    /// <summary>
+    /// ポーション投擲処理
+    /// </summary>
+    public void PlayerThrow()
+    {
+        // 投擲モードに変更
+        nowMode = MODE.POTION_THROW;
+
+        //そのポーションにあったアニメーションをする
+        GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);
+
+        Vector3 pos = SerchUnit((nowPlayerType + 1));
+
+        int x = (int)(pos.x + (tileData.GetLength(1) / 2 - 0.5f));
+        int z = (int)(pos.z + (tileData.GetLength(0) / 2 - 0.5f));
+
+        unitData[z, x][0].GetComponent<UnitController>().ThrowSelect();
+        unitData[z, x][0].GetComponent<UnitController>().OnThrowColliderEnable();
+    }
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    /// <summary>
+    /// ポーション設置処理
+    /// </summary>
+    public void SetPotion(Vector3 pos)
+    {
+        BoomPotion1[nowPlayerType].SetActive(false);                //使用したポーションのアイコンを消す
+        player[nowPlayerType].OwnedPotionList.Remove(TYPE.BOMB);    //使用したポーションをリストから削除する
+
+        Vector3 PlPos = SerchUnit((nowPlayerType + 1));
+
+        int x = (int)(PlPos.x + (tileData.GetLength(1) / 2 - 0.5f));
+        int z = (int)(PlPos.z + (tileData.GetLength(0) / 2 - 0.5f));
+
+        unitData[z, x][0].GetComponent<UnitController>().OffThrowColliderEnable();
+
+        string resname = "BombPotion";
+        resourcesInstantiate(resname, pos, Quaternion.Euler(0, 0, 0));
+        nextMode = MODE.FIELD_UPDATE;
+    }
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     /// <summary>
     /// ポーション使用ボタン
@@ -853,16 +883,8 @@ public class GameDirectorCopy : MonoBehaviour
                 { //1番目の場合
                     if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.BOMB))
                     {
-                        //ざんてい
-                        nextMode = MODE.FIELD_UPDATE;
-
-                        //// 投擲モードに変更
-                        //nowMode = MODE.POTION_THROW;
-
-
-                        //GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
-                        //BoomPotion1[nowPlayerType].SetActive(false);                //使用したポーションのアイコンを消す
-                        //player[nowPlayerType].OwnedPotionList.Remove(TYPE.BOMB);    //使用したポーションをリストから削除する
+                        // サーバーにボム使用フラグを送信
+                        networkManager.SendPotionStatus((int)EventID.PotionThrow);
                     }
                     else
                     {
@@ -873,25 +895,14 @@ public class GameDirectorCopy : MonoBehaviour
                 { //２番目の場合
                     if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.BOMB))
                     {
-                        //ざんてい
-                        nextMode = MODE.FIELD_UPDATE;
-
-                        //// 投擲モードに変更
-                        //nowMode = MODE.POTION_THROW;
-
-
-                        //GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
-                        //BoomPotion2[nowPlayerType].SetActive(false);                 //使用したポーションのアイコンを消す
-                        //player[nowPlayerType].OwnedPotionList.Remove(TYPE.BOMB);     //使用したポーションをリストから削除する
+                        // サーバーにボム使用フラグを送信
+                        networkManager.SendPotionStatus((int)EventID.PotionThrow);
                     }
                     else
                     {
                         Debug.Log((nowPlayerType + 1) + "Pはまだ2枠目のポーションを作ってない!!");
                     }
                 }
-
-                // 設置後に次のPLターンへ
-                //nextMode = MODE.FIELD_UPDATE;
             }
         }
     }

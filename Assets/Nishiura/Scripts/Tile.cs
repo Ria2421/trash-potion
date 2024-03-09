@@ -18,7 +18,7 @@ public class Tile : MonoBehaviour
             GetComponent<Renderer>().material.color = new Color(0f, 1f, 0f, 1f);
         }
         
-        if (other.gameObject.tag == "Potion")
+        if (other.gameObject.tag == "Bomb")
         {
             GetComponent<Renderer>().material.color = new Color(1f, 0.3f, 0.3f, 1f);
         }
@@ -31,7 +31,7 @@ public class Tile : MonoBehaviour
             GetComponent<Renderer>().material.color = new Color(1f, 1f, 1f, 1f);
         }
         
-        if (other.gameObject.tag == "Potion")
+        if (other.gameObject.tag == "Bomb")
         {
             GetComponent<Renderer>().material.color = new Color(1f, 1f, 1f, 1f);
         }

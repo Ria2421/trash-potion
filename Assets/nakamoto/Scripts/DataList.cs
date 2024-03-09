@@ -108,6 +108,8 @@ public enum EventID
     PotionGenerate,   // ポーション生成
     PotionComplete,   // 生成成功
     PotionFailure,    // 生成失敗
+    PotionThrow,      // 投擲処理
+    PotionSetPos,     // 投擲位置
 }
 
 /// <summary>
@@ -214,6 +216,19 @@ class MoveData
 
     /// <summary>
     /// 移動先のZ座標
+    /// </summary>
+    public float posZ;
+}
+
+class SetPotionData
+{
+    /// <summary>
+    /// 設置位置のX座標
+    /// </summary>
+    public float posX;
+
+    /// <summary>
+    /// 設置位置のZ座標
     /// </summary>
     public float posZ;
 }

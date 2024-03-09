@@ -344,6 +344,26 @@ public class NetworkManager : MonoBehaviour
 
                         break;
 
+                    case (int)EventID.PotionThrow:
+                        // 投擲フラグを受信
+
+                        // 投擲処理を実行
+                        directorCopy.PlayerThrow();
+
+                        break;
+
+                    case (int)EventID.PotionSetPos:
+
+                        // 受信した設置位置をJsonデシリアライズ
+                        SetPotionData setPotionData = JsonConvert.DeserializeObject<SetPotionData>(jsonString);
+
+                        Vector3 SetPos = new Vector3(setPotionData.posX, 0, setPotionData.posZ);
+
+                        // ポーションを設置
+                        directorCopy.SetPotion(SetPos);
+
+                        break;
+
                     default: 
                         break;
                 }
@@ -523,5 +543,24 @@ public class NetworkManager : MonoBehaviour
         byte[] buffer = Encoding.UTF8.GetBytes(json);         // JSONをbyteに変換
         buffer = buffer.Prepend((byte)status).ToArray();      // 送信データの先頭にイベントIDを付与
         await stream.WriteAsync(buffer, 0, buffer.Length);    // JSON送信処理
+    }
+
+    /// <summary>
+    /// 投擲位置を送信
+    /// </summary>
+    public async void SendThrowPos(float x,float z)
+    {
+        SetPotionData setPotionData = new SetPotionData();
+
+        setPotionData.posX = x;
+        setPotionData.posZ = z;
+
+        // 送信データをJSONシリアライズ
+        string json = JsonConvert.SerializeObject(setPotionData);
+
+        // 送信処理
+        byte[] buffer = Encoding.UTF8.GetBytes(json);                   // JSONをbyteに変換
+        buffer = buffer.Prepend((byte)EventID.PotionSetPos).ToArray();  // 送信データの先頭にイベントIDを付与
+        await stream.WriteAsync(buffer, 0, buffer.Length);              // JSON送信処理
     }
 }

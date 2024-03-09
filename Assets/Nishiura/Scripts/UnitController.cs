@@ -51,6 +51,14 @@ public class UnitController : MonoBehaviour
     }
 
     /// <summary>
+    /// 移動範囲非表示関数
+    /// </summary>
+    public void OffColliderEnable()
+    {
+        GetComponent<BoxCollider>().center = new Vector3(0f, 100f, 0f);
+    }
+
+    /// <summary>
     /// 投擲範囲表示関数
     /// </summary>
     public void OnThrowColliderEnable()
@@ -60,20 +68,21 @@ public class UnitController : MonoBehaviour
     }
 
     /// <summary>
-    /// 移動範囲非表示関数
-    /// </summary>
-    public void OffColliderEnable()
-    {
-        GetComponent<BoxCollider>().center = new Vector3(0f, 100f,0f);
-    }
-
-    /// <summary>
     /// 投擲範囲非表示関数
     /// </summary>
     public void OffThrowColliderEnable()
     {
         colliderObj.GetComponent<BoxCollider>().center = new Vector3(0f, 100f, 0f);
+        //colliderObj.GetComponent<BoxCollider>().enabled = false;
     }
+
+    ///// <summary>
+    ///// 投擲範囲非表示関数
+    ///// </summary>
+    //public void OffThrowColliderEnable()
+    //{
+    //    colliderObj.GetComponent<BoxCollider>().center = new Vector3(0f, 100f, 0f);
+    //}
 
     /// <summary>
     /// 選択時の動作

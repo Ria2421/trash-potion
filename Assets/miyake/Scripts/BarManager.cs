@@ -16,10 +16,11 @@ public class BarManager : MonoBehaviour
     public GameObject Bad;
     public Slider slider;
     public Text timerText;
-    private bool maxValue;
-    private bool isClicked;
+    bool maxValue;
+    bool isClicked;
     bool endCountDown;
-    private NetworkManager networkManager;
+    NetworkManager networkManager;
+    bool gameFlag;
 
     void Start()
     {
@@ -27,6 +28,7 @@ public class BarManager : MonoBehaviour
         maxValue = false;
         isClicked = false;
         endCountDown = false;
+        gameFlag = false;
 
         // ネットワークマネージャーの取得
         networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
@@ -45,23 +47,29 @@ public class BarManager : MonoBehaviour
             {
                 isClicked = true;
 
-                if (slider.value >= 85)
-                {   // 大成功
-                    veryGood.SetActive(true);
-                    // 生成情報の送信
-                    networkManager.SendPotionStatus((int)EventID.PotionComplete);
-                }
-                else if (slider.value >= 50)
-                {   // 成功
-                    good.SetActive(true);
-                    // 生成情報の送信
-                    networkManager.SendPotionStatus((int)EventID.PotionComplete);
-                }
-                else if (slider.value < 50)
-                {   // 失敗
-                    Bad.SetActive(true);
-                    // 失敗情報の送信
-                    networkManager.SendPotionStatus((int)EventID.PotionFailure);
+                if (!gameFlag)
+                {
+                    if (slider.value >= 85)
+                    {   // 大成功
+                        veryGood.SetActive(true);
+                        // 生成情報の送信
+                        networkManager.SendPotionStatus((int)EventID.PotionComplete);
+                        gameFlag = true;
+                    }
+                    else if (slider.value >= 50)
+                    {   // 成功
+                        good.SetActive(true);
+                        // 生成情報の送信
+                        networkManager.SendPotionStatus((int)EventID.PotionComplete);
+                        gameFlag = true;
+                    }
+                    else if (slider.value < 50)
+                    {   // 失敗
+                        Bad.SetActive(true);
+                        // 失敗情報の送信
+                        networkManager.SendPotionStatus((int)EventID.PotionFailure);
+                        gameFlag = true;
+                    }
                 }
 
                 // ミニゲームの終了

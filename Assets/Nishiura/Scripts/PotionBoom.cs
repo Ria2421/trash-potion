@@ -4,6 +4,7 @@
 // Update:02/29
 //
 using UnityEngine;
+using UnityEngine.UI;
 using static TMPro.Examples.ObjectSpin;
 
 public class PotionBoom : MonoBehaviour
@@ -28,15 +29,26 @@ public class PotionBoom : MonoBehaviour
     /// </summary>
     PotionType potionType;
 
+    /// <summary>
+    /// 爆破カウント
+    /// </summary>
+    int bombCnt;
+
+    /// <summary>
+    /// カウントテキスト
+    /// </summary>
+    [SerializeField] Text countText;
+
     void Start()
     {
+        bombCnt = 6;
         potionType = new PotionType();
         gameDirector = GameObject.Find("GameDirector").GetComponent<GameDirector>();
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (bombCnt == 0)
         { //指定番号のプレイヤーを殺害(番号はサーバから取得)
             BoomPotion(type);
         }
@@ -104,5 +116,14 @@ public class PotionBoom : MonoBehaviour
     {
         //ポーションを破壊
         Destroy(this.gameObject);
+    }
+
+    /// <summary>
+    /// ボムのカウントダウン
+    /// </summary>
+    public void bombCntDown()
+    {
+        bombCnt--;
+        countText.text = bombCnt.ToString();
     }
 }

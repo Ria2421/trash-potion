@@ -223,6 +223,11 @@ class MoveData
 class SetPotionData
 {
     /// <summary>
+    /// プレイヤーNo
+    /// </summary>
+    public int plNo;
+
+    /// <summary>
     /// 設置位置のX座標
     /// </summary>
     public float posX;

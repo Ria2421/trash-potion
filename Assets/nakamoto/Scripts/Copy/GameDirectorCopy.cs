@@ -460,6 +460,13 @@ public class GameDirectorCopy : MonoBehaviour
     /// </summary>
     void SelectMode()
     {
+        if (player[nowPlayerType].IsDead == true)
+        {   // 現在ターンのプレイヤーが死んでいたらスキップ
+
+            // 次のターンへ
+            nextMode = MODE.FIELD_UPDATE;
+        }
+
         //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         // 現在のPLターン表示
         turnText.GetComponent<Text>().text = (nowPlayerType + 1).ToString() + "Pのターン";
@@ -625,7 +632,7 @@ public class GameDirectorCopy : MonoBehaviour
         AllTurnNum++;
         allTurnText.text = AllTurnNum.ToString() + "ターン目"; 
 
-        nowPlayerType++;
+        nowPlayerType++;        
     }
 
     int getNextTurn()
@@ -936,7 +943,7 @@ public class GameDirectorCopy : MonoBehaviour
     /// 指定ユニット破壊処理
     /// </summary>
     /// <param name="unitType"></param>
-    public void DestroyUnit(int unitType)
+    public void DestroyUnit(List<int> deadList)
     {
         GameObject Unit;
         for (int i = 0; i < unitData.GetLength(0); i++)
@@ -947,15 +954,19 @@ public class GameDirectorCopy : MonoBehaviour
                 {
                     Unit = unitData[i, j][0];
 
-                    if (Unit.GetComponent<UnitController>().Type == unitType)
-                    { //当該ユニットを殺す
-                        Destroy(Unit);
-                        player[unitType].IsDead = true;
-                        return;
+                    for (int k = 0;k <deadList.Count;k++)
+                    {
+                        if (Unit.GetComponent<UnitController>().Type == deadList[k])
+                        { //当該ユニットを殺す
+                            Destroy(Unit);
+                            player[deadList[k]-1].IsDead = true;
+                        }
                     }
                 }
             }
         }
+
+        Debug.Log("死亡");
     }
 
     /// <summary>
@@ -1068,7 +1079,10 @@ public class GameDirectorCopy : MonoBehaviour
     /// <param name="flag">表示・非表示フラグ</param>
     public void SetMoveIcon(int plNo, bool flag)
     {
-        moveImgs[plNo - 1].SetActive(flag);
+        if (moveImgs[plNo-1] != null) 
+        {
+            moveImgs[plNo - 1].SetActive(flag);
+        }
     }
 
     /// <summary>
@@ -1078,6 +1092,9 @@ public class GameDirectorCopy : MonoBehaviour
     /// <param name="flag">表示・非表示フラグ</param>
     public void SetGenerateIcon(int plNo, bool flag)
     {
-        generateImgs[plNo - 1].SetActive(flag);
+        if(generateImgs[plNo - 1] != null)
+        {
+            generateImgs[plNo - 1].SetActive(flag);
+        }
     }
 }

@@ -8,11 +8,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TutorialMiniGame : MonoBehaviour
+public class TutorialMiniGame1 : MonoBehaviour
 {
     public Text timerText;
     int timer = 0;              //カウントダウンタイマーの変数
-    int randScene = 0;          //ランダムでミニゲームの抽選するための変数
+    int gameNum = 0;          //ランダムでミニゲームの抽選するための変数
     bool isLottery;             //抽選したか
     public GameObject slideGame;        //ミニゲーム1
     public GameObject rouletteGame;     //ミニゲーム2
@@ -74,19 +74,19 @@ public class TutorialMiniGame : MonoBehaviour
     void LotteryGame()
     {
         //1～3の数字をランダムで代入。未満で抽選
-        //randScene = Random.Range(1, 3);
-        randScene = 2;
+        //gameNum = Random.Range(1, 3);
+        gameNum = 2;
 
-        if (randScene == 1)
+        if (gameNum == 1)
         {
             slideGame.SetActive(true);
         }
-        else if (randScene == 2)
+        else if (gameNum == 2)
         {
             ochaGame.SetActive(true);
             ochaGameImg.SetActive(true);
         }
-        else if (randScene == 3)
+        else if (gameNum == 3)
         {
             rouletteGame.SetActive(true);
         }

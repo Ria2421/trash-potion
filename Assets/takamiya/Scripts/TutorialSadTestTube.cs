@@ -13,31 +13,26 @@ public class TutorialSadTestTube : MonoBehaviour
     [SerializeField] float speed;
     public Slider slider;
     private bool isClicked;
-    bool endCountDown;
 
     void Start()
     {
         //slider.value = 94;
         isClicked = false;
-        endCountDown = false;
     }
 
     void Update()
     {
-
-        if (endCountDown)
+        //長押しされている間実行
+        if (Input.GetMouseButtonUp(0))
         {
-            //長押しされている間実行
-            if (Input.GetMouseButtonUp(0))
-            {
-                isClicked = true;
-            }
-
-            //クリックされていなければ実行
-            if (Input.GetMouseButton(0))
-            {
-                slider.value -= speed;
-            }
+            isClicked = true;
         }
+
+        //クリックされていなければ実行
+        if (Input.GetMouseButton(0))
+        {
+            slider.value -= speed;
+        }
+
     }
 }

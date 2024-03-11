@@ -30,10 +30,10 @@ public class TutorialRouletteManager : MonoBehaviour
         Application.targetFrameRate = 60;
         endCountDown = false;
         limit = 5;
-        //limitTime.enabled = false;
+        //limitTime.enabled = true;
         isLimit = false;
         //1ïbÇ≤Ç∆Ç…ä÷êîÇé¿çs
-        //InvokeRepeating("CountDownTimer", 3.0f, 1.0f);
+        InvokeRepeating("CountDownTimer", 3.0f, 1.0f);
     }
 
     // Update is called once per frame
@@ -109,16 +109,16 @@ public class TutorialRouletteManager : MonoBehaviour
         bad.SetActive(true);
     }
 
-    //void CountDownTimer()
-    //{
-    //    limit--;
-    //    limitTime.text = limit.ToString();
-    //    if (limitTime.text == "-1")
-    //    {
-    //        bad.SetActive(true);
-    //        isLimit = true;
-    //        CancelInvoke();
-    //        Destroy(limitTime);
-    //    }
-    //}
+    void CountDownTimer()
+    {
+        //limit--;
+        //limitTime.text = limit.ToString();
+        //if (limitTime.text == "-1")
+        //{
+        //    bad.SetActive(true);
+        //    isLimit = true;
+        //    CancelInvoke();
+        //    Destroy(limitTime);
+        //}
+    }
 }

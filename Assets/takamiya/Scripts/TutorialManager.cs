@@ -16,6 +16,8 @@ public class TutorialManager : MonoBehaviour
     int imageNum;//今何枚目が表示されているかの変数
 
 
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,7 +28,7 @@ public class TutorialManager : MonoBehaviour
     void Update()
     {
         //左クリックが押されたら
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (Input.GetMouseButtonDown(0))
         {
             //最後の画像が表示されていたら
             if (imageNum == TutorialImages.Length - 1)
@@ -45,7 +47,7 @@ public class TutorialManager : MonoBehaviour
             }
         }
         //右クリックが押されたら
-        else if(Input.GetKeyDown(KeyCode.Backspace))
+        else if(Input.GetMouseButtonDown(1))
         {
             //一番最初の画像だったら
             if (imageNum == 0)

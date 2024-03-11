@@ -300,6 +300,12 @@ public class NetworkManager : MonoBehaviour
 
                         Vector3 pos = new Vector3(moveData.posX,0,moveData.posZ);
 
+                        // 現プレイヤーの移動アイコンを非表示に
+                        directorCopy.SetMoveIcon(moveData.plNo, false);
+
+                        // 次ターンのプレイヤーの移動アイコンを表示
+                        directorCopy.SetMoveIcon(moveData.plNo + 1, true);
+
                         // 指定タイルへ現在ターンのPLオブジェクトを移動
                         directorCopy.MoveUnit(moveData.z, moveData.x, pos);
 
@@ -313,6 +319,9 @@ public class NetworkManager : MonoBehaviour
 
                         // 受信PLNoをJsonデシリアライズ
                         int plNo = JsonConvert.DeserializeObject<int>(jsonString);
+
+                        // 生成アイコン表示
+                        directorCopy.SetGenerateIcon(plNo, true);
 
                         // ポーションステータスを生成中に変更
                         directorCopy.ChangePotionStatus(plNo, 2);
@@ -328,6 +337,9 @@ public class NetworkManager : MonoBehaviour
                         // 指定したPLNoのポーションを生成
                         directorCopy.GeneratePotion(plNo);
 
+                        // 生成アイコン表示
+                        directorCopy.SetGenerateIcon(plNo, false);
+
                         // ポーションステータスを生成中に変更
                         directorCopy.ChangePotionStatus(plNo, 0);
 
@@ -338,6 +350,9 @@ public class NetworkManager : MonoBehaviour
 
                         // 受信PLNoをJsonデシリアライズ
                         plNo = JsonConvert.DeserializeObject<int>(jsonString);
+
+                        // 生成アイコン表示
+                        directorCopy.SetGenerateIcon(plNo, false);
 
                         // ポーションステータスを生成中に変更
                         directorCopy.ChangePotionStatus(plNo, 1);

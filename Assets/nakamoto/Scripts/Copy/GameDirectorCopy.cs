@@ -210,6 +210,16 @@ public class GameDirectorCopy : MonoBehaviour
     //+++++++++++++++++++++++++++++++++++++++++
     bool generateFlag;
 
+    //+++++++++++++++++++++++++++++++++++++++++
+    // キャラ移動アイコン格納用
+    //+++++++++++++++++++++++++++++++++++++++++
+    GameObject[] moveImgs = new GameObject[playerNum];
+
+    //+++++++++++++++++++++++++++++++++++++++++
+    // キャラ生成アイコン格納用
+    //+++++++++++++++++++++++++++++++++++++++++
+    GameObject[] generateImgs = new GameObject[playerNum];
+
     ///========================================
     ///
     /// メソッド
@@ -363,6 +373,21 @@ public class GameDirectorCopy : MonoBehaviour
                 }
             }
         }
+
+        for (int i = 0; i < playerNum; i++)
+        {   // キャラアイコン情報取得
+            moveImgs[i] = GameObject.Find((i + 1).ToString() + "MoveImg");
+            generateImgs[i] = GameObject.Find((i + 1).ToString() + "GenerateImg");
+        }
+
+        for (int i = 0; i < playerNum; i++)
+        {   // キャラアイコンを非表示に
+            moveImgs[i].SetActive(false);
+            generateImgs[i].SetActive(false);
+        }
+
+        // 1Pの移動アイコンを表示
+        SetMoveIcon(1, true);
 
         nowTurn = 0;
         nextMode = MODE.MOVE_SELECT;
@@ -1034,5 +1059,25 @@ public class GameDirectorCopy : MonoBehaviour
             }
         }
         return new Vector3(0, 0, 0);
+    }
+
+    /// <summary>
+    /// 移動アイコン表示
+    /// </summary>
+    /// <param name="plNo">プレイヤーNo</param>
+    /// <param name="flag">表示・非表示フラグ</param>
+    public void SetMoveIcon(int plNo, bool flag)
+    {
+        moveImgs[plNo - 1].SetActive(flag);
+    }
+
+    /// <summary>
+    /// 生成アイコン表示
+    /// </summary>
+    /// <param name="plNo">プレイヤーNo</param>
+    /// <param name="flag">表示・非表示フラグ</param>
+    public void SetGenerateIcon(int plNo, bool flag)
+    {
+        generateImgs[plNo - 1].SetActive(flag);
     }
 }

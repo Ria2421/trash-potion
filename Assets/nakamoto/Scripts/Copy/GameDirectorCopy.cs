@@ -20,11 +20,11 @@ public class GameDirectorCopy : MonoBehaviour
         {0,0,0,0,0,0,0,0,0,0,0},//手前
         {0,2,1,1,1,1,1,1,1,2,0},
         {0,1,1,1,1,1,1,1,1,1,0},
-        {0,1,1,3,3,1,3,3,1,1,0},
+        {0,1,1,1,3,1,3,1,1,1,0},
         {0,1,1,3,1,1,1,3,1,1,0},
         {0,1,1,1,1,1,1,1,1,1,0},
         {0,1,1,3,1,1,1,3,1,1,0},
-        {0,1,1,3,3,1,3,3,1,1,0},
+        {0,1,1,1,3,1,3,1,1,1,0},
         {0,1,1,1,1,1,1,1,1,1,0},
         {0,2,1,1,1,1,1,1,1,2,0},
         {0,0,0,0,0,0,0,0,0,0,0},
@@ -60,6 +60,7 @@ public class GameDirectorCopy : MonoBehaviour
         FIELD_UPDATE,
         WAIT_TURN_END,
         TURN_CHANGE,
+        END_GAME,
     }
 
     ///========================================
@@ -219,6 +220,21 @@ public class GameDirectorCopy : MonoBehaviour
     // キャラ生成アイコン格納用
     //+++++++++++++++++++++++++++++++++++++++++
     GameObject[] generateImgs = new GameObject[playerNum];
+
+    //+++++++++++++++++++++++++++++++++++++++++
+    // 死亡人数カウント用変数
+    //+++++++++++++++++++++++++++++++++++++++++
+    int deadPlayerCnt;
+
+    //+++++++++++++++++++++++++++++++++++++++++
+    // 勝利テキスト格納用
+    //+++++++++++++++++++++++++++++++++++++++++
+    [SerializeField] GameObject winText;
+
+    //+++++++++++++++++++++++++++++++++++++++++
+    // 勝利PLNo
+    //+++++++++++++++++++++++++++++++++++++++++
+    int winnerNum;
 
     ///========================================
     ///
@@ -430,6 +446,10 @@ public class GameDirectorCopy : MonoBehaviour
         {
             TurnChangeMode();
         }
+        else if(MODE.END_GAME == nowMode)
+        {
+            GameEnd();
+        }
     }
 
     /// <summary>
@@ -449,6 +469,9 @@ public class GameDirectorCopy : MonoBehaviour
         {
         }
         else if (MODE.FIELD_UPDATE == next)
+        {
+        }
+        else if(MODE.END_GAME == next)
         {
         }
         nowMode = next;
@@ -609,7 +632,6 @@ public class GameDirectorCopy : MonoBehaviour
 
         //+++++++++++++++++
         // 爆発判定
-        //+++++++++++++++++
 
         //objectというタグ名のゲームオブジェクトを複数取得したい時
         GameObject[] objects = GameObject.FindGameObjectsWithTag("Bomb");
@@ -622,17 +644,20 @@ public class GameDirectorCopy : MonoBehaviour
         }
         //+++++++++++++++++
 
-        //+++++++++++++++++
-        // 終了判定
-        //+++++++++++++++++
+        if(deadPlayerCnt >= 3)
+        {   // 終了判定
+            nextMode = MODE.END_GAME;
+        }
+        else
+        {
+            nextMode = MODE.MOVE_SELECT;
 
-        nextMode = MODE.MOVE_SELECT;
+            // 累計ターン表示
+            AllTurnNum++;
+            allTurnText.text = AllTurnNum.ToString() + "ターン目";
 
-        // 累計ターン表示
-        AllTurnNum++;
-        allTurnText.text = AllTurnNum.ToString() + "ターン目"; 
-
-        nowPlayerType++;        
+            nowPlayerType++;
+        }     
     }
 
     int getNextTurn()
@@ -960,13 +985,14 @@ public class GameDirectorCopy : MonoBehaviour
                         { //当該ユニットを殺す
                             Destroy(Unit);
                             player[deadList[k]-1].IsDead = true;
+
+                            deadPlayerCnt++;
+                            break;
                         }
                     }
                 }
             }
         }
-
-        Debug.Log("死亡");
     }
 
     /// <summary>
@@ -1096,5 +1122,41 @@ public class GameDirectorCopy : MonoBehaviour
         {
             generateImgs[plNo - 1].SetActive(flag);
         }
+    }
+
+    /// <summary>
+    /// ゲーム終了処理
+    /// </summary>
+    void GameEnd()
+    {
+        for (int i = 0; i < player.Length; i++)
+        {
+            if (player[i].IsDead == false)
+            {   // 勝利したPLNoを取得
+                winnerNum = player[i].PlayerNo;
+            }
+        }
+
+        // 勝利テキストを有効化
+        winText.SetActive(true);
+
+        if(winnerNum == 0) 
+        {   // 勝者が0人の時
+            winText.GetComponent<Text>().text = "引き分け";
+        }
+        else
+        {   // 誰か勝者がいるとき
+            winText.GetComponent<Text>().text = winnerNum.ToString() + "の勝ち!";
+        }
+
+        Invoke("InResultScene",1.0f);
+    }
+
+    void InResultScene()
+    {
+        /* フェード処理 (黒)  
+             ( "シーン名",フェードの色, 速さ);  */
+        Initiate.DoneFading();
+        Initiate.Fade("Result", Color.black, 1.5f);
     }
 }

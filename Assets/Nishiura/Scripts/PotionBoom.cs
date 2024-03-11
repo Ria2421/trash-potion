@@ -42,7 +42,7 @@ public class PotionBoom : MonoBehaviour
 
     void Start()
     {
-        bombCnt = 6;
+        bombCnt = 2;
         potionType = new PotionType();
         gameDirector = GameObject.Find("GameDirector").GetComponent<GameDirectorCopy>();
     }

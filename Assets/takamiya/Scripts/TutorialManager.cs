@@ -33,7 +33,7 @@ public class TutorialManager : MonoBehaviour
             //ÅŒã‚Ì‰æ‘œ‚ª•\¦‚³‚ê‚Ä‚¢‚½‚ç
             if (imageNum == TutorialImages.Length - 1)
             {
-                Initiate.Fade("Title", Color.black, 1.0f);
+                Initiate.Fade("MiniGameScene", Color.black, 1.0f);
             }
             else
             {

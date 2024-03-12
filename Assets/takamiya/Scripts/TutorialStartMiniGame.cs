@@ -21,10 +21,19 @@ public class StartMiniGame : MonoBehaviour
 
     public GameObject AgainButton; //もう一度ボタン
     public GameObject NextButton;  //次のボタン
+    public GameObject BackTitleButton;//タイトルに戻るボタン
 
     TutorialBarManager tutorialBarManager;
 
     TutorialTestTubeManager tutorialTestTube;
+
+    TutorialSadTestTube tutorialSadTestTube;
+
+    TutorialRouletteManager tutorialRouletteManager;
+
+    TutorialStartRoulette tutorialStartRoulette;
+
+    StartMiniGame tutorialMiniGame;
 
     GameObject countDownObject;
 
@@ -48,7 +57,16 @@ public class StartMiniGame : MonoBehaviour
        GameObject ochaGameObject = parentObject.transform.Find("OchaGame").gameObject;
        GameObject  SliderObject = ochaGameObject.transform.Find("Slider").gameObject;
         tutorialTestTube = SliderObject.GetComponent<TutorialTestTubeManager>();
-        
+
+        GameObject testTube2SliderObject = ochaGameObject.transform.Find("TestTube2Slider").gameObject;
+        tutorialSadTestTube = testTube2SliderObject.GetComponent<TutorialSadTestTube>();
+
+        GameObject miniGamesObject = GameObject.Find("MiniGames");
+        GameObject rouletteGameObject = miniGamesObject.transform.Find("RouletteGame").gameObject;
+        GameObject rouletteManagerObject = rouletteGameObject.transform.Find("RouletteManager").gameObject;
+        tutorialRouletteManager = rouletteManagerObject.GetComponent<TutorialRouletteManager>();
+
+        tutorialMiniGame = GameObject.Find("MiniGameManager").GetComponent<StartMiniGame>();
 
         Init();
     }
@@ -65,6 +83,9 @@ public class StartMiniGame : MonoBehaviour
         //1秒ごとに関数を実行
         InvokeRepeating("CountDownTimer", 1.0f, 0.7f);
     }
+    /// <summary>
+    /// もう一度ミニゲームを繰り返す
+    /// </summary>
     public void Retry()
     {
         switch (gameNum)
@@ -75,12 +96,17 @@ public class StartMiniGame : MonoBehaviour
                 break;
             case GAMEMODE.OCHA_MODE:
                 tutorialTestTube.Init();
+                tutorialSadTestTube.Init();
+                Init();
+                break;
+            case GAMEMODE.ROULETTE_MODE:
+                tutorialRouletteManager.Init();
                 Init();
                 break;
 
-
-
         }
+        tutorialMiniGame.BackTitleButton.SetActive(false);
+        tutorialMiniGame.AgainButton.SetActive(false);
     }
 
     //カウントダウン処理
@@ -112,6 +138,15 @@ public class StartMiniGame : MonoBehaviour
             if(gameNum == GAMEMODE.SLIDE_MODE)
             {
                 tutorialBarManager.endCountDown = true;
+            }
+            else if(gameNum == GAMEMODE.OCHA_MODE)
+            {
+                tutorialTestTube.endCountDown = true;
+                tutorialSadTestTube.endCountDown = true;
+            }
+            else if(gameNum == GAMEMODE.ROULETTE_MODE)
+            {
+                tutorialRouletteManager.endCountDown = true;
             }
             Invoke("TextDestroy", 0.7f);
         }
@@ -145,9 +180,11 @@ public class StartMiniGame : MonoBehaviour
     {
         //Destroy(timerText);
         countDownObject.SetActive(false);
-
     }
 
+    /// <summary>
+    /// 次のミニゲームに行く時の処理
+    /// </summary>
     public void NextGameButton()
     {
         switch (gameNum)
@@ -168,22 +205,27 @@ public class StartMiniGame : MonoBehaviour
                 break;
 
             case GAMEMODE.OCHA_MODE://おちゃゲームの場合
-                ochaGame.SetActive(false);
-                ochaGameImg.SetActive(false);
-                rouletteGame.SetActive(true);
-                tutorialTestTube.good.SetActive(false);
-                tutorialTestTube.veryGood.SetActive(false);
-                tutorialTestTube.Bad.SetActive(false);
-                NextButton.SetActive(false);
-                AgainButton.SetActive(false);
+                //ochaGame.SetActive(false);
+                //ochaGameImg.SetActive(false);
+                //rouletteGame.SetActive(true);
+                //tutorialTestTube.good.SetActive(false);
+                //tutorialTestTube.veryGood.SetActive(false);
+                //tutorialTestTube.Bad.SetActive(false);
+                //NextButton.SetActive(false);
+                //AgainButton.SetActive(false);
+                tutorialTestTube.DestroyMiniGame();
+                gameNum++;
+                Init();
                 break;
 
             case GAMEMODE.ROULETTE_MODE://ルーレットゲームの場合
-                rouletteGame.SetActive(true);
+                Initiate.Fade("Title", Color.black, 1.0f);
                 break;
 
             default:
                 break;
         }
+        tutorialMiniGame.NextButton.SetActive(false);
+        tutorialMiniGame.AgainButton.SetActive(false);
     }
 }

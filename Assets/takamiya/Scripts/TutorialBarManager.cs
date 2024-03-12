@@ -100,12 +100,6 @@ public class TutorialBarManager : MonoBehaviour
                 }
             }
         }
-        else if(!endCountDown)
-        {
-            slider.value = 0;
-            tutorialMiniGame.NextButton.SetActive(false);
-            tutorialMiniGame.AgainButton.SetActive(false);
-        }
     }
 
     /// <summary>

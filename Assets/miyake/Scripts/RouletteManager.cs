@@ -19,7 +19,7 @@ public class RouletteManager : MonoBehaviour
     public Text timerText;
     float angle = 0;                       //‰ñ“]‚ÌŠp“x‚Ì•Ï”
     bool endCountDown;
-    //public Text limitTime;              //ƒ~ƒjƒQ[ƒ€‚Ì§ŒÀŠÔ
+    public Text limitTime;              //ƒ~ƒjƒQ[ƒ€‚Ì§ŒÀŠÔ
     int limit;                          //§ŒÀŠÔ‚Ì•Ï”
     bool isLimit;                     //§ŒÀŠÔ‚ğ’´‚¦‚½‚©‚Ç‚¤‚©
 
@@ -30,7 +30,7 @@ public class RouletteManager : MonoBehaviour
         Application.targetFrameRate = 60;
         endCountDown = false;
         limit = 5;
-        //limitTime.enabled = false;
+        limitTime.enabled = false;
         isLimit = false;
         //1•b‚²‚Æ‚ÉŠÖ”‚ğÀs
         InvokeRepeating("CountDownTimer", 3.0f, 1.0f);
@@ -44,7 +44,7 @@ public class RouletteManager : MonoBehaviour
             if (timerText.text == "GO!!")
             {
                 endCountDown = true;
-                //limitTime.enabled = true;
+                limitTime.enabled = true;
             }
             if (endCountDown)
             {
@@ -114,16 +114,16 @@ public class RouletteManager : MonoBehaviour
         bad.SetActive(true);
     }
 
-    //void CountDownTimer()
-    //{
-    //    limit--;
-    //    limitTime.text = limit.ToString();
-    //    if (limitTime.text == "-1")
-    //    {
-    //        bad.SetActive(true);
-    //        isLimit = true;
-    //        CancelInvoke();
-    //        Destroy(limitTime);
-    //    }
-    //}
+    void CountDownTimer()
+    {
+        limit--;
+        limitTime.text = limit.ToString();
+        if (limitTime.text == "-1")
+        {
+            bad.SetActive(true);
+            isLimit = true;
+            CancelInvoke();
+            Destroy(limitTime);
+        }
+    }
 }

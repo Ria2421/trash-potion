@@ -12,13 +12,14 @@ public class TutorialStartRoulette : MonoBehaviour
 {
     public Text timerText;
     float randAngle = 0;        //ƒ‰ƒ“ƒ_ƒ€‚Å‰ñ“]‚·‚éŠp“x‚Ì•Ï”
-    bool endCountDown;
-
+    public bool endCountDown;
     // Start is called before the first frame update
     void Start()
     {
-        endCountDown = false;
-
+        Init();
+    }
+    public void Init()
+    {
         if (endCountDown)
         {
             randAngle = Random.Range(-180, 180);

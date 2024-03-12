@@ -10,17 +10,20 @@ using UnityEngine.UI;
 
 public class TutorialTestTubeManager : MonoBehaviour
 {
-    public Text timerText;
-    int timer = 0;              //カウントダウンタイマーの変数
-    [SerializeField] float speed;
-    public GameObject good;//goodテキスト指定
-    public GameObject veryGood;//veryGoodテキストの指定
-    public GameObject Bad;//Badテキスト指定
-    [SerializeField] Slider slider;//スライダーの指定
+    public Text timerText;                 //タイマーテキストの指定
+    int timer = 0;                        //カウントダウンタイマーの変数
+    [SerializeField] float speed;         //速度調整
+    public GameObject good;              //goodテキスト指定
+    public GameObject veryGood;         //veryGoodテキストの指定
+    public GameObject Bad;             //Badテキスト指定
+    [SerializeField] Slider slider;   //スライダーの指定
+
     StartMiniGame tutorialMiniGame;
     TutorialBarManager tutorialBarManager;
 
     private bool _endCountDown;
+
+    private bool isClicked;
 
     public bool endCountDown
     {
@@ -47,6 +50,7 @@ public class TutorialTestTubeManager : MonoBehaviour
         //timer = 3;
 
         endCountDown = false;
+        isClicked = false;
 
         tutorialMiniGame.gameNum = StartMiniGame.GAMEMODE.OCHA_MODE;
 
@@ -64,87 +68,61 @@ public class TutorialTestTubeManager : MonoBehaviour
     {
         if(endCountDown)
         {
-            //クリックを離した瞬間の判定
-            if (Input.GetMouseButtonUp(0))
+            if(isClicked == false)
             {
-                if (slider.value >= 94)
+                //クリックを離した瞬間の判定
+                if (Input.GetMouseButtonUp(0))
                 {
-                    Bad.SetActive(true);
-                }
-                else if (slider.value >= 68 && slider.value < 84)
-                {
-                    good.SetActive(true);
-                }
-                else if (slider.value >= 84 && slider.value < 94)
-                {
-                    veryGood.SetActive(true);
-                }
-                else if (slider.value < 68)
-                {
-                    Bad.SetActive(true);
-                }
-                tutorialMiniGame.NextButton.SetActive(true);
-                tutorialMiniGame.AgainButton.SetActive(true);
+                    isClicked = true;
+                    if (slider.value >= 94)
+                    {
+                        Bad.SetActive(true);
+                    }
+                    else if (slider.value >= 68 && slider.value < 84)
+                    {
+                        good.SetActive(true);
+                    }
+                    else if (slider.value >= 84 && slider.value < 94)
+                    {
+                        veryGood.SetActive(true);
+                    }
+                    else if (slider.value < 68)
+                    {
+                        Bad.SetActive(true);
+                    }
+                    tutorialMiniGame.NextButton.SetActive(true);
+                    tutorialMiniGame.AgainButton.SetActive(true);
 
-                // ミニゲームの終了
-                Invoke("MiniGameDestroy", 1f);
-            }
-            //クリックされている間実行
-            if (Input.GetMouseButton(0))
-            {
-                slider.value += speed;
+                    // ミニゲームの終了
+                    //Invoke("MiniGameDestroy", 1f);
 
-                if (slider.value >= 94)
+                }
+                //クリックされている間実行
+                if (Input.GetMouseButton(0))
                 {
-                    Bad.SetActive(true);
+                    slider.value += speed;
+
+                    if (slider.value >= 94)
+                    {
+                        Bad.SetActive(true);
+                    }
                 }
             }
         }
-        else if(!endCountDown)
-        {
-            slider.value = 0;
-            tutorialMiniGame.NextButton.SetActive(false);
-            tutorialMiniGame.AgainButton.SetActive(false);
-        }
-
+       
     }
     /// <summary>
     /// ミニゲームの破棄
     /// </summary>
-    private void MiniGameDestroy()
+    public void DestroyMiniGame()
     {
         // ミニゲームを終了
         //Destroy(GameObject.Find("MiniGames"));
+        veryGood.SetActive(false);
+        good.SetActive(false);
+        Bad.SetActive(false);
+        Destroy(GameObject.Find("OchaGame"));
+        Destroy(GameObject.Find("OchaGameimgs"));
 
     }
-
-    //void CountDownTimer()
-    //{
-   
-    //    //カウントダウンしてタイマーのテキストに秒数を設定
-    //    timer--;
-    //    timerText.text = timer.ToString();
-    //    if (timerText.text == "2")
-    //    {
-    //        timerText.color = Color.yellow;
-    //    }
-    //    else if (timerText.text == "1")
-    //    {
-    //        timerText.color = Color.red;
-    //    }
-
-    //    //timerが0になったら終了
-    //    if (timer == 0)
-    //    {
-    //        //Invokeをやめる
-    //        CancelInvoke();
-    //        timerText.text = "GO!!";
-    //        if(tutorialMiniGame.gameNum == StartMiniGame.GAMEMODE.OCHA_MODE)
-    //        {
-    //            tutorialBarManager.endCountDown = true;
-    //        }
-            
-    //        Invoke("TextDestroy", 0.7f);
-    //    }
-    //}
 }

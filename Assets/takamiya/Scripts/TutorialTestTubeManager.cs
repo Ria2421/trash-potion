@@ -47,8 +47,6 @@ public class TutorialTestTubeManager : MonoBehaviour
     {
         slider.value = 0;//初期化
 
-        //timer = 3;
-
         endCountDown = false;
         isClicked = false;
 
@@ -57,11 +55,6 @@ public class TutorialTestTubeManager : MonoBehaviour
         veryGood.SetActive(false);
         good.SetActive(false);
         Bad.SetActive(false);
-
-        //1秒ごとに関数を実行
-        //InvokeRepeating("CountDownTimer", 1.0f, 0.7f);
-
-        //tutorialBarManager = GameObject.Find("Slider").GetComponent<TutorialBarManager>();
     }
 
     void Update()
@@ -92,10 +85,6 @@ public class TutorialTestTubeManager : MonoBehaviour
                     }
                     tutorialMiniGame.NextButton.SetActive(true);
                     tutorialMiniGame.AgainButton.SetActive(true);
-
-                    // ミニゲームの終了
-                    //Invoke("MiniGameDestroy", 1f);
-
                 }
                 //クリックされている間実行
                 if (Input.GetMouseButton(0))
@@ -117,7 +106,6 @@ public class TutorialTestTubeManager : MonoBehaviour
     public void DestroyMiniGame()
     {
         // ミニゲームを終了
-        //Destroy(GameObject.Find("MiniGames"));
         veryGood.SetActive(false);
         good.SetActive(false);
         Bad.SetActive(false);

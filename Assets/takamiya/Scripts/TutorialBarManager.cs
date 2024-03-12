@@ -113,6 +113,4 @@ public class TutorialBarManager : MonoBehaviour
         Bad.SetActive(false);
         Destroy(GameObject.Find("Slidegame"));
     }
-
-
 }

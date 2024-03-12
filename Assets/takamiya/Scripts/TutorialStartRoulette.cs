@@ -10,27 +10,13 @@ using UnityEngine.UI;
 
 public class TutorialStartRoulette : MonoBehaviour
 {
-    public Text timerText;
     float randAngle = 0;        //ƒ‰ƒ“ƒ_ƒ€‚Å‰ñ“]‚·‚éŠp“x‚Ì•Ï”
-    public bool endCountDown;
-    // Start is called before the first frame update
-    void Start()
+   
+    public void LotteryAngle()
     {
-        Init();
-    }
-    public void Init()
-    {
-        if (endCountDown)
-        {
-            randAngle = Random.Range(-180, 180);
+        randAngle = Random.Range(-180, 180);
+        //randAngle = 180;
 
-            transform.eulerAngles = new Vector3(0, 0, randAngle);
-        }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        transform.eulerAngles = new Vector3(0, 0, randAngle);
     }
 }

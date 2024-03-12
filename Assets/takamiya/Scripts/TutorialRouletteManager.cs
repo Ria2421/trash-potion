@@ -3,9 +3,6 @@
 //Day:2/28
 //ルーレット処理
 //==============================================
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,13 +12,14 @@ public class TutorialRouletteManager : MonoBehaviour
     public GameObject verygood;
     public GameObject good;
     public GameObject bad;
-    public GameObject roulette;            //ルーレット本体
+    public GameObject roulette;           //ルーレット本体
     public Text timerText;
-    float angle = 0;                       //回転の角度の変数
+    public float angle = 0;              //回転の角度の変数
     public bool endCountDown;
     public Text limitTime;              //ミニゲームの制限時間
-    int limit;                          //制限時間の変数
+    int limit;                         //制限時間の変数
     bool isLimit;                     //制限時間を超えたかどうか
+    private bool isClicked;
 
     StartMiniGame tutorialMiniGame;
 
@@ -39,16 +37,21 @@ public class TutorialRouletteManager : MonoBehaviour
         limit = 5;
         limitTime.enabled = true;
         isLimit = false;
+        isClicked = false;
         verygood.SetActive(false);
         good.SetActive(false);
         bad.SetActive(false);
         //1秒ごとに関数を実行
-        InvokeRepeating("CountDownTimer", 3.0f, 1.0f);
+        //InvokeRepeating("CountDownTimer", 3.0f, 1.0f);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(isClicked ==true)
+        {
+            return;
+        }
         if (!isLimit)
         {
             if (endCountDown)
@@ -58,7 +61,8 @@ public class TutorialRouletteManager : MonoBehaviour
 
                 if (Input.GetMouseButtonDown(0))
                 {//左クリックされたら
-                    rouletteSpeed = 0;
+                    isClicked = true;
+                    //rouletteSpeed = 0;
                     Judge();
                     CancelInvoke();
                     tutorialMiniGame.BackTitleButton.SetActive(true);
@@ -71,18 +75,16 @@ public class TutorialRouletteManager : MonoBehaviour
     //判定処理
     void Judge()
     {
-
-        angle = roulette.transform.eulerAngles.y;
-        float angleA = (174 + angle) % 360;     //大成功の端
-        float angleB = (201 + angle) % 360;     //大成功の端
-        float angleC = (133 + angle) % 360;     //成功の端
-        float angleD = (244 + angle) % 360;     //成功の端
-
+        angle = roulette.transform.eulerAngles.z;
+        float angleA = (155 + angle) % 360;     //大成功の端
+        float angleB = (183 + angle) % 360;     //大成功の端
+        float angleC = (110 + angle) % 360;     //成功の端
+        float angleD = (229 + angle) % 360;     //成功の端
 
         //大成功
         if (angleA > angleB)
         {//360度を超えていたら
-            if ((angleA <= transform.eulerAngles.y && transform.eulerAngles.y <= 360) || (0 <= transform.eulerAngles.y && transform.eulerAngles.y <= angleB))
+            if ((angleA <= transform.eulerAngles.z && transform.eulerAngles.z <= 360) || (0 <= transform.eulerAngles.z && transform.eulerAngles.z <= angleB))
             {
                 verygood.SetActive(true);
 
@@ -91,18 +93,17 @@ public class TutorialRouletteManager : MonoBehaviour
         }
         else
         {
-            if (transform.eulerAngles.y >= angleA && transform.eulerAngles.y <= angleB)
+            if (transform.eulerAngles.z >= angleA && transform.eulerAngles.z <= angleB)
             {
                 verygood.SetActive(true);
                 return;
             }
         }
 
-
         //成功
         if (angleC > angleD)
         {
-            if ((angleC <= transform.eulerAngles.y && transform.eulerAngles.y <= 360) || (0 <= transform.eulerAngles.y && transform.eulerAngles.y <= angleD))
+            if ((angleC <= transform.eulerAngles.z && transform.eulerAngles.z <= 360) || (0 <= transform.eulerAngles.z && transform.eulerAngles.z <= angleD))
             {
                 good.SetActive(true);
                 return;
@@ -110,7 +111,7 @@ public class TutorialRouletteManager : MonoBehaviour
         }
         else
         {
-            if (transform.eulerAngles.y >= angleC && transform.eulerAngles.y <= angleD)
+            if (transform.eulerAngles.z >= angleC && transform.eulerAngles.z <= angleD)
             {
                 good.SetActive(true);
                 return;
@@ -130,7 +131,6 @@ public class TutorialRouletteManager : MonoBehaviour
             bad.SetActive(true);
             isLimit = true;
             CancelInvoke();
-            //Destroy(limitTime);
         }
     }
 }

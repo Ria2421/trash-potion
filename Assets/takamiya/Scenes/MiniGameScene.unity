@@ -3562,6 +3562,7 @@ MonoBehaviour:
   bad: {fileID: 4559448808030362329}
   roulette: {fileID: 9016178436353591304}
   timerText: {fileID: 8202955392278660286}
+  angle: 0
   endCountDown: 0
   limitTime: {fileID: 8202955392278660286}
 --- !u!4 &7232242813824480109
@@ -4298,8 +4299,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dac0243b7253ae4da39eca4d2d0f69d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timerText: {fileID: 8202955392278660286}
-  endCountDown: 0
 --- !u!4 &9203632834721814775
 Transform:
   m_ObjectHideFlags: 0

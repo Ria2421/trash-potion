@@ -32,7 +32,9 @@ public class NetworkManager : MonoBehaviour
     /// <summary>
     /// 接続先IPアドレス
     /// </summary>
-    const string ipAddress = "20.196.200.136";
+    const string ipAddress = "127.0.0.1";
+
+    // ↑ローカル時は"127.0.0.1"
 
     /// <summary>
     /// ポート番号
@@ -300,20 +302,6 @@ public class NetworkManager : MonoBehaviour
 
                         Vector3 pos = new Vector3(moveData.posX,0,moveData.posZ);
 
-                        //// 現プレイヤーの移動アイコンを非表示に
-                        //directorCopy.SetMoveIcon(moveData.plNo, false);
-
-                        //if(moveData.plNo == 4)
-                        //{
-                        //    // 次ターンのプレイヤーの移動アイコンを表示
-                        //    directorCopy.SetMoveIcon(1, true);
-                        //}
-                        //else
-                        //{
-                        //    // 次ターンのプレイヤーの移動アイコンを表示
-                        //    directorCopy.SetMoveIcon(moveData.plNo + 1, true);
-                        //}
-
                         // 指定タイルへ現在ターンのPLオブジェクトを移動
                         directorCopy.MoveUnit(moveData.z, moveData.x, pos);
 
@@ -381,20 +369,6 @@ public class NetworkManager : MonoBehaviour
                         SetPotionData setPotionData = JsonConvert.DeserializeObject<SetPotionData>(jsonString);
 
                         Vector3 SetPos = new Vector3(setPotionData.posX, 0, setPotionData.posZ);
-
-                        //// 現プレイヤーの移動アイコンを非表示に
-                        //directorCopy.SetMoveIcon(setPotionData.plNo, false);
-
-                        //if (setPotionData.plNo == 4)
-                        //{
-                        //    // 次ターンのプレイヤーの移動アイコンを表示
-                        //    directorCopy.SetMoveIcon(1, true);
-                        //}
-                        //else
-                        //{
-                        //    // 次ターンのプレイヤーの移動アイコンを表示
-                        //    directorCopy.SetMoveIcon(setPotionData.plNo + 1, true);
-                        //}
 
                         // ポーションを設置
                         directorCopy.SetPotion(SetPos);

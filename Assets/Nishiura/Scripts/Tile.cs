@@ -8,19 +8,54 @@ using UnityEngine;
 public class Tile : MonoBehaviour
 {
     /// <summary>
+    /// プレイヤーフラグ
+    /// </summary>
+    bool playerFlag;
+
+    /// <summary>
+    /// ボムフラグ
+    /// </summary>
+    bool bombFlag;
+
+    /// <summary>
+    /// 更新処理
+    /// </summary>
+    void Update()
+    {
+
+    }
+
+    /// <summary>
     /// 可動域タイル変色関数
     /// </summary>
     /// <param name="collision"></param>
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.tag == "Player")
         {
-            GetComponent<Renderer>().material.color = new Color(0f, 1f, 0f, 1f);
+            playerFlag = true;
         }
-        
+
         if (other.gameObject.tag == "Bomb")
         {
+            bombFlag = true;
+        }
+
+        if (playerFlag)
+        {
+            GetComponent<Renderer>().material.color = new Color(0f, 1f, 0f, 1f);
+        }
+        else if (bombFlag)
+        {
             GetComponent<Renderer>().material.color = new Color(1f, 0.3f, 0.3f, 1f);
+        }
+        else if (playerFlag && bombFlag)
+        {
+            GetComponent<Renderer>().material.color = new Color(0f, 1f, 0f, 1f);
+        }
+        else
+        {
+            GetComponent<Renderer>().material.color = new Color(1f, 1f, 1f, 1f);
         }
     }
 
@@ -28,10 +63,27 @@ public class Tile : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
-            GetComponent<Renderer>().material.color = new Color(1f, 1f, 1f, 1f);
+            playerFlag = false;
         }
         
         if (other.gameObject.tag == "Bomb")
+        {
+            bombFlag = false;
+        }
+
+        if (playerFlag)
+        {
+            GetComponent<Renderer>().material.color = new Color(0f, 1f, 0f, 1f);
+        }
+        else if (bombFlag)
+        {
+            GetComponent<Renderer>().material.color = new Color(1f, 0.3f, 0.3f, 1f);
+        }
+        else if (playerFlag && bombFlag)
+        {
+            GetComponent<Renderer>().material.color = new Color(0f, 1f, 0f, 1f);
+        }
+        else
         {
             GetComponent<Renderer>().material.color = new Color(1f, 1f, 1f, 1f);
         }

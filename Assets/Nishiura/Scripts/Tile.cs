@@ -18,14 +18,6 @@ public class Tile : MonoBehaviour
     bool bombFlag;
 
     /// <summary>
-    /// 更新処理
-    /// </summary>
-    void Update()
-    {
-
-    }
-
-    /// <summary>
     /// 可動域タイル変色関数
     /// </summary>
     /// <param name="collision"></param>
@@ -87,5 +79,13 @@ public class Tile : MonoBehaviour
         {
             GetComponent<Renderer>().material.color = new Color(1f, 1f, 1f, 1f);
         }
+    }
+
+    /// <summary>
+    /// 現在のプレイヤーフラグの状況
+    /// </summary>
+    public bool ReturnPlayerFlag()
+    {
+        return playerFlag;
     }
 }

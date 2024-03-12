@@ -434,6 +434,11 @@ public class NetworkManager : MonoBehaviour
     /// </summary>
     public async void sendUserData()
     {
+        if(nameInput.GetComponent<InputField>().text == "")
+        {   // 空文字の時は何もせずに返す
+            return;
+        }
+
         //送信用ユーザーデータの作成
         UserData userData = new UserData();
         userData.UserName = nameInput.GetComponent<InputField>().text;   // 入力された名前を格納

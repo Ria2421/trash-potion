@@ -13,12 +13,12 @@ public class GameDirectorCopy : MonoBehaviour
 {
     /// <summary>
     /// タイル配置設定
-    /// 0:Wall 1:NormalTile 2:SpawnPoint 3:Object1 4: -
+    /// 0:Wall 1:NormalTile 2:SpawnPoint 3:Object1 4:1P 5:2P 6:3P 7:4P
     /// </summary>
     int[,] initTileData = new int[,]
     {
         {0,0,0,0,0,0,0,0,0,0,0},//手前
-        {0,2,1,1,1,1,1,1,1,2,0},
+        {0,6,1,1,1,1,1,1,1,4,0},
         {0,1,1,1,1,1,1,1,1,1,0},
         {0,1,1,1,3,1,3,1,1,1,0},
         {0,1,1,3,1,1,1,3,1,1,0},
@@ -26,7 +26,7 @@ public class GameDirectorCopy : MonoBehaviour
         {0,1,1,3,1,1,1,3,1,1,0},
         {0,1,1,1,3,1,3,1,1,1,0},
         {0,1,1,1,1,1,1,1,1,1,0},
-        {0,2,1,1,1,1,1,1,1,2,0},
+        {0,7,1,1,1,1,1,1,1,5,0},
         {0,0,0,0,0,0,0,0,0,0,0},
     };
 
@@ -345,7 +345,8 @@ public class GameDirectorCopy : MonoBehaviour
                 string resname = "";
 
                 int no = tileData[i, j].tNo;
-                if (4 == no || 8 == no) no = 5;
+                //if (4 == no || 8 == no) no = 5;
+                if (8 == no) no = 5;
 
                 resname = "Cube (" + no + ")";
 
@@ -872,19 +873,30 @@ public class GameDirectorCopy : MonoBehaviour
     /// </summary>
     void ThrowPotionMode()
     {
-        if (Input.GetMouseButtonDown(0))
-        { //クリック時、投擲位置を設定
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+        //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        // 自分のターンのみ行動可能に
+        if (NetworkManager.MyNo == nowPlayerType + 1)
+        //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        {
+            if (Input.GetMouseButtonDown(0))
+            { //クリック時、投擲位置を設定
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit, 100,blockLayerMask))
-            {
-                if (null != hit.collider.gameObject)
+                if (Physics.Raycast(ray, out hit, 100, blockLayerMask))
                 {
-                    Vector3 selectPos = hit.collider.gameObject.transform.position;
+                    if (null != hit.collider.gameObject)
+                    {   // RayにTileオブジェが当たった時
 
-                    // 設置情報をサーバーに送信
-                    networkManager.SendThrowPos(selectPos.x, selectPos.z);
+                        if (hit.collider.gameObject.GetComponent<Tile>().ReturnPlayerFlag())
+                        {   // タイルのプレイヤーフラグがtrueだったら
+
+                            Vector3 selectPos = hit.collider.gameObject.transform.position;
+
+                            // 設置情報をサーバーに送信
+                            networkManager.SendThrowPos(selectPos.x, selectPos.z);
+                        }
+                    }
                 }
             }
         }

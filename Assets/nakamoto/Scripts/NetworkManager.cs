@@ -300,19 +300,19 @@ public class NetworkManager : MonoBehaviour
 
                         Vector3 pos = new Vector3(moveData.posX,0,moveData.posZ);
 
-                        // 現プレイヤーの移動アイコンを非表示に
-                        directorCopy.SetMoveIcon(moveData.plNo, false);
+                        //// 現プレイヤーの移動アイコンを非表示に
+                        //directorCopy.SetMoveIcon(moveData.plNo, false);
 
-                        if(moveData.plNo == 4)
-                        {
-                            // 次ターンのプレイヤーの移動アイコンを表示
-                            directorCopy.SetMoveIcon(1, true);
-                        }
-                        else
-                        {
-                            // 次ターンのプレイヤーの移動アイコンを表示
-                            directorCopy.SetMoveIcon(moveData.plNo + 1, true);
-                        }
+                        //if(moveData.plNo == 4)
+                        //{
+                        //    // 次ターンのプレイヤーの移動アイコンを表示
+                        //    directorCopy.SetMoveIcon(1, true);
+                        //}
+                        //else
+                        //{
+                        //    // 次ターンのプレイヤーの移動アイコンを表示
+                        //    directorCopy.SetMoveIcon(moveData.plNo + 1, true);
+                        //}
 
                         // 指定タイルへ現在ターンのPLオブジェクトを移動
                         directorCopy.MoveUnit(moveData.z, moveData.x, pos);
@@ -382,19 +382,19 @@ public class NetworkManager : MonoBehaviour
 
                         Vector3 SetPos = new Vector3(setPotionData.posX, 0, setPotionData.posZ);
 
-                        // 現プレイヤーの移動アイコンを非表示に
-                        directorCopy.SetMoveIcon(setPotionData.plNo, false);
+                        //// 現プレイヤーの移動アイコンを非表示に
+                        //directorCopy.SetMoveIcon(setPotionData.plNo, false);
 
-                        if (setPotionData.plNo == 4)
-                        {
-                            // 次ターンのプレイヤーの移動アイコンを表示
-                            directorCopy.SetMoveIcon(1, true);
-                        }
-                        else
-                        {
-                            // 次ターンのプレイヤーの移動アイコンを表示
-                            directorCopy.SetMoveIcon(setPotionData.plNo + 1, true);
-                        }
+                        //if (setPotionData.plNo == 4)
+                        //{
+                        //    // 次ターンのプレイヤーの移動アイコンを表示
+                        //    directorCopy.SetMoveIcon(1, true);
+                        //}
+                        //else
+                        //{
+                        //    // 次ターンのプレイヤーの移動アイコンを表示
+                        //    directorCopy.SetMoveIcon(setPotionData.plNo + 1, true);
+                        //}
 
                         // ポーションを設置
                         directorCopy.SetPotion(SetPos);

@@ -36,15 +36,15 @@ public class GameDirectorCopy : MonoBehaviour
     int[,] initUnitData = new int[,]
     {
         {0,0,0,0,0,0,0,0,0,0,0},//手前
-        {0,3,0,0,0,0,0,0,0,1,0},
+        {0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,3,0,0,0,0,0,1,0,0},
         {0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,4,0,0,0,0,0,2,0,0},
         {0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0},
-        {0,4,0,0,0,0,0,0,0,2,0},
         {0,0,0,0,0,0,0,0,0,0,0},
     };
 
@@ -83,6 +83,11 @@ public class GameDirectorCopy : MonoBehaviour
     /// プレイヤー人数
     /// </summary>
     const int playerNum = 4;
+
+    /// <summary>
+    /// ブロックレイヤー特定用マスク
+    /// </summary>
+    const int blockLayerMask = 1 << 7;
 
     /// <summary>
     /// フィールド上のプレイヤーリスト
@@ -483,11 +488,21 @@ public class GameDirectorCopy : MonoBehaviour
     /// </summary>
     void SelectMode()
     {
+        if (deadPlayerCnt >= 3)
+        {   // 終了判定
+            nextMode = MODE.END_GAME;
+        }
+
         if (player[nowPlayerType].IsDead == true)
         {   // 現在ターンのプレイヤーが死んでいたらスキップ
 
             // 次のターンへ
             nextMode = MODE.FIELD_UPDATE;
+        }
+        else
+        {
+            // 現在ターンのプレイヤーの移動アイコンを表示
+            SetMoveIcon(nowPlayerType+1, true);
         }
 
         //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -513,7 +528,7 @@ public class GameDirectorCopy : MonoBehaviour
                     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                     RaycastHit hit;
 
-                    if (Physics.Raycast(ray, out hit, 100))
+                    if (Physics.Raycast(ray, out hit, 100, blockLayerMask))
                     {
                         if (null != hit.collider.gameObject)
                         {
@@ -862,7 +877,7 @@ public class GameDirectorCopy : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit, 100))
+            if (Physics.Raycast(ray, out hit, 100,blockLayerMask))
             {
                 if (null != hit.collider.gameObject)
                 {
@@ -981,13 +996,14 @@ public class GameDirectorCopy : MonoBehaviour
 
                     for (int k = 0;k <deadList.Count;k++)
                     {
+                        
                         if (Unit.GetComponent<UnitController>().Type == deadList[k])
                         { //当該ユニットを殺す
                             Destroy(Unit);
                             player[deadList[k]-1].IsDead = true;
 
+                            unitData[i, j] = new List<GameObject>();
                             deadPlayerCnt++;
-                            break;
                         }
                     }
                 }
@@ -995,82 +1011,82 @@ public class GameDirectorCopy : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// バフ処理
-    /// </summary>
-    /// <param name="unitType"></param>
-    public void BuffUnit(int unitType, TYPE buffType)
-    {
-        GameObject Unit;
-        for (int i = 0; i < unitData.GetLength(0); i++)
-        {
-            for (int j = 0; j < unitData.GetLength(1); j++)
-            {
-                if (unitData[i, j].Count > 0)
-                {
-                    Unit = unitData[i, j][0];
+    ///// <summary>
+    ///// バフ処理
+    ///// </summary>
+    ///// <param name="unitType"></param>
+    //public void BuffUnit(int unitType, TYPE buffType)
+    //{
+    //    GameObject Unit;
+    //    for (int i = 0; i < unitData.GetLength(0); i++)
+    //    {
+    //        for (int j = 0; j < unitData.GetLength(1); j++)
+    //        {
+    //            if (unitData[i, j].Count > 0)
+    //            {
+    //                Unit = unitData[i, j][0];
 
-                    if (Unit.GetComponent<UnitController>().Type == unitType)
-                    {
-                        switch (buffType)
-                        { //バフポーション別処理
-                            case TYPE.REFRESH: //リフレッシュポーションの処理
-                                player[unitType].PlayerState = PLAYERSTATE.NORMAL_STATE;
-                                break;
-                            case TYPE.INVISIBLE: //無敵ポーションの処理
-                                player[unitType].PlayerState = PLAYERSTATE.INVICIBLE_STATE;
-                                break;
-                            case TYPE.MUSCLE: //筋力ポーションの処理
-                                player[unitType].PlayerState = PLAYERSTATE.MUSCLE_STATE;
-                                break;
-                        }
-                        return;
-                    }
-                }
-            }
-        }
-    }
+    //                if (Unit.GetComponent<UnitController>().Type == unitType)
+    //                {
+    //                    switch (buffType)
+    //                    { //バフポーション別処理
+    //                        case TYPE.REFRESH: //リフレッシュポーションの処理
+    //                            player[unitType].PlayerState = PLAYERSTATE.NORMAL_STATE;
+    //                            break;
+    //                        case TYPE.INVISIBLE: //無敵ポーションの処理
+    //                            player[unitType].PlayerState = PLAYERSTATE.INVICIBLE_STATE;
+    //                            break;
+    //                        case TYPE.MUSCLE: //筋力ポーションの処理
+    //                            player[unitType].PlayerState = PLAYERSTATE.MUSCLE_STATE;
+    //                            break;
+    //                    }
+    //                    return;
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
 
-    /// <summary>
-    /// デバフ処理
-    /// </summary>
-    /// <param name="unitType"></param>
-    public void DebuffUnit(int unitType, TYPE debuffType)
-    {
-        GameObject Unit;
-        for (int i = 0; i < unitData.GetLength(0); i++)
-        {
-            for (int j = 0; j < unitData.GetLength(1); j++)
-            {
-                if (unitData[i, j].Count > 0)
-                {
-                    Unit = unitData[i, j][0];
+    ///// <summary>
+    ///// デバフ処理
+    ///// </summary>
+    ///// <param name="unitType"></param>
+    //public void DebuffUnit(int unitType, TYPE debuffType)
+    //{
+    //    GameObject Unit;
+    //    for (int i = 0; i < unitData.GetLength(0); i++)
+    //    {
+    //        for (int j = 0; j < unitData.GetLength(1); j++)
+    //        {
+    //            if (unitData[i, j].Count > 0)
+    //            {
+    //                Unit = unitData[i, j][0];
 
-                    if (Unit.GetComponent<UnitController>().Type == unitType)
-                    {
-                        switch (debuffType)
-                        { //バフポーション別処理
-                            case TYPE.SOUR: //超スッパイポーションの処理
-                                GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isParalysis", true);
-                                player[unitType].PlayerState = PLAYERSTATE.PARALYSIS_STATE;
-                                break;
+    //                if (Unit.GetComponent<UnitController>().Type == unitType)
+    //                {
+    //                    switch (debuffType)
+    //                    { //バフポーション別処理
+    //                        case TYPE.SOUR: //超スッパイポーションの処理
+    //                            GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isParalysis", true);
+    //                            player[unitType].PlayerState = PLAYERSTATE.PARALYSIS_STATE;
+    //                            break;
 
-                            case TYPE.CURSE: //瓶詰めの呪いの処理
-                                GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isCurse", true);
-                                player[unitType].PlayerState = PLAYERSTATE.CURSED_STATE;
-                                break;
+    //                        case TYPE.CURSE: //瓶詰めの呪いの処理
+    //                            GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isCurse", true);
+    //                            player[unitType].PlayerState = PLAYERSTATE.CURSED_STATE;
+    //                            break;
 
-                            case TYPE.ICE: //アイスポーションの処理
-                                GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isFrost", true);
-                                player[unitType].PlayerState = PLAYERSTATE.FROZEN_STATE;
-                                break;
-                        }
-                        return;
-                    }
-                }
-            }
-        }
-    }
+    //                        case TYPE.ICE: //アイスポーションの処理
+    //                            GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isFrost", true);
+    //                            player[unitType].PlayerState = PLAYERSTATE.FROZEN_STATE;
+    //                            break;
+    //                    }
+    //                    return;
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
 
     /// <summary>
     /// ユニット指定処理
@@ -1105,7 +1121,15 @@ public class GameDirectorCopy : MonoBehaviour
     /// <param name="flag">表示・非表示フラグ</param>
     public void SetMoveIcon(int plNo, bool flag)
     {
-        if (moveImgs[plNo-1] != null) 
+        for (int i = 0; i < playerNum; i++)
+        {   // 全員非表示に
+            if (player[i].IsDead == false)
+            {
+                moveImgs[i].SetActive(false);
+            }
+        }
+
+        if (moveImgs[plNo - 1] != null)
         {
             moveImgs[plNo - 1].SetActive(flag);
         }

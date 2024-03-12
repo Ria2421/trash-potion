@@ -220,6 +220,9 @@ class MoveData
     public float posZ;
 }
 
+/// <summary>
+/// ボム設置データ
+/// </summary>
 class SetPotionData
 {
     /// <summary>

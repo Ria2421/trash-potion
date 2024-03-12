@@ -42,7 +42,7 @@ public class PotionBoom : MonoBehaviour
 
     void Start()
     {
-        bombCnt = 2;
+        bombCnt = 6;
         potionType = new PotionType();
         gameDirector = GameObject.Find("GameDirector").GetComponent<GameDirectorCopy>();
     }
@@ -144,7 +144,6 @@ public class PotionBoom : MonoBehaviour
                 deadList.Add(other.gameObject.GetComponent<UnitController>().Type);
             }
         }
-
     }
 
     /// <summary>

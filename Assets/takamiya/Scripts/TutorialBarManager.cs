@@ -18,14 +18,35 @@ public class TutorialBarManager : MonoBehaviour
     public Text timerText;
     private bool maxValue;
     private bool isClicked;
-    bool endCountDown;
+    private bool _endCountDown;
+    StartMiniGame tutorialMiniGame;
+    public bool endCountDown {
+        get
+        {
+            return _endCountDown;
+        }
+        set
+        {
+            _endCountDown = value;
+        }
+    }
 
     void Start()
+    {
+        tutorialMiniGame = GameObject.Find("MiniGameManager").GetComponent<StartMiniGame>();
+        Init();
+    }
+    public void Init()
     {
         slider.value = 0;
         maxValue = false;
         isClicked = false;
         endCountDown = false;
+        veryGood.SetActive(false);
+        good.SetActive(false);
+        Bad.SetActive(false);
+
+        tutorialMiniGame.gameNum = StartMiniGame.GAMEMODE.SLIDE_MODE;
     }
 
     void Update()
@@ -48,7 +69,8 @@ public class TutorialBarManager : MonoBehaviour
                 {
                     Bad.SetActive(true);
                 }
-
+                tutorialMiniGame.NextButton.SetActive(true);
+                tutorialMiniGame.AgainButton.SetActive(true);
                 // ミニゲームの終了
                 Invoke("MiniGameDestroy", 1f);
             }
@@ -83,9 +105,14 @@ public class TutorialBarManager : MonoBehaviour
     /// <summary>
     /// ミニゲームの破棄
     /// </summary>
-    private void MiniGameDestroy()
+    public void DestroyMiniGame()
     {
         // ミニゲームを終了
-        Destroy(GameObject.Find("MiniGames(Clone)"));
+        veryGood.SetActive(false);
+        good.SetActive(false);
+        Bad.SetActive(false);
+        Destroy(GameObject.Find("Slidegame"));
     }
+
+
 }

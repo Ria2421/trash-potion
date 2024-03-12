@@ -18,22 +18,32 @@ public class TutorialRouletteManager : MonoBehaviour
     public GameObject roulette;            //ルーレット本体
     public Text timerText;
     float angle = 0;                       //回転の角度の変数
-    bool endCountDown;
-    //public Text limitTime;              //ミニゲームの制限時間
+    public bool endCountDown;
+    public Text limitTime;              //ミニゲームの制限時間
     int limit;                          //制限時間の変数
     bool isLimit;                     //制限時間を超えたかどうか
 
+    StartMiniGame tutorialMiniGame;
+
     // Start is called before the first frame update
     void Start()
+    {
+        tutorialMiniGame = GameObject.Find("MiniGameManager").GetComponent<StartMiniGame>();
+        Init();
+    }
+    public void Init()
     {
         //フレームレートを60に固定
         Application.targetFrameRate = 60;
         endCountDown = false;
         limit = 5;
-        //limitTime.enabled = false;
+        limitTime.enabled = true;
         isLimit = false;
+        verygood.SetActive(false);
+        good.SetActive(false);
+        bad.SetActive(false);
         //1秒ごとに関数を実行
-        //InvokeRepeating("CountDownTimer", 3.0f, 1.0f);
+        InvokeRepeating("CountDownTimer", 3.0f, 1.0f);
     }
 
     // Update is called once per frame
@@ -51,6 +61,8 @@ public class TutorialRouletteManager : MonoBehaviour
                     rouletteSpeed = 0;
                     Judge();
                     CancelInvoke();
+                    tutorialMiniGame.BackTitleButton.SetActive(true);
+                    tutorialMiniGame.AgainButton.SetActive(true);
                 }
             }
         }
@@ -109,16 +121,16 @@ public class TutorialRouletteManager : MonoBehaviour
         bad.SetActive(true);
     }
 
-    //void CountDownTimer()
-    //{
-    //    limit--;
-    //    limitTime.text = limit.ToString();
-    //    if (limitTime.text == "-1")
-    //    {
-    //        bad.SetActive(true);
-    //        isLimit = true;
-    //        CancelInvoke();
-    //        Destroy(limitTime);
-    //    }
-    //}
+    void CountDownTimer()
+    {
+        limit--;
+        limitTime.text = limit.ToString();
+        if (limitTime.text == "-1")
+        {
+            bad.SetActive(true);
+            isLimit = true;
+            CancelInvoke();
+            //Destroy(limitTime);
+        }
+    }
 }

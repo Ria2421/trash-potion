@@ -12,7 +12,6 @@ public class StartMiniGame : MonoBehaviour
 {
     public Text timerText;
     int timer = 0;              //カウントダウンタイマーの変数
-    //int gameNum = 3;          //ランダムでミニゲームの抽選するための変数
     bool isLottery;             //抽選したか
     public GameObject slideGame;        //ミニゲーム1
     public GameObject rouletteGame;     //ミニゲーム2
@@ -50,22 +49,40 @@ public class StartMiniGame : MonoBehaviour
     void Start()
     {
         gameNum = GAMEMODE.SLIDE_MODE;
+
+        //MiniGameCanvasオブジェクトを取得
         GameObject parentObject = GameObject.Find("MiniGameCanvas");
+        //CountDownオブジェクトを取得
         countDownObject = parentObject.transform.Find("CountDown").gameObject;
 
-        //tutorialTestTube = GameObject.Find("OchaGame").GetComponent<TutorialTestTubeManager>();
-       GameObject ochaGameObject = parentObject.transform.Find("OchaGame").gameObject;
-       GameObject  SliderObject = ochaGameObject.transform.Find("Slider").gameObject;
+        //OchaGameオブジェクトを取得
+        GameObject ochaGameObject = parentObject.transform.Find("OchaGame").gameObject;
+        //Sliderオブジェクトを取得
+        GameObject SliderObject = ochaGameObject.transform.Find("Slider").gameObject;
+
+        //Sliderオブジェクトに入っているコンポーネントを取得
         tutorialTestTube = SliderObject.GetComponent<TutorialTestTubeManager>();
 
+        //TestTube2Sliderオブジェクトを取得
         GameObject testTube2SliderObject = ochaGameObject.transform.Find("TestTube2Slider").gameObject;
+
+        //TestTube2Sliderオブジェクトに入っているコンポーネントを取得
         tutorialSadTestTube = testTube2SliderObject.GetComponent<TutorialSadTestTube>();
 
+        //MiniGamesオブジェクトを取得
         GameObject miniGamesObject = GameObject.Find("MiniGames");
+        //RouletteGameオブジェクトを取得
         GameObject rouletteGameObject = miniGamesObject.transform.Find("RouletteGame").gameObject;
+        //Rouletteオブジェクトを取得
+        GameObject rouletteObject = rouletteGameObject.transform.Find("Roulette").gameObject;
+        //RouletteManagerオブジェクトを取得
         GameObject rouletteManagerObject = rouletteGameObject.transform.Find("RouletteManager").gameObject;
-        tutorialRouletteManager = rouletteManagerObject.GetComponent<TutorialRouletteManager>();
 
+        //RouletteManagerオブジェクトに入っているコンポーネントを取得
+        tutorialRouletteManager = rouletteManagerObject.GetComponent<TutorialRouletteManager>();
+        //Rouletteオブジェクトに入っているコンポーネントを取得
+        tutorialStartRoulette = rouletteObject.GetComponent<TutorialStartRoulette>();
+        //MiniGameManagerオブジェクトを取得
         tutorialMiniGame = GameObject.Find("MiniGameManager").GetComponent<StartMiniGame>();
 
         Init();
@@ -74,12 +91,12 @@ public class StartMiniGame : MonoBehaviour
     {
         isLottery = false;
         timer = 3;
-
-        AgainButton.SetActive(false);
-        NextButton.SetActive(false);
+        
+        AgainButton.SetActive(false);//もう一度ボタンを非表示にする
+        NextButton.SetActive(false);//次へボタンを非表示にする
         countDownObject.SetActive(true);
         timerText.text = timer.ToString();
-        timerText.color = new Color(0,255,253,255);
+        timerText.color = new Color(0, 255, 253, 255);
         //1秒ごとに関数を実行
         InvokeRepeating("CountDownTimer", 1.0f, 0.7f);
     }
@@ -105,14 +122,15 @@ public class StartMiniGame : MonoBehaviour
                 break;
 
         }
-        tutorialMiniGame.BackTitleButton.SetActive(false);
-        tutorialMiniGame.AgainButton.SetActive(false);
+        tutorialMiniGame.NextButton.SetActive(false);//次へボタンを非表示にする
+        tutorialMiniGame.BackTitleButton.SetActive(false);//タイトルに戻るボタンを非表示にする
+        tutorialMiniGame.AgainButton.SetActive(false);//もう一度ボタンを非表示にする
     }
 
     //カウントダウン処理
     void CountDownTimer()
     {
-        if(!isLottery)
+        if (!isLottery)
         {
             LotteryGame();
         }
@@ -120,13 +138,13 @@ public class StartMiniGame : MonoBehaviour
         //カウントダウンしてタイマーのテキストに秒数を設定
         timer--;
         timerText.text = timer.ToString();
-        if(timerText.text == "2")
+        if (timerText.text == "2")
         {
-            timerText.color = Color.yellow;
+            timerText.color = Color.yellow;//テキストカラーを黄色に変える
         }
-        else if(timerText.text == "1")
+        else if (timerText.text == "1")
         {
-            timerText.color = Color.red;
+            timerText.color = Color.red;//テキストカラーを赤に変える
         }
 
         //timerが0になったら終了
@@ -135,26 +153,27 @@ public class StartMiniGame : MonoBehaviour
             //Invokeをやめる
             CancelInvoke();
             timerText.text = "GO!!";
-            if(gameNum == GAMEMODE.SLIDE_MODE)
+            if (gameNum == GAMEMODE.SLIDE_MODE)
             {
                 tutorialBarManager.endCountDown = true;
             }
-            else if(gameNum == GAMEMODE.OCHA_MODE)
+            else if (gameNum == GAMEMODE.OCHA_MODE)
             {
                 tutorialTestTube.endCountDown = true;
                 tutorialSadTestTube.endCountDown = true;
             }
-            else if(gameNum == GAMEMODE.ROULETTE_MODE)
+            else if (gameNum == GAMEMODE.ROULETTE_MODE)
             {
                 tutorialRouletteManager.endCountDown = true;
+                tutorialStartRoulette.LotteryAngle();
             }
             Invoke("TextDestroy", 0.7f);
         }
     }
 
     void LotteryGame()
-    { 
-        switch(gameNum)
+    {
+        switch (gameNum)
         {
             case GAMEMODE.SLIDE_MODE://スライドゲームの場合
                 slideGame.SetActive(true);
@@ -176,9 +195,11 @@ public class StartMiniGame : MonoBehaviour
 
         isLottery = true;
     }
+    /// <summary>
+    /// カウントダウンオブジェクトを非表示にする
+    /// </summary>
     void TextDestroy()
     {
-        //Destroy(timerText);
         countDownObject.SetActive(false);
     }
 
@@ -190,29 +211,12 @@ public class StartMiniGame : MonoBehaviour
         switch (gameNum)
         {
             case GAMEMODE.SLIDE_MODE://スライドゲームの場合
-                //slideGame.SetActive(false);
-                //ochaGame.SetActive(true);
-                //ochaGameImg.SetActive(true);
-                //tutorialBarManager.good.SetActive(false);
-                //tutorialBarManager.veryGood.SetActive(false);
-                //tutorialBarManager.Bad.SetActive(false);
-                //NextButton.SetActive(false);
-                //AgainButton.SetActive(false);
-               tutorialBarManager.DestroyMiniGame();
-                //tutorialTestTube.Init();
+                tutorialBarManager.DestroyMiniGame();
                 gameNum++;
                 Init();
                 break;
 
             case GAMEMODE.OCHA_MODE://おちゃゲームの場合
-                //ochaGame.SetActive(false);
-                //ochaGameImg.SetActive(false);
-                //rouletteGame.SetActive(true);
-                //tutorialTestTube.good.SetActive(false);
-                //tutorialTestTube.veryGood.SetActive(false);
-                //tutorialTestTube.Bad.SetActive(false);
-                //NextButton.SetActive(false);
-                //AgainButton.SetActive(false);
                 tutorialTestTube.DestroyMiniGame();
                 gameNum++;
                 Init();

@@ -19,7 +19,6 @@ public class TutorialTestTubeManager : MonoBehaviour
     [SerializeField] Slider slider;   //スライダーの指定
 
     StartMiniGame tutorialMiniGame;
-    TutorialBarManager tutorialBarManager;
 
     private bool _endCountDown;
 
@@ -47,21 +46,14 @@ public class TutorialTestTubeManager : MonoBehaviour
     {
         slider.value = 0;//初期化
 
-        //timer = 3;
-
         endCountDown = false;
         isClicked = false;
 
         tutorialMiniGame.gameNum = StartMiniGame.GAMEMODE.OCHA_MODE;
 
-        veryGood.SetActive(false);
-        good.SetActive(false);
-        Bad.SetActive(false);
-
-        //1秒ごとに関数を実行
-        //InvokeRepeating("CountDownTimer", 1.0f, 0.7f);
-
-        //tutorialBarManager = GameObject.Find("Slider").GetComponent<TutorialBarManager>();
+        veryGood.SetActive(false);//大成功テキストを非表示にする
+        good.SetActive(false);//成功テキストを非表示にする
+        Bad.SetActive(false);//失敗テキストを非表示にする
     }
 
     void Update()
@@ -74,28 +66,25 @@ public class TutorialTestTubeManager : MonoBehaviour
                 if (Input.GetMouseButtonUp(0))
                 {
                     isClicked = true;
+
                     if (slider.value >= 94)
                     {
-                        Bad.SetActive(true);
+                        Bad.SetActive(true);//失敗テキストを表示にする
                     }
                     else if (slider.value >= 68 && slider.value < 84)
                     {
-                        good.SetActive(true);
+                        good.SetActive(true);//成功テキストを表示にする
                     }
                     else if (slider.value >= 84 && slider.value < 94)
                     {
-                        veryGood.SetActive(true);
+                        veryGood.SetActive(true);//大成功テキストを表示にする
                     }
                     else if (slider.value < 68)
                     {
-                        Bad.SetActive(true);
+                        Bad.SetActive(true);//失敗テキストを表示にする
                     }
                     tutorialMiniGame.NextButton.SetActive(true);
                     tutorialMiniGame.AgainButton.SetActive(true);
-
-                    // ミニゲームの終了
-                    //Invoke("MiniGameDestroy", 1f);
-
                 }
                 //クリックされている間実行
                 if (Input.GetMouseButton(0))
@@ -104,7 +93,7 @@ public class TutorialTestTubeManager : MonoBehaviour
 
                     if (slider.value >= 94)
                     {
-                        Bad.SetActive(true);
+                        Bad.SetActive(true);//失敗テキストを表示にする
                     }
                 }
             }
@@ -117,12 +106,11 @@ public class TutorialTestTubeManager : MonoBehaviour
     public void DestroyMiniGame()
     {
         // ミニゲームを終了
-        //Destroy(GameObject.Find("MiniGames"));
-        veryGood.SetActive(false);
-        good.SetActive(false);
-        Bad.SetActive(false);
-        Destroy(GameObject.Find("OchaGame"));
-        Destroy(GameObject.Find("OchaGameimgs"));
+        veryGood.SetActive(false);//大成功テキストを非表示にする
+        good.SetActive(false);//成功テキストを非表示にする
+        Bad.SetActive(false);//失敗テキストを非表示にする
+        Destroy(GameObject.Find("OchaGame"));//おちゃゲームを削除
+        Destroy(GameObject.Find("OchaGameimgs"));//おちゃゲーム画像を削除
 
     }
 }

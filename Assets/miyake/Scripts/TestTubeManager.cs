@@ -20,6 +20,10 @@ public class TestTubeManager : MonoBehaviour
     bool endCountDown;
     NetworkManager networkManager;
     bool gameFlag;
+    [SerializeField] AudioClip veryGoodSE;      //‘å¬Œ÷SE
+    [SerializeField] AudioClip goodSE;          //¬Œ÷SE
+    [SerializeField] AudioClip badSE;           //¸”sSE
+    [SerializeField] AudioSource audioSource;
 
     void Start()
     {
@@ -47,6 +51,8 @@ public class TestTubeManager : MonoBehaviour
                     if (slider.value >= 94)
                     {   // ¸”s
                         Bad.SetActive(true);
+                        //¸”sSE
+                        audioSource.PlayOneShot(badSE);
                         // ¸”sî•ñ‚Ì‘—M
                         networkManager.SendPotionStatus((int)EventID.PotionFailure);
                         gameFlag = true;
@@ -54,6 +60,8 @@ public class TestTubeManager : MonoBehaviour
                     else if (slider.value >= 68 && slider.value < 84)
                     {   // ¬Œ÷
                         good.SetActive(true);
+                        //¬Œ÷SE
+                        audioSource.PlayOneShot(goodSE);
                         // ¶¬î•ñ‚Ì‘—M
                         networkManager.SendPotionStatus((int)EventID.PotionComplete);
                         gameFlag = true;
@@ -61,6 +69,8 @@ public class TestTubeManager : MonoBehaviour
                     else if (slider.value >= 84 && slider.value < 94)
                     {   // ‘å¬Œ÷
                         veryGood.SetActive(true);
+                        //‘å¬Œ÷SE
+                        audioSource.PlayOneShot(veryGoodSE);
                         // ¶¬î•ñ‚Ì‘—M
                         networkManager.SendPotionStatus((int)EventID.PotionComplete);
                         gameFlag = true;
@@ -68,6 +78,8 @@ public class TestTubeManager : MonoBehaviour
                     else if (slider.value < 68)
                     {   // ¸”s
                         Bad.SetActive(true);
+                        //¸”sSE
+                        audioSource.PlayOneShot(badSE);
                         // ¸”sî•ñ‚Ì‘—M
                         networkManager.SendPotionStatus((int)EventID.PotionFailure);
                         gameFlag = true;

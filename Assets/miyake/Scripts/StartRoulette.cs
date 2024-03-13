@@ -12,24 +12,14 @@ public class StartRoulette : MonoBehaviour
 {
     public Text timerText;
     float randAngle = 0;        //ランダムで回転する角度の変数
-    bool endCountDown;
 
     // Start is called before the first frame update
     void Start()
     {
-        endCountDown = false;
+        //初期位置をランダムで決める
+        randAngle = Random.Range(-180, 180);
 
-        if (timerText.text == "GO!!")
-        {
-            endCountDown = true;
-        }
-
-        if (endCountDown)
-        {
-            randAngle = Random.Range(-180, 180);
-
-            transform.eulerAngles = new Vector3(0, 0, randAngle);
-        }
+        transform.eulerAngles = new Vector3(90, 0, randAngle);
     }
 
     // Update is called once per frame

@@ -18,12 +18,17 @@ public class TutorialStartMiniGame : MonoBehaviour
     public GameObject rouletteGame;     //ミニゲーム2
     public GameObject ochaGame;         //ミニゲーム3
     public GameObject ochaGameImg;      //ミニゲーム3の画像
+    [SerializeField] AudioClip countDownSE;     //カウントダウンSE
+    [SerializeField] AudioSource audioSource;
 
     void Start()
     {
         isLottery = false;
         timer = 3;
         timerText.enabled = false;
+
+        //カウントダウンSE
+        audioSource.PlayOneShot(countDownSE);
 
         //+++++++++++++++++++++++++++++++++++++++++++++++
         // ボタン不使用
@@ -74,7 +79,7 @@ public class TutorialStartMiniGame : MonoBehaviour
     void LotteryGame()
     {
         //1～3の数字をランダムで代入。未満で抽選
-        //gameNum = Random.Range(1, 3);
+        gameNum = Random.Range(1, 4);
 
         if (gameNum == 1)
         {

@@ -21,6 +21,10 @@ public class BarManager : MonoBehaviour
     bool endCountDown;
     NetworkManager networkManager;
     bool gameFlag;
+    [SerializeField] AudioClip veryGoodSE;      //‘å¬Œ÷SE
+    [SerializeField] AudioClip goodSE;          //¬Œ÷SE
+    [SerializeField] AudioClip badSE;           //¸”sSE
+    [SerializeField] AudioSource audioSource;
 
     void Start()
     {
@@ -52,6 +56,8 @@ public class BarManager : MonoBehaviour
                     if (slider.value >= 85)
                     {   // ‘å¬Œ÷
                         veryGood.SetActive(true);
+                        //‘å¬Œ÷SE
+                        audioSource.PlayOneShot(veryGoodSE);
                         // ¶¬î•ñ‚Ì‘—M
                         networkManager.SendPotionStatus((int)EventID.PotionComplete);
                         gameFlag = true;
@@ -59,6 +65,8 @@ public class BarManager : MonoBehaviour
                     else if (slider.value >= 50)
                     {   // ¬Œ÷
                         good.SetActive(true);
+                        //¬Œ÷SE
+                        audioSource.PlayOneShot(goodSE);
                         // ¶¬î•ñ‚Ì‘—M
                         networkManager.SendPotionStatus((int)EventID.PotionComplete);
                         gameFlag = true;
@@ -66,6 +74,8 @@ public class BarManager : MonoBehaviour
                     else if (slider.value < 50)
                     {   // ¸”s
                         Bad.SetActive(true);
+                        //¸”sSE
+                        audioSource.PlayOneShot(badSE);
                         // ¸”sî•ñ‚Ì‘—M
                         networkManager.SendPotionStatus((int)EventID.PotionFailure);
                         gameFlag = true;

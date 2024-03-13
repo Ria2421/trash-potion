@@ -22,6 +22,10 @@ public class RouletteManager : MonoBehaviour
     public Text limitTime;              //ミニゲームの制限時間
     int limit;                          //制限時間の変数
     bool isLimit;                     //制限時間を超えたかどうか
+    [SerializeField] AudioClip veryGoodSE;      //大成功SE
+    [SerializeField] AudioClip goodSE;          //成功SE
+    [SerializeField] AudioClip badSE;           //失敗SE
+    [SerializeField] AudioSource audioSource;
 
     // Start is called before the first frame update
     void Start()
@@ -29,8 +33,6 @@ public class RouletteManager : MonoBehaviour
         //フレームレートを60に固定
         Application.targetFrameRate = 60;
         endCountDown = false;
-        limit = 5;
-        limitTime.enabled = false;
         isLimit = false;
         //1秒ごとに関数を実行
         InvokeRepeating("CountDownTimer", 3.0f, 1.0f);
@@ -44,7 +46,6 @@ public class RouletteManager : MonoBehaviour
             if (timerText.text == "GO!!")
             {
                 endCountDown = true;
-                limitTime.enabled = true;
             }
             if (endCountDown)
             {
@@ -77,6 +78,9 @@ public class RouletteManager : MonoBehaviour
         {//360度を超えていたら
             if ((angleA <= transform.eulerAngles.y && transform.eulerAngles.y <= 360) || (0 <= transform.eulerAngles.y && transform.eulerAngles.y <= angleB))
             {
+                //大成功SE
+                audioSource.PlayOneShot(veryGoodSE);
+
                 verygood.SetActive(true);
 
                 return;
@@ -86,6 +90,9 @@ public class RouletteManager : MonoBehaviour
         {
             if (transform.eulerAngles.y >= angleA && transform.eulerAngles.y <= angleB)
             {
+                //大成功SE
+                audioSource.PlayOneShot(veryGoodSE);
+
                 verygood.SetActive(true);
                 return;
             }
@@ -97,6 +104,9 @@ public class RouletteManager : MonoBehaviour
         {
             if ((angleC <= transform.eulerAngles.y && transform.eulerAngles.y <= 360) || (0 <= transform.eulerAngles.y && transform.eulerAngles.y <= angleD))
             {
+                //成功SE
+                audioSource.PlayOneShot(goodSE);
+
                 good.SetActive(true);
                 return;
             }
@@ -105,25 +115,32 @@ public class RouletteManager : MonoBehaviour
         {
             if (transform.eulerAngles.y >= angleC && transform.eulerAngles.y <= angleD)
             {
+                //成功SE
+                audioSource.PlayOneShot(goodSE);
+
                 good.SetActive(true);
                 return;
             }
         }
 
         // 範囲外はすべて失敗
+
+        //失敗SE
+        audioSource.PlayOneShot(badSE);
+
         bad.SetActive(true);
     }
 
-    void CountDownTimer()
-    {
-        limit--;
-        limitTime.text = limit.ToString();
-        if (limitTime.text == "-1")
-        {
-            bad.SetActive(true);
-            isLimit = true;
-            CancelInvoke();
-            Destroy(limitTime);
-        }
-    }
+    //void CountDownTimer()
+    //{
+    //    limit--;
+    //    limitTime.text = limit.ToString();
+    //    if (limitTime.text == "-1")
+    //    {
+    //        bad.SetActive(true);
+    //        isLimit = true;
+    //        CancelInvoke();
+    //        Destroy(limitTime);
+    //    }
+    //}
 }

@@ -11,6 +11,16 @@ using static TMPro.Examples.ObjectSpin;
 public class PotionBoom : MonoBehaviour
 {
     /// <summary>
+    /// オーディオソース
+    /// </summary>
+    [SerializeField] AudioSource audioSource;
+
+    /// <summary>
+    /// 爆発時SE
+    /// </summary>
+    [SerializeField] AudioClip boomSE;      
+
+    /// <summary>
     /// 爆発エフェクトのプレハブ
     /// </summary>
     public GameObject explosionPrefab;
@@ -51,6 +61,7 @@ public class PotionBoom : MonoBehaviour
     {
         if (bombCnt == 0)
         { //指定番号のプレイヤーを殺害(番号はサーバから取得)
+            audioSource.PlayOneShot(boomSE);
             BoomPotion(deadList);
         }
     }
@@ -69,47 +80,6 @@ public class PotionBoom : MonoBehaviour
         gameDirector.DestroyUnit(deadList);
 
         Invoke("PotionKill",0.2f);
-
-        //for(int i = 0; i < unitType.Length; i++)
-        //{
-        //    switch(potionType.PotionTypes)
-        //    { //ポーション別処理
-        //        case TYPE.BOMB:     //ボムの場合
-        //            gameDirector.DestroyUnit(unitType[i]);
-        //            break;
-
-        //        case TYPE.CRUSTER:  //クラスターの場合
-        //            gameDirector.DestroyUnit(unitType[i]);
-        //            break;
-
-        //        case TYPE.REFRESH:   //リフレッシュの場合
-        //            gameDirector.BuffUnit(unitType[i],TYPE.REFRESH);
-        //            break;
-
-        //        case TYPE.INVISIBLE: //無敵の場合
-        //            gameDirector.BuffUnit(unitType[i],TYPE.INVISIBLE);
-        //            break;
-
-        //        case TYPE.MUSCLE:   //筋力の場合
-        //            gameDirector.BuffUnit(unitType[i],TYPE.MUSCLE);
-        //            break;
-
-        //        case TYPE.ICE:      //アイスの場合
-        //            gameDirector.DebuffUnit(unitType[i],TYPE.ICE);
-        //            break;
-
-        //        case TYPE.CURSE:    //呪いの場合
-        //            gameDirector.DebuffUnit(unitType[i],TYPE.CURSE);
-        //            break;
-
-        //        case TYPE.SOUR:     //スッパイ場合
-        //            gameDirector.DebuffUnit(unitType[i],TYPE.SOUR);
-        //            break;
-
-        //        default:
-        //            break;
-        //    }
-        //}
     }
 
     /// <summary>
@@ -139,9 +109,12 @@ public class PotionBoom : MonoBehaviour
         if (other.gameObject.tag == "Player")
         {   // "player"タグにぶつかった時
 
-            if (!deadList.Contains(other.gameObject.GetComponent<UnitController>().Type))
-            {   // ぶつかったプレイヤーのNoを取得
-                deadList.Add(other.gameObject.GetComponent<UnitController>().Type);
+            if(other.gameObject != null)
+            {   //nullチェック
+                if (!deadList.Contains(other.gameObject.GetComponent<UnitController>().Type))
+                {   // ぶつかったプレイヤーのNoを取得
+                    deadList.Add(other.gameObject.GetComponent<UnitController>().Type);
+                }
             }
         }
     }
@@ -154,10 +127,12 @@ public class PotionBoom : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {   // "player"タグが出た時
-
-            if (deadList.Contains(other.gameObject.GetComponent<UnitController>().Type))
-            {   // ぶつかったプレイヤーのNoを消す
-                deadList.Remove(other.gameObject.GetComponent<UnitController>().Type);
+            if (other.gameObject != null)
+            {   //nullチェック
+                if (deadList.Contains(other.gameObject.GetComponent<UnitController>().Type))
+                {   // ぶつかったプレイヤーのNoを消す
+                    deadList.Remove(other.gameObject.GetComponent<UnitController>().Type);
+                }
             }
         }
     }

@@ -37,6 +37,11 @@ public class NetworkManager : MonoBehaviour
     // ↑ローカル時は"127.0.0.1"
 
     /// <summary>
+    /// プレイヤー人数
+    /// </summary>
+    const int playerNum = 4;
+
+    /// <summary>
     /// ポート番号
     /// </summary>
     const int portNum = 20001;
@@ -95,9 +100,15 @@ public class NetworkManager : MonoBehaviour
     [SerializeField] GameObject[] arrowYouTexts;
 
     /// <summary>
-    /// 全プレイヤーの名前格納 
+    /// 全プレイヤー情報格納 
     /// </summary>
-    [SerializeField] GameObject[] playerNames;
+    [SerializeField] GameObject[] playerObjects;
+
+    /// <summary>
+    /// 全プレイヤーの名前格納
+    /// </summary>
+    public string[] PlayerNames
+    { get; private set; }
 
     /// <summary>
     /// 全プレイヤーの待機状態格納用
@@ -132,6 +143,8 @@ public class NetworkManager : MonoBehaviour
     /// </summary>
     async void Start()
     {
+        PlayerNames = new string[playerNum];
+
         context = SynchronizationContext.Current;
 
         // 接続処理の実行
@@ -243,7 +256,9 @@ public class NetworkManager : MonoBehaviour
                         UserData userData = JsonConvert.DeserializeObject<UserData>(jsonString);
 
                         // 送信されてきたPLNoの名前をクライアントのテキストに反映させる
-                        playerNames[userData.PlayerNo - 1].GetComponent<Text>().text = userData.UserName;
+                        playerObjects[userData.PlayerNo - 1].GetComponent<Text>().text = userData.UserName;
+
+                        PlayerNames[userData.PlayerNo - 1] = userData.UserName;
 
                         break;
 

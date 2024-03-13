@@ -6238,7 +6238,7 @@ MonoBehaviour:
   - {fileID: 391241814}
   - {fileID: 416645899}
   - {fileID: 1777862022}
-  playerNames:
+  playerObjects:
   - {fileID: 1014855889}
   - {fileID: 1996686809}
   - {fileID: 873400487}

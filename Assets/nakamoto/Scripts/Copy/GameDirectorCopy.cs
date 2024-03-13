@@ -1,7 +1,7 @@
 //
 // ゲームディレクターコピースクリプト
-// Name:西浦晃太 Date:02/07
-// Update:03/07
+// Name:中本健太 Date:02/07
+// Update:03/13
 //
 using System.Collections;
 using System.Collections.Generic;
@@ -250,6 +250,11 @@ public class GameDirectorCopy : MonoBehaviour
     //+++++++++++++++++++++++++++++++++++++++++
     int winnerNum;
 
+    //+++++++++++++++++++++++++++++++++++++++++
+    // GameEndフラグ
+    //+++++++++++++++++++++++++++++++++++++++++
+    bool gameEnd = false;
+
     ///========================================
     ///
     /// メソッド
@@ -463,7 +468,10 @@ public class GameDirectorCopy : MonoBehaviour
         }
         else if(MODE.END_GAME == nowMode)
         {
-            GameEnd();
+            if(!gameEnd)
+            {
+                GameEnd();
+            }
         }
     }
 
@@ -667,14 +675,18 @@ public class GameDirectorCopy : MonoBehaviour
         //objectというタグ名のゲームオブジェクトを複数取得したい時
         GameObject[] objects = GameObject.FindGameObjectsWithTag("Bomb");
 
-        // 配列の要素一つ一つに対して処理を行う
-        foreach (GameObject obj in objects)
-        {
-            // Bombのカウントダウンを下げる
-            obj.GetComponent<PotionBoom>().bombCntDown();
-        }
-        //+++++++++++++++++
+        if (!player[nowPlayerType].IsDead)
+        {   // 現在ターンのPLが死亡していない時のみ
 
+            // 配列の要素一つ一つに対して処理を行う
+            foreach (GameObject obj in objects)
+            {
+                // Bombのカウントダウンを下げる
+                obj.GetComponent<PotionBoom>().bombCntDown();
+            }
+        }
+        
+        //+++++++++++++++++
         if(deadPlayerCnt >= 3)
         {   // 終了判定
             nextMode = MODE.END_GAME;
@@ -993,6 +1005,9 @@ public class GameDirectorCopy : MonoBehaviour
                     {
                         // サーバーにボム使用フラグを送信
                         networkManager.SendPotionStatus((int)EventID.PotionThrow);
+
+                        // 移動情報送信後に生成フラグをfalseに戻す
+                        generateFlag = false;
                     }
                     else
                     {
@@ -1005,6 +1020,9 @@ public class GameDirectorCopy : MonoBehaviour
                     {
                         // サーバーにボム使用フラグを送信
                         networkManager.SendPotionStatus((int)EventID.PotionThrow);
+
+                        // 移動情報送信後に生成フラグをfalseに戻す
+                        generateFlag = false;
                     }
                     else
                     {
@@ -1129,15 +1147,24 @@ public class GameDirectorCopy : MonoBehaviour
         if(winnerNum == 0) 
         {   // 勝者が0人の時
             winText.GetComponent<Text>().text = "引き分け";
+
+            PlayerRank.WinnerID = new int[] { 0, 1, 2, 3 };
         }
         else
         {   // 誰か勝者がいるとき
             winText.GetComponent<Text>().text = winnerNum.ToString() + "の勝ち!";
+
+            PlayerRank.WinnerID = new int[] { winnerNum - 1 };
         }
 
         Invoke("InResultScene",1.0f);
+
+        gameEnd = true;
     }
 
+    /// <summary>
+    /// リザルトシーンに移動
+    /// </summary>
     void InResultScene()
     {
         /* フェード処理 (黒)  

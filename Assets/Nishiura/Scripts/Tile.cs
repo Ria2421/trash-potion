@@ -18,9 +18,15 @@ public class Tile : MonoBehaviour
     bool bombFlag;
 
     /// <summary>
+    /// ボムの投擲範囲フラグ
+    /// </summary>
+    bool bombRangeFlag;
+
+    /// <summary>
     /// 可動域タイル変色関数
     /// </summary>
     /// <param name="collision"></param>
+    
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.tag == "Player")
@@ -33,7 +39,12 @@ public class Tile : MonoBehaviour
             bombFlag = true;
         }
 
-        if (playerFlag)
+        if(other.gameObject.tag == "BombRange")
+        {
+            bombRangeFlag = true;
+        }
+
+        if (playerFlag || bombRangeFlag)
         {
             GetComponent<Renderer>().material.color = new Color(0f, 1f, 0f, 1f);
         }
@@ -41,7 +52,7 @@ public class Tile : MonoBehaviour
         {
             GetComponent<Renderer>().material.color = new Color(1f, 0.3f, 0.3f, 1f);
         }
-        else if (playerFlag && bombFlag)
+        else if (playerFlag && bombFlag || bombRangeFlag && bombFlag)
         {
             GetComponent<Renderer>().material.color = new Color(0f, 1f, 0f, 1f);
         }
@@ -63,7 +74,12 @@ public class Tile : MonoBehaviour
             bombFlag = false;
         }
 
-        if (playerFlag)
+        if (other.gameObject.tag == "BombRange")
+        {
+            bombRangeFlag = false;
+        }
+
+        if (playerFlag || bombRangeFlag)
         {
             GetComponent<Renderer>().material.color = new Color(0f, 1f, 0f, 1f);
         }
@@ -71,7 +87,7 @@ public class Tile : MonoBehaviour
         {
             GetComponent<Renderer>().material.color = new Color(1f, 0.3f, 0.3f, 1f);
         }
-        else if (playerFlag && bombFlag)
+        else if (playerFlag && bombFlag || bombRangeFlag && bombFlag)
         {
             GetComponent<Renderer>().material.color = new Color(0f, 1f, 0f, 1f);
         }

@@ -16,6 +16,11 @@ public class UnitController : MonoBehaviour
     [SerializeField] GameObject colliderObj;
 
     /// <summary>
+    /// 移動範囲用ゲームオブジェクト
+    /// </summary>
+    [SerializeField] GameObject moveRangeObj;
+
+    /// <summary>
     /// プレーヤーのタイプ
     /// </summary>
     public const int TYPE_RED = 1;
@@ -46,8 +51,8 @@ public class UnitController : MonoBehaviour
     /// </summary>
     void OnColliderEnable()
     {
-        GetComponent<BoxCollider>().center = new Vector3(0f, -2f, 0f);
-        GetComponent<BoxCollider>().enabled = true;
+        moveRangeObj.GetComponent<BoxCollider>().center = new Vector3(0f, -2f, 0f);
+        moveRangeObj.SetActive(true);
     }
 
     /// <summary>
@@ -55,7 +60,7 @@ public class UnitController : MonoBehaviour
     /// </summary>
     public void OffColliderEnable()
     {
-        GetComponent<BoxCollider>().center = new Vector3(0f, 100f, 0f);
+        moveRangeObj.GetComponent<BoxCollider>().center = new Vector3(0f, 100f, 0f);
     }
 
     /// <summary>
@@ -93,7 +98,7 @@ public class UnitController : MonoBehaviour
     {
         float ret = 0;
 
-        // selectフラグがfalseの時はユニットの位置を下げる
+        // 指定の位置に上げる
         Vector3 pos = new Vector3(transform.position.x, SELECT_POS_Y, transform.position.z);
 
         // タイルの色変更用コライダーをON
@@ -121,17 +126,5 @@ public class UnitController : MonoBehaviour
 
         transform.position = pos;
         return ret;
-    }
-
-    /// <summary>
-    /// 当たり判定
-    /// </summary>
-    /// <param name="collision"></param>
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.gameObject.tag == "Bomb")
-        {   // Bombタグに触れていたら
-
-        }
     }
 }

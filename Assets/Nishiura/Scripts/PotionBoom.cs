@@ -108,8 +108,7 @@ public class PotionBoom : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {   // "player"タグにぶつかった時
-
-            if(other.gameObject != null)
+            if (other.gameObject != null)
             {   //nullチェック
                 if (!deadList.Contains(other.gameObject.GetComponent<UnitController>().Type))
                 {   // ぶつかったプレイヤーのNoを取得

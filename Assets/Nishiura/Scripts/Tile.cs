@@ -29,7 +29,7 @@ public class Tile : MonoBehaviour
     
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.tag == "MoveRange")
         {
             playerFlag = true;
         }
@@ -64,7 +64,7 @@ public class Tile : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.tag == "MoveRange")
         {
             playerFlag = false;
         }
@@ -102,6 +102,6 @@ public class Tile : MonoBehaviour
     /// </summary>
     public bool ReturnPlayerFlag()
     {
-        return playerFlag;
+        return bombRangeFlag;
     }
 }

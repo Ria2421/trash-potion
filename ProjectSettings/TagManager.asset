@@ -9,7 +9,7 @@ TagManager:
   - Bomb
   - Tile
   - BombRange
-  - Undefined
+  - MoveRange
   layers:
   - Default
   - TransparentFX

@@ -168,7 +168,12 @@ public class GameDirectorCopy : MonoBehaviour
     //+++++++++++++++++++++++++++++++++++++++++
     // 生成ボタンオブジェクト
     //+++++++++++++++++++++++++++++++++++++++++
-    [SerializeField] GameObject[] brewingButton; 
+    [SerializeField] GameObject[] brewingButton;
+
+    //+++++++++++++++++++++++++++++++++++++++++
+    // 生成禁止ボタンオブジェクト
+    //+++++++++++++++++++++++++++++++++++++++++
+    [SerializeField] GameObject[] cantBrewingButton;
 
     //+++++++++++++++++++++++++++++++++++++++++
     // ターン表示テキスト
@@ -560,11 +565,6 @@ public class GameDirectorCopy : MonoBehaviour
                             if (0 < unitData[z, x].Count && player[nowTurn].PlayerNo == unitData[z, x][0].GetComponent<UnitController>().PlayerNo)
                             {   // ユニット選択(選択したマスのユニット数が0以上・現在のPLターンとクリックしたタイルのユニットのPLNoが一致してたら)
 
-                                if (null != selectUnit)
-                                {   // 既にユニットを選択していた場合
-                                    selectUnit.GetComponent<UnitController>().Select(false);
-                                }
-
                                 //++++++++++++++++++++++++++++++++++++++++++++++++++++//
                                 // 現PLターンの「選択した」という情報をサーバーに送る //
                                 //++++++++++++++++++++++++++++++++++++++++++++++++++++//
@@ -582,12 +582,14 @@ public class GameDirectorCopy : MonoBehaviour
                                 if (movableTile(oldX, oldY, x, z))
                                 {   // 移動判定が通った場合
 
+                                    // 移動情報送信後に生成フラグをfalseに戻す
+                                    generateFlag = false;
+                                    brewingButton[NetworkManager.MyNo-1].SetActive(true);
+                                    cantBrewingButton[NetworkManager.MyNo - 1].SetActive(false);
+
                                     // 現PLターンの「移動した」という情報(移動先のタイル)をサーバーに送る //
                                     // 全クライアントに移動情報を渡した後に画面に反映させる //
                                     networkManager.SendMoveUnit(x, z, tilePos.x, tilePos.z);
-
-                                    // 移動情報送信後に生成フラグをfalseに戻す
-                                    generateFlag = false;
 
                                     //選択SE
                                     audioSource.PlayOneShot(selectSE);
@@ -806,6 +808,8 @@ public class GameDirectorCopy : MonoBehaviour
                 {
                     // ポーション生成フラグをtrueに
                     generateFlag = true;
+                    brewingButton[NetworkManager.MyNo - 1].SetActive(false);
+                    cantBrewingButton[NetworkManager.MyNo - 1].SetActive(true);
 
                     // ミニゲームの再生(仮)
                     Instantiate(minigamePrefab, minigamePrefab.GetComponent<Transform>().position, Quaternion.identity);
@@ -1003,11 +1007,13 @@ public class GameDirectorCopy : MonoBehaviour
                 { //1番目の場合
                     if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.BOMB))
                     {
-                        // サーバーにボム使用フラグを送信
-                        networkManager.SendPotionStatus((int)EventID.PotionThrow);
-
                         // 移動情報送信後に生成フラグをfalseに戻す
                         generateFlag = false;
+                        brewingButton[NetworkManager.MyNo - 1].SetActive(true);
+                        cantBrewingButton[NetworkManager.MyNo - 1].SetActive(false);
+
+                        // サーバーにボム使用フラグを送信
+                        networkManager.SendPotionStatus((int)EventID.PotionThrow);
                     }
                     else
                     {
@@ -1018,11 +1024,13 @@ public class GameDirectorCopy : MonoBehaviour
                 { //２番目の場合
                     if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.BOMB))
                     {
-                        // サーバーにボム使用フラグを送信
-                        networkManager.SendPotionStatus((int)EventID.PotionThrow);
-
                         // 移動情報送信後に生成フラグをfalseに戻す
                         generateFlag = false;
+                        brewingButton[NetworkManager.MyNo - 1].SetActive(true);
+                        cantBrewingButton[NetworkManager.MyNo - 1].SetActive(false);
+
+                        // サーバーにボム使用フラグを送信
+                        networkManager.SendPotionStatus((int)EventID.PotionThrow);
                     }
                     else
                     {
@@ -1050,7 +1058,6 @@ public class GameDirectorCopy : MonoBehaviour
 
                     for (int k = 0;k <deadList.Count;k++)
                     {
-                        
                         if (Unit.GetComponent<UnitController>().Type == deadList[k])
                         { //当該ユニットを殺す
                             //死亡SE

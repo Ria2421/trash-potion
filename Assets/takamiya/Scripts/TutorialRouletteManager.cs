@@ -9,9 +9,9 @@ using UnityEngine.UI;
 public class TutorialRouletteManager : MonoBehaviour
 {
     public float rouletteSpeed = 0;        //回転速度
-    public GameObject verygood;
-    public GameObject good;
-    public GameObject bad;
+    public GameObject verygood;              //veryGoodテキストの指定
+    public GameObject good;                 //goodテキスト指定
+    public GameObject bad;                 //Badテキスト指定
     public GameObject roulette;           //ルーレット本体
     public Text timerText;
     public float angle = 0;              //回転の角度の変数
@@ -38,9 +38,9 @@ public class TutorialRouletteManager : MonoBehaviour
         limitTime.enabled = true;
         isLimit = false;
         isClicked = false;
-        verygood.SetActive(false);
-        good.SetActive(false);
-        bad.SetActive(false);
+        verygood.SetActive(false);//大成功テキストを非表示にする
+        good.SetActive(false);//成功テキストを非表示にする
+        bad.SetActive(false);//失敗テキストを非表示にする
         //1秒ごとに関数を実行
         //InvokeRepeating("CountDownTimer", 3.0f, 1.0f);
     }
@@ -65,8 +65,8 @@ public class TutorialRouletteManager : MonoBehaviour
                     //rouletteSpeed = 0;
                     Judge();
                     CancelInvoke();
-                    tutorialMiniGame.BackTitleButton.SetActive(true);
-                    tutorialMiniGame.AgainButton.SetActive(true);
+                    tutorialMiniGame.BackTitleButton.SetActive(true);//タイトルに戻るボタンを表示する
+                    tutorialMiniGame.AgainButton.SetActive(true);//もう一度ボタンを表示する
                 }
             }
         }

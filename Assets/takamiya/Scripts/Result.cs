@@ -15,9 +15,11 @@ public class Result : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Initiate.Fade("Title", Color.black, 1.0f);
-        }
+       
+    }
+
+    public void FadeTitle()
+    {
+        Initiate.Fade("Title", Color.black, 1.0f);
     }
 }

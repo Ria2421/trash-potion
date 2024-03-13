@@ -70,6 +70,15 @@ public class GameDirectorCopy : MonoBehaviour
     ///========================================
 
     /// <summary>
+    /// 各サウンドエフェクト
+    /// </summary>
+    [SerializeField] AudioClip deathSE;     //死亡時SE
+    [SerializeField] AudioClip boomSE;      //爆発時SE
+    [SerializeField] AudioClip selectSE;    //選択時SE
+    [SerializeField] AudioClip throwSE;     //投擲時SE
+    [SerializeField] AudioSource audioSource;
+
+    /// <summary>
     /// プレイヤー 配列
     /// </summary>
     Player[] player = new Player[playerNum];
@@ -552,6 +561,9 @@ public class GameDirectorCopy : MonoBehaviour
                                 // 現PLターンの「選択した」という情報をサーバーに送る //
                                 //++++++++++++++++++++++++++++++++++++++++++++++++++++//
                                 networkManager.SendSelectUnit(z, x);
+
+                                //選択SE
+                                audioSource.PlayOneShot(selectSE);
 #if DEBUG
                                 Debug.Log("選択情報送信完了");
 #endif
@@ -568,6 +580,9 @@ public class GameDirectorCopy : MonoBehaviour
 
                                     // 移動情報送信後に生成フラグをfalseに戻す
                                     generateFlag = false;
+
+                                    //選択SE
+                                    audioSource.PlayOneShot(selectSE);
 #if DEBUG
                                     Debug.Log("移動情報送信完了");
 #endif
@@ -908,6 +923,9 @@ public class GameDirectorCopy : MonoBehaviour
     /// </summary>
     public void PlayerThrow()
     {
+        //選択SE
+        audioSource.PlayOneShot(selectSE);
+
         // 投擲モードに変更
         nowMode = MODE.POTION_THROW;
 
@@ -930,6 +948,9 @@ public class GameDirectorCopy : MonoBehaviour
     /// </summary>
     public void SetPotion(Vector3 pos)
     {
+        //投擲SE
+        audioSource.PlayOneShot(throwSE);
+
         BoomPotion1[nowPlayerType].SetActive(false);                //使用したポーションのアイコンを消す
         player[nowPlayerType].OwnedPotionList.Remove(TYPE.BOMB);    //使用したポーションをリストから削除する
 
@@ -962,6 +983,9 @@ public class GameDirectorCopy : MonoBehaviour
             }
             else
             {
+                //選択SE
+                audioSource.PlayOneShot(selectSE);
+
                 //枠別判定
                 if (buttonNum == 1)
                 { //1番目の場合
@@ -1011,6 +1035,9 @@ public class GameDirectorCopy : MonoBehaviour
                         
                         if (Unit.GetComponent<UnitController>().Type == deadList[k])
                         { //当該ユニットを殺す
+                            //死亡SE
+                            audioSource.PlayOneShot(deathSE);
+
                             Destroy(Unit);
                             player[deadList[k]-1].IsDead = true;
 

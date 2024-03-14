@@ -33,7 +33,6 @@ public class MoveCameraManagerCopy : MonoBehaviour
 
     GameDirector gameDirector;
 
-    [SerializeField] Text turnCnt;
     int cameraShift = 0;
     bool upCamera = false;
     int turnNum = 1;
@@ -64,9 +63,6 @@ public class MoveCameraManagerCopy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //現在のラウンド数を表示
-        turnCnt.GetComponent<Text>().text = "ラウンド" + turnNum.ToString();
-
         if (cameraShift > 3)
         {
             cameraShift = 0;

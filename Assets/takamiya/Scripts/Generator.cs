@@ -31,6 +31,8 @@ public class Generator : MonoBehaviour
     /// </summary>
     [SerializeField] GameObject waitUI;
 
+    bool inGameFlag;
+
     //------------------------------------------------------------------------------
     // メソッド ------------------------------------------
 
@@ -39,7 +41,7 @@ public class Generator : MonoBehaviour
     /// </summary>
     void Start()
     {
-        if(NetworkManager.MyNo == 1)
+        if (NetworkManager.MyNo == 1)
         {   // 1Pの時は選択画面を表示
             selectUI.SetActive(true);
             waitUI.SetActive(false);
@@ -49,6 +51,8 @@ public class Generator : MonoBehaviour
             selectUI.SetActive(false);
             waitUI.SetActive(true);
         }
+
+        inGameFlag = false;
     }
 
     /// <summary>
@@ -74,14 +78,19 @@ public class Generator : MonoBehaviour
     /// </summary>
     public async void ButtonPushSE()
     {
-        // 送信処理
-        string json = "1";
-        byte[] buffer = Encoding.UTF8.GetBytes(json);                      // JSONをbyteに変換
-        buffer = buffer.Prepend((byte)EventID.InGameFlag).ToArray();       // 送信データの先頭にイベントIDを付与
-        NetworkStream stream = NetworkManager.MyTcpClient.GetStream();
-        await stream.WriteAsync(buffer, 0, buffer.Length);                 // JSON送信処理
+        if(!inGameFlag)
+        {
+            // 送信処理
+            string json = "1";
+            byte[] buffer = Encoding.UTF8.GetBytes(json);                      // JSONをbyteに変換
+            buffer = buffer.Prepend((byte)EventID.InGameFlag).ToArray();       // 送信データの先頭にイベントIDを付与
+            NetworkStream stream = NetworkManager.MyTcpClient.GetStream();
+            await stream.WriteAsync(buffer, 0, buffer.Length);                 // JSON送信処理
 #if DEBUG
-        Debug.Log("インゲーム送信");
+            Debug.Log("インゲーム送信");
 #endif
+            inGameFlag = true;
+        }
     }
+
 }

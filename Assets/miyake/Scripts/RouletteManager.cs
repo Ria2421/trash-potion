@@ -61,8 +61,8 @@ public class RouletteManager : MonoBehaviour
                 if (Input.GetMouseButtonDown(0))
                 {//左クリックされたら
                     rouletteSpeed = 0;
-                    Judge();
                     CancelInvoke();
+                    Judge();
                 }
             }
         }
@@ -93,6 +93,10 @@ public class RouletteManager : MonoBehaviour
                     // 生成情報の送信
                     networkManager.SendPotionStatus((int)EventID.PotionComplete);
                     gameFlag = true;
+
+                    // ミニゲームの終了
+                    Invoke("MiniGameDestroy", 1.5f);
+
                     return;
                 }
             }
@@ -108,6 +112,10 @@ public class RouletteManager : MonoBehaviour
                     // 生成情報の送信
                     networkManager.SendPotionStatus((int)EventID.PotionComplete);
                     gameFlag = true;
+
+                    // ミニゲームの終了
+                    Invoke("MiniGameDestroy", 1.5f);
+
                     return;
                 }
             }
@@ -126,6 +134,10 @@ public class RouletteManager : MonoBehaviour
                     // 生成情報の送信
                     networkManager.SendPotionStatus((int)EventID.PotionComplete);
                     gameFlag = true;
+
+                    // ミニゲームの終了
+                    Invoke("MiniGameDestroy", 1.5f);
+
                     return;
                 }
             }
@@ -141,6 +153,10 @@ public class RouletteManager : MonoBehaviour
                     // 生成情報の送信
                     networkManager.SendPotionStatus((int)EventID.PotionComplete);
                     gameFlag = true;
+
+                    // ミニゲームの終了
+                    Invoke("MiniGameDestroy", 1.5f);
+
                     return;
                 }
             }

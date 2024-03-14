@@ -155,6 +155,22 @@ public class NetworkManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 更新処理
+    /// </summary>
+    private void Update()
+    {
+        //終了機能
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {//ESCキーを押した場合
+#if UNITY_EDITOR    //Unityエディタの場合
+            UnityEditor.EditorApplication.isPlaying = false;
+#else   //ビルドの場合
+            Application.Quit();
+#endif
+        }
+    }
+
+    /// <summary>
     /// クライアント接続処理
     /// </summary>
     /// <param name="ipaddress"></param>

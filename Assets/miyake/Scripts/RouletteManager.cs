@@ -22,6 +22,7 @@ public class RouletteManager : MonoBehaviour
     public Text limitTime;              //ミニゲームの制限時間
     int limit;                          //制限時間の変数
     bool isLimit;                     //制限時間を超えたかどうか
+    bool gameFlag;
     NetworkManager networkManager;
     [SerializeField] AudioClip veryGoodSE;      //大成功SE
     [SerializeField] AudioClip goodSE;          //成功SE
@@ -35,6 +36,7 @@ public class RouletteManager : MonoBehaviour
         Application.targetFrameRate = 60;
         endCountDown = false;
         isLimit = false;
+        gameFlag = false;
         //1秒ごとに関数を実行
         InvokeRepeating("CountDownTimer", 3.0f, 1.0f);
 
@@ -76,78 +78,96 @@ public class RouletteManager : MonoBehaviour
         float angleC = (133 + angle) % 360;     //成功の端
         float angleD = (244 + angle) % 360;     //成功の端
 
-
-        //大成功
-        if (angleA > angleB)
-        {//360度を超えていたら
-            if ((angleA <= transform.eulerAngles.y && transform.eulerAngles.y <= 360) || (0 <= transform.eulerAngles.y && transform.eulerAngles.y <= angleB))
-            {
-                //大成功SE
-                audioSource.PlayOneShot(veryGoodSE);
-
-                verygood.SetActive(true);
-
-                // 生成情報の送信
-                networkManager.SendPotionStatus((int)EventID.PotionComplete);
-
-                return;
-            }
-        }
-        else
+        if (!gameFlag)
         {
-            if (transform.eulerAngles.y >= angleA && transform.eulerAngles.y <= angleB)
-            {
-                //大成功SE
-                audioSource.PlayOneShot(veryGoodSE);
+            //大成功
+            if (angleA > angleB)
+            {//360度を超えていたら
+                if ((angleA <= transform.eulerAngles.y && transform.eulerAngles.y <= 360) || (0 <= transform.eulerAngles.y && transform.eulerAngles.y <= angleB))
+                {
+                    //大成功SE
+                    audioSource.PlayOneShot(veryGoodSE);
 
-                verygood.SetActive(true);
+                    verygood.SetActive(true);
 
-                // 生成情報の送信
-                networkManager.SendPotionStatus((int)EventID.PotionComplete);
-                return;
+                    // 生成情報の送信
+                    networkManager.SendPotionStatus((int)EventID.PotionComplete);
+                    gameFlag = true;
+                    return;
+                }
             }
+            else
+            {
+                if (transform.eulerAngles.y >= angleA && transform.eulerAngles.y <= angleB)
+                {
+                    //大成功SE
+                    audioSource.PlayOneShot(veryGoodSE);
+
+                    verygood.SetActive(true);
+
+                    // 生成情報の送信
+                    networkManager.SendPotionStatus((int)EventID.PotionComplete);
+                    gameFlag = true;
+                    return;
+                }
+            }
+
+
+            //成功
+            if (angleC > angleD)
+            {
+                if ((angleC <= transform.eulerAngles.y && transform.eulerAngles.y <= 360) || (0 <= transform.eulerAngles.y && transform.eulerAngles.y <= angleD))
+                {
+                    //成功SE
+                    audioSource.PlayOneShot(goodSE);
+
+                    good.SetActive(true);
+
+                    // 生成情報の送信
+                    networkManager.SendPotionStatus((int)EventID.PotionComplete);
+                    gameFlag = true;
+                    return;
+                }
+            }
+            else
+            {
+                if (transform.eulerAngles.y >= angleC && transform.eulerAngles.y <= angleD)
+                {
+                    //成功SE
+                    audioSource.PlayOneShot(goodSE);
+
+                    good.SetActive(true);
+
+                    // 生成情報の送信
+                    networkManager.SendPotionStatus((int)EventID.PotionComplete);
+                    gameFlag = true;
+                    return;
+                }
+            }
+
+            // 範囲外はすべて失敗
+
+            //失敗SE
+            audioSource.PlayOneShot(badSE);
+
+            bad.SetActive(true);
+
+            // 失敗情報の送信
+            networkManager.SendPotionStatus((int)EventID.PotionFailure);
+            gameFlag = true;
         }
 
+        // ミニゲームの終了
+        Invoke("MiniGameDestroy", 1.5f);
+    }
 
-        //成功
-        if (angleC > angleD)
-        {
-            if ((angleC <= transform.eulerAngles.y && transform.eulerAngles.y <= 360) || (0 <= transform.eulerAngles.y && transform.eulerAngles.y <= angleD))
-            {
-                //成功SE
-                audioSource.PlayOneShot(goodSE);
-
-                good.SetActive(true);
-
-                // 生成情報の送信
-                networkManager.SendPotionStatus((int)EventID.PotionComplete);
-                return;
-            }
-        }
-        else
-        {
-            if (transform.eulerAngles.y >= angleC && transform.eulerAngles.y <= angleD)
-            {
-                //成功SE
-                audioSource.PlayOneShot(goodSE);
-
-                good.SetActive(true);
-
-                // 生成情報の送信
-                networkManager.SendPotionStatus((int)EventID.PotionComplete);
-                return;
-            }
-        }
-
-        // 範囲外はすべて失敗
-
-        //失敗SE
-        audioSource.PlayOneShot(badSE);
-
-        bad.SetActive(true);
-
-        // 失敗情報の送信
-        networkManager.SendPotionStatus((int)EventID.PotionFailure);
+    /// <summary>
+    /// ミニゲームの破棄
+    /// </summary>
+    private void MiniGameDestroy()
+    {
+        // ミニゲームを終了
+        Destroy(GameObject.Find("MiniGames(Clone)"));
     }
 
     //void CountDownTimer()

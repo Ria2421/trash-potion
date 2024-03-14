@@ -21,6 +21,8 @@ public class StartMiniGame : MonoBehaviour
     public GameObject AgainButton; //もう一度ボタン
     public GameObject NextButton;  //次のボタン
     public GameObject BackTitleButton;//タイトルに戻るボタン
+    [SerializeField] AudioClip countDownSE;     //カウントダウンSE
+    [SerializeField] AudioSource audioSource;
 
     TutorialBarManager tutorialBarManager;
 
@@ -49,6 +51,9 @@ public class StartMiniGame : MonoBehaviour
     void Start()
     {
         gameNum = GAMEMODE.SLIDE_MODE;
+
+        //カウントダウンSE
+        audioSource.PlayOneShot(countDownSE);
 
         //MiniGameCanvasオブジェクトを取得
         GameObject parentObject = GameObject.Find("MiniGameCanvas");

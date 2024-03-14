@@ -20,6 +20,10 @@ public class TutorialBarManager : MonoBehaviour
     private bool isClicked;
     private bool _endCountDown;
     StartMiniGame tutorialMiniGame;
+    [SerializeField] AudioClip veryGoodSE;      //ëÂê¨å˜SE
+    [SerializeField] AudioClip goodSE;          //ê¨å˜SE
+    [SerializeField] AudioClip badSE;           //é∏îsSE
+    [SerializeField] AudioSource audioSource;
     public bool endCountDown {
         get
         {
@@ -59,14 +63,23 @@ public class TutorialBarManager : MonoBehaviour
 
                 if (slider.value >= 85)
                 {
+                    //ëÂê¨å˜SE
+                    audioSource.PlayOneShot(veryGoodSE);
+
                     veryGood.SetActive(true);
                 }
                 else if (slider.value >= 50)
                 {
+                    //ê¨å˜SE
+                    audioSource.PlayOneShot(goodSE);
+
                     good.SetActive(true);
                 }
                 else if (slider.value < 50)
                 {
+                    //é∏îsSE
+                    audioSource.PlayOneShot(badSE);
+
                     Bad.SetActive(true);
                 }
                 tutorialMiniGame.NextButton.SetActive(true);

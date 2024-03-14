@@ -10,7 +10,7 @@ public class GoGame : MonoBehaviour
 
     //startの変数
     [SerializeField] Text start;
-
+    
     void Start()
     {
         //フォントサイズを64、色を黒に、カーソルを非表示

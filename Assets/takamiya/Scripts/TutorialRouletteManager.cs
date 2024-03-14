@@ -20,6 +20,10 @@ public class TutorialRouletteManager : MonoBehaviour
     int limit;                         //§ŒÀŠÔ‚Ì•Ï”
     bool isLimit;                     //§ŒÀŠÔ‚ğ’´‚¦‚½‚©‚Ç‚¤‚©
     private bool isClicked;
+    [SerializeField] AudioClip veryGoodSE;      //‘å¬Œ÷SE
+    [SerializeField] AudioClip goodSE;          //¬Œ÷SE
+    [SerializeField] AudioClip badSE;           //¸”sSE
+    [SerializeField] AudioSource audioSource;
 
     StartMiniGame tutorialMiniGame;
 
@@ -86,6 +90,9 @@ public class TutorialRouletteManager : MonoBehaviour
         {//360“x‚ğ’´‚¦‚Ä‚¢‚½‚ç
             if ((angleA <= transform.eulerAngles.z && transform.eulerAngles.z <= 360) || (0 <= transform.eulerAngles.z && transform.eulerAngles.z <= angleB))
             {
+                //‘å¬Œ÷SE
+                audioSource.PlayOneShot(veryGoodSE);
+
                 verygood.SetActive(true);
 
                 return;
@@ -95,6 +102,9 @@ public class TutorialRouletteManager : MonoBehaviour
         {
             if (transform.eulerAngles.z >= angleA && transform.eulerAngles.z <= angleB)
             {
+                //‘å¬Œ÷SE
+                audioSource.PlayOneShot(veryGoodSE);
+
                 verygood.SetActive(true);
                 return;
             }
@@ -105,6 +115,9 @@ public class TutorialRouletteManager : MonoBehaviour
         {
             if ((angleC <= transform.eulerAngles.z && transform.eulerAngles.z <= 360) || (0 <= transform.eulerAngles.z && transform.eulerAngles.z <= angleD))
             {
+                //¬Œ÷SE
+                audioSource.PlayOneShot(goodSE);
+
                 good.SetActive(true);
                 return;
             }
@@ -113,12 +126,19 @@ public class TutorialRouletteManager : MonoBehaviour
         {
             if (transform.eulerAngles.z >= angleC && transform.eulerAngles.z <= angleD)
             {
+                //¬Œ÷SE
+                audioSource.PlayOneShot(goodSE);
+
                 good.SetActive(true);
                 return;
             }
         }
 
         // ”ÍˆÍŠO‚Í‚·‚×‚Ä¸”s
+
+        //¸”sSE
+        audioSource.PlayOneShot(badSE);
+
         bad.SetActive(true);
     }
 

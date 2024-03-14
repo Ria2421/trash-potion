@@ -17,6 +17,10 @@ public class TutorialTestTubeManager : MonoBehaviour
     public GameObject veryGood;         //veryGoodテキストの指定
     public GameObject Bad;             //Badテキスト指定
     [SerializeField] Slider slider;   //スライダーの指定
+    [SerializeField] AudioClip veryGoodSE;      //大成功SE
+    [SerializeField] AudioClip goodSE;          //成功SE
+    [SerializeField] AudioClip badSE;           //失敗SE
+    [SerializeField] AudioSource audioSource;
 
     StartMiniGame tutorialMiniGame;
 
@@ -69,18 +73,30 @@ public class TutorialTestTubeManager : MonoBehaviour
 
                     if (slider.value >= 94)
                     {
+                        //失敗SE
+                        audioSource.PlayOneShot(badSE);
+
                         Bad.SetActive(true);//失敗テキストを表示にする
                     }
                     else if (slider.value >= 68 && slider.value < 84)
                     {
+                        //成功SE
+                        audioSource.PlayOneShot(goodSE);
+
                         good.SetActive(true);//成功テキストを表示にする
                     }
                     else if (slider.value >= 84 && slider.value < 94)
                     {
+                        //大成功SE
+                        audioSource.PlayOneShot(veryGoodSE);
+
                         veryGood.SetActive(true);//大成功テキストを表示にする
                     }
                     else if (slider.value < 68)
                     {
+                        //失敗SE
+                        audioSource.PlayOneShot(badSE);
+
                         Bad.SetActive(true);//失敗テキストを表示にする
                     }
                     tutorialMiniGame.NextButton.SetActive(true);
@@ -93,6 +109,9 @@ public class TutorialTestTubeManager : MonoBehaviour
 
                     if (slider.value >= 94)
                     {
+                        //失敗SE
+                        audioSource.PlayOneShot(badSE);
+
                         Bad.SetActive(true);//失敗テキストを表示にする
                     }
                 }

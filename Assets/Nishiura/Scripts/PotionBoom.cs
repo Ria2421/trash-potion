@@ -57,8 +57,7 @@ public class PotionBoom : MonoBehaviour
 
     void Start()
     {
-        randomCnt = Random.Range(0, 7);
-        bombCnt = 6 + randomCnt;
+        bombCnt = 6;
         potionType = new PotionType();
         gameDirector = GameObject.Find("GameDirector").GetComponent<GameDirectorCopy>();
     }

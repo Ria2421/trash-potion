@@ -1,7 +1,7 @@
 //
 // ゲームディレクタースクリプト
 // Name:西浦晃太 Date:02/07
-// Update:03/05
+// Update:03/07
 //
 using System;
 using System.Collections.Generic;
@@ -161,6 +161,19 @@ public class GameDirector : MonoBehaviour
     [SerializeField] GameObject[] Potion;
 
     /// <summary>
+    /// 各サウンドエフェクト
+    /// </summary>
+    public AudioClip deathSE;     //死亡時SE
+    public AudioClip debuffSE;    //デバフSE
+    public AudioClip buffSE;      //バフSE
+    public AudioClip boomSE;      //爆発時SE
+    public AudioClip selectSE;    //選択時SE
+    public AudioClip throwSE;     //投擲時SE
+    public AudioClip handClapSE;    //拍手SE
+    public AudioClip whistleSE;     //口笛SE
+    public AudioSource audioSource;
+
+    /// <summary>
     /// ゲーム終了テキスト
     /// </summary>
     [SerializeField] Text GameEndTXT;
@@ -183,14 +196,6 @@ public class GameDirector : MonoBehaviour
         get { return isMoved; }
     }
 
-    /// <summary>
-    /// 現在プレイヤーのターン変数のプロパティ
-    /// </summary>
-    public int NowPlayerType
-    {
-        get { return nowPlayerType; }
-    }
-
     ///========================================
     ///
     /// メソッド
@@ -203,6 +208,8 @@ public class GameDirector : MonoBehaviour
     void Start()
     {
         deadCnt = 0;
+
+        audioSource = GetComponent<AudioSource>();
 
         for (int i = 0; i < player.Length; i++)
         { //配列分のプレイヤーの構造体を生成
@@ -313,7 +320,7 @@ public class GameDirector : MonoBehaviour
     void Update()
     {
         if (deadCnt >= 3)
-        {
+        { //三人死んだらゲーム終了
             GameEnd();
         }
 
@@ -322,6 +329,7 @@ public class GameDirector : MonoBehaviour
             nowPlayerType = 0;
         }
 
+        //現在ターンのひとつ前のプレイヤーのタイプ
         oldType = nowPlayerType - 1;
 
         if (oldType == -1)
@@ -335,7 +343,7 @@ public class GameDirector : MonoBehaviour
         }
 
         if (player[oldType].TurnClock >= 5)
-        {
+        { //5ターン後爆破
             potionBoom.BoomPotion(type);
         }
 
@@ -431,6 +439,7 @@ public class GameDirector : MonoBehaviour
                             {
                                 selectUnit.GetComponent<UnitController>().Select(false);
                             }
+                            audioSource.PlayOneShot(selectSE);
                             selectUnit = unitData[z, x][0];
                             oldX = x;
                             oldY = z;
@@ -441,6 +450,7 @@ public class GameDirector : MonoBehaviour
                         { //移動先タイル選択
                             if (movableTile(oldX, oldY, x, z))
                             {
+                                audioSource.PlayOneShot(selectSE);
                                 isMoved = true;
                                 unitData[oldY, oldX].Clear();
                                 pos.y += 0.1f;
@@ -570,12 +580,15 @@ public class GameDirector : MonoBehaviour
     public void Brewing()
     {
         int rndPotion = r.Next(4);
-        if (player[nowPlayerType].PlayerState == PLAYERSTATE.PARALYSIS_STATE || player[nowPlayerType].PlayerState == PLAYERSTATE.FROZEN_STATE || player[nowPlayerType].IsDead == true)
-        { //しびれていた場合または凍っていた場合
+        if (player[nowPlayerType].PlayerState == PLAYERSTATE.PARALYSIS_STATE 
+            || player[nowPlayerType].PlayerState == PLAYERSTATE.FROZEN_STATE
+            || player[nowPlayerType].IsDead == true)
+        { //しびれていた場合または凍っていた場合 死亡していた場合
             Debug.Log((nowPlayerType + 1) + "Pはしびれている。ポーションが作れない！");
         }
         else
         {
+            audioSource.PlayOneShot(selectSE);
             if (player[nowPlayerType].OwnedPotionList?.Count >= 4)
             { //枠が埋まっていた場合
                 Debug.Log((nowPlayerType + 1) + "Pのポーション枠は満杯だ！！");
@@ -640,12 +653,14 @@ public class GameDirector : MonoBehaviour
     /// </summary>
     public void UsePotion(int buttonNum)
     {
-        if (player[nowPlayerType].PlayerState == PLAYERSTATE.FROZEN_STATE || player[nowPlayerType].IsDead == true)
+        if (player[nowPlayerType].PlayerState == PLAYERSTATE.FROZEN_STATE
+            || player[nowPlayerType].IsDead == true)
         { //凍っていた場合
             Debug.Log((nowPlayerType + 1) + "Pは凍っている。ポーションは使えない！");
         }
         else
         {
+            audioSource.PlayOneShot(selectSE);
             //枠別判定
             if (buttonNum == 1)
             { //1番目の場合
@@ -723,6 +738,7 @@ public class GameDirector : MonoBehaviour
 
                     if (Unit.GetComponent<UnitController>().Type == unitType)
                     { //当該ユニットを殺す
+                        audioSource.PlayOneShot(deathSE);
                         Destroy(Unit);
                         player[unitType].IsDead = true;
                         deadCnt++;
@@ -750,14 +766,17 @@ public class GameDirector : MonoBehaviour
 
                     if (Unit.GetComponent<UnitController>().Type == unitType)
                     {
+                        audioSource.PlayOneShot(buffSE);
                         switch (buffType)
                         { //バフポーション別処理
                             case TYPE.REFRESH: //リフレッシュポーションの処理
                                 player[unitType].PlayerState = PLAYERSTATE.NORMAL_STATE;
                                 break;
+
                             case TYPE.INVISIBLE: //無敵ポーションの処理
                                 player[unitType].PlayerState = PLAYERSTATE.INVICIBLE_STATE;
                                 break;
+
                             case TYPE.MUSCLE: //筋力ポーションの処理
                                 player[unitType].PlayerState = PLAYERSTATE.MUSCLE_STATE;
                                 break;
@@ -786,6 +805,7 @@ public class GameDirector : MonoBehaviour
 
                     if (Unit.GetComponent<UnitController>().Type == unitType)
                     {
+                        audioSource.PlayOneShot(debuffSE);
                         switch (debuffType)
                         { //バフポーション別処理
                             case TYPE.SOUR: //超スッパイポーションの処理
@@ -843,6 +863,7 @@ public class GameDirector : MonoBehaviour
                     unitData[z, x][0].GetComponent<UnitController>().OffThrowColliderEnable();
                     player[nowPlayerType].IsThrowed= true;
                     potionBoom = GameObject.FindWithTag("Potion").GetComponent<PotionBoom>();
+                    audioSource.PlayOneShot(throwSE);
                     nextMode = MODE.FIELD_UPDATE;
                 }
             }
@@ -857,7 +878,7 @@ public class GameDirector : MonoBehaviour
     {
         GameObject Unit;
         if (player[nowPlayerType].IsDead)
-        {
+        {　//死んでいた場合
             return new Vector3(0, 0, 0);
         }
         else
@@ -892,6 +913,8 @@ public class GameDirector : MonoBehaviour
             if (player[i].IsDead ==false)
             { //勝ち残ったプレイヤーナンバーを代入
                 wonPlayer = (i + 1);
+                audioSource.PlayOneShot(handClapSE);
+                audioSource.PlayOneShot(whistleSE);
             }
             else
             { //全員死亡していた場合

@@ -34,18 +34,12 @@ public class PotionBoom : MonoBehaviour
     int bombClock = 5;
 
     /// <summary>
-    /// ひとつ前のプレイヤータイプ
-    /// </summary>
-    int oldType;
-
-    /// <summary>
     /// プレイヤー配列
     /// </summary>
     Player[] player = new Player[4];
 
     void Start()
     {
-        oldType = 0;
         potionType = new PotionType();
 
         for (int i = 0; i < player.Length; i++)
@@ -54,35 +48,6 @@ public class PotionBoom : MonoBehaviour
         }
 
         gameDirector = GameObject.Find("GameDirector").GetComponent<GameDirector>();
-    }
-
-    void Update()
-    {
-        //oldType = gameDirector.NowPlayerType - 1;
-
-        //if (oldType == -1)
-        //{
-        //    oldType = 3;
-        //}
-
-        //if (oldType >= 4)
-        //{
-        //    oldType = 0;
-        //}
-
-
-        //if (player[oldType].TurnClock >= bombClock)
-        //{
-        //    BoomPotion(type);
-        //}
-
-        //for (int i = 0; i < player.Length; i++)
-        //{
-        //    if (player[i].TurnClock >= 6)
-        //    {
-        //        player[i].TurnClock = 0;
-        //    }
-        //}
     }
 
     /// <summary>
@@ -150,6 +115,7 @@ public class PotionBoom : MonoBehaviour
     /// </summary>
     void PotionKill()
     {
+        gameDirector.audioSource.PlayOneShot(gameDirector.boomSE);
         //ポーションを破壊
         Destroy(this.gameObject);
     }

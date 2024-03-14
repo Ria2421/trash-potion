@@ -214,7 +214,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 7b29b58fb118d96489bd3c9c5a914a2a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d6e20bcd00d09d744b21c0255cdc73e7, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2689,13 +2689,14 @@ GameObject:
   - component: {fileID: 753679328}
   - component: {fileID: 753679330}
   - component: {fileID: 753679329}
+  - component: {fileID: 753679331}
   m_Layer: 5
   m_Name: WinText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &753679328
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2712,8 +2713,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 272.45}
-  m_SizeDelta: {x: 800, y: 150}
+  m_AnchoredPosition: {x: 0, y: 237.71}
+  m_SizeDelta: {x: 1100, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &753679329
 MonoBehaviour:
@@ -2728,7 +2729,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2736,19 +2737,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 131
-    m_FontStyle: 3
+    m_Font: {fileID: 12800000, guid: 6a3cd150dfb75754d944bf823f43f64a, type: 3}
+    m_FontSize: 178
+    m_FontStyle: 2
     m_BestFit: 0
     m_MinSize: 10
-    m_MaxSize: 143
+    m_MaxSize: 190
     m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: "1P\u306E\u52DD\u3061\uFF01"
 --- !u!222 &753679330
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2757,6 +2758,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 753679327}
   m_CullTransparentMesh: 1
+--- !u!114 &753679331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 753679327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
+  m_EffectDistance: {x: 3, y: 3}
+  m_UseGraphicAlpha: 1
 --- !u!1 &794097552
 GameObject:
   m_ObjectHideFlags: 0
@@ -5188,7 +5204,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 74dac345ed5cd55458fd9c4e75e5d308, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 813380c91d0670a4a85ac2319d22e341, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5263,7 +5279,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 87cfdfb9a738b5d4eb4186eb69469def, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 699de465e97982a4bb23da4a53181b18, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5451,7 +5467,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1664032455}
-  - {fileID: 753679328}
   - {fileID: 106340521}
   - {fileID: 1532739332}
   - {fileID: 1827228233}
@@ -5461,6 +5476,7 @@ RectTransform:
   - {fileID: 254506367}
   - {fileID: 2078396392}
   - {fileID: 1137848151}
+  - {fileID: 753679328}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -6268,7 +6284,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 259ab2fd4140ff6488a3f0c3ddb18d67, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e1f5a4095d7c8074c99732cf3801c746, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

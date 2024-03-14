@@ -70,7 +70,8 @@ public enum TYPE
 {
     NONE = 0,
     NORMAL,     //ただのポーション
-    BOMB,       //ボムポーション
+    BOMB1,       //ボムポーション
+    BOMB2,       //ボムポーション
     CRUSTER,    //クラスターポーション
     FLAME,      //火炎ポーション
     REFRESH,    //リフレッシュポーション

@@ -504,15 +504,15 @@ public class GameDirector : MonoBehaviour
             {
                 if (rndPotion == 0)
                 { //枠1
-                    if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.BOMB))
-                    { //すでに同じポーションを所持していた場合
-                        Debug.Log((nowPlayerType + 1) + "Pのボムすでにあるよ");
-                    }
-                    else
-                    {
-                        BoomPotion[nowPlayerType].SetActive(true);
-                        player[nowPlayerType].OwnedPotionList.Add(TYPE.BOMB);
-                    }
+                    //if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.BOMB))
+                    //{ //すでに同じポーションを所持していた場合
+                    //    Debug.Log((nowPlayerType + 1) + "Pのボムすでにあるよ");
+                    //}
+                    //else
+                    //{
+                    //    BoomPotion[nowPlayerType].SetActive(true);
+                    //    player[nowPlayerType].OwnedPotionList.Add(TYPE.BOMB);
+                    //}
                 }
                 else if (rndPotion == 1)
                 { //枠２
@@ -567,62 +567,62 @@ public class GameDirector : MonoBehaviour
         else
         {
             //枠別判定
-            if (buttonNum == 1)
-            { //1番目の場合
-                if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.BOMB))
-                {
-                    ThrowPotion();
-                    GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
-                    BoomPotion[nowPlayerType].SetActive(false);                 //使用したポーションのアイコンを消す
-                    player[nowPlayerType].OwnedPotionList.Remove(TYPE.BOMB);    //使用したポーションをリストから削除する
-                }
-                else
-                {
-                    Debug.Log((nowPlayerType + 1) + "Pはまだ1枠目のポーションを作ってない!!");
-                }
-            }
-            else if (buttonNum == 2)
-            { //２番目の場合
-                if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.CURSE))
-                {
-                    ThrowPotion();
-                    GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
-                    DebuffPotion[nowPlayerType].SetActive(false);                //使用したポーションのアイコンを消す
-                    player[nowPlayerType].OwnedPotionList.Remove(TYPE.CURSE);    //使用したポーションをリストから削除する
-                }
-                else
-                {
-                    Debug.Log((nowPlayerType + 1) + "Pはまだ2枠目のポーションを作ってない!!");
-                }
-            }
-            else if (buttonNum == 3)
-            { //３番目の場合
-                if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.REFRESH))
-                {
-                    ThrowPotion();
-                    GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
-                    BuffPotion[nowPlayerType].SetActive(false);                    //使用したポーションのアイコンを消す
-                    player[nowPlayerType].OwnedPotionList.Remove(TYPE.REFRESH);    //使用したポーションをリストから削除する
-                }
-                else
-                {
-                    Debug.Log((nowPlayerType + 1) + "Pはまだ3枠目のポーションを作ってない!!");
-                }
-            }
-            else if (buttonNum == 4)
-            { //４番目の場合
-                if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.NORMAL))
-                {
-                    ThrowPotion();
-                    GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
-                    Potion[nowPlayerType].SetActive(false);                       //使用したポーションのアイコンを消す 
-                    player[nowPlayerType].OwnedPotionList.Remove(TYPE.NORMAL);    //使用したポーションをリストから削除する
-                }
-                else
-                {
-                    Debug.Log((nowPlayerType + 1) + "Pはまだ４枠目のポーションを作ってない!!");
-                }
-            }
+            //if (buttonNum == 1)
+            //{ //1番目の場合
+            //    if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.BOMB))
+            //    {
+            //        ThrowPotion();
+            //        GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
+            //        BoomPotion[nowPlayerType].SetActive(false);                 //使用したポーションのアイコンを消す
+            //        player[nowPlayerType].OwnedPotionList.Remove(TYPE.BOMB);    //使用したポーションをリストから削除する
+            //    }
+            //    else
+            //    {
+            //        Debug.Log((nowPlayerType + 1) + "Pはまだ1枠目のポーションを作ってない!!");
+            //    }
+            //}
+            //else if (buttonNum == 2)
+            //{ //２番目の場合
+            //    if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.CURSE))
+            //    {
+            //        ThrowPotion();
+            //        GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
+            //        DebuffPotion[nowPlayerType].SetActive(false);                //使用したポーションのアイコンを消す
+            //        player[nowPlayerType].OwnedPotionList.Remove(TYPE.CURSE);    //使用したポーションをリストから削除する
+            //    }
+            //    else
+            //    {
+            //        Debug.Log((nowPlayerType + 1) + "Pはまだ2枠目のポーションを作ってない!!");
+            //    }
+            //}
+            //else if (buttonNum == 3)
+            //{ //３番目の場合
+            //    if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.REFRESH))
+            //    {
+            //        ThrowPotion();
+            //        GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
+            //        BuffPotion[nowPlayerType].SetActive(false);                    //使用したポーションのアイコンを消す
+            //        player[nowPlayerType].OwnedPotionList.Remove(TYPE.REFRESH);    //使用したポーションをリストから削除する
+            //    }
+            //    else
+            //    {
+            //        Debug.Log((nowPlayerType + 1) + "Pはまだ3枠目のポーションを作ってない!!");
+            //    }
+            //}
+            //else if (buttonNum == 4)
+            //{ //４番目の場合
+            //    if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.NORMAL))
+            //    {
+            //        ThrowPotion();
+            //        GameObject.Find("Unit" + (nowPlayerType + 1) + "(Clone)").GetComponent<UnitController>().animator.SetBool("isThrow", true);     //そのポーションにあったアニメーションをする
+            //        Potion[nowPlayerType].SetActive(false);                       //使用したポーションのアイコンを消す 
+            //        player[nowPlayerType].OwnedPotionList.Remove(TYPE.NORMAL);    //使用したポーションをリストから削除する
+            //    }
+            //    else
+            //    {
+            //        Debug.Log((nowPlayerType + 1) + "Pはまだ４枠目のポーションを作ってない!!");
+            //    }
+            //}
         }
     }
 

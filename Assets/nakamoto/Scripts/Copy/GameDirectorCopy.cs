@@ -853,13 +853,13 @@ public class GameDirectorCopy : MonoBehaviour
 
             // 爆破ポーション1の生成
             BoomPotion1[plNo - 1].SetActive(true);
-            player[plNo - 1].OwnedPotionList.Add(TYPE.BOMB);
+            player[plNo - 1].OwnedPotionList.Add(TYPE.BOMB1);
         }
         else if (player[plNo - 1].OwnedPotionList.Count == 1)
         {
             // 爆破ポーション2の生成
             BoomPotion2[plNo - 1].SetActive(true);
-            player[plNo - 1].OwnedPotionList.Add(TYPE.BOMB);
+            player[plNo - 1].OwnedPotionList.Add(TYPE.BOMB2);
         }
     }
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -987,8 +987,21 @@ public class GameDirectorCopy : MonoBehaviour
         //投擲SE
         audioSource.PlayOneShot(throwSE);
 
-        BoomPotion1[nowPlayerType].SetActive(false);                //使用したポーションのアイコンを消す
-        player[nowPlayerType].OwnedPotionList.Remove(TYPE.BOMB);    //使用したポーションをリストから削除する
+        ///////////
+        if (player[nowPlayerType].OwnedPotionList.Count == 1)
+        {   // ポーションの持ち数が０個の時
+
+            // 爆破ポーション1の生成
+            BoomPotion1[nowPlayerType].SetActive(false);                //使用したポーションのアイコンを消す
+            player[nowPlayerType].OwnedPotionList.Remove(TYPE.BOMB1);    //使用したポーションをリストから削除する
+        }
+        else if (player[nowPlayerType].OwnedPotionList.Count == 2)
+        {
+            // 爆破ポーション2の生成
+            BoomPotion2[nowPlayerType].SetActive(false);                //使用したポーションのアイコンを消す
+            player[nowPlayerType].OwnedPotionList.Remove(TYPE.BOMB2);    //使用したポーションをリストから削除する
+        }
+        
 
         Vector3 PlPos = SerchUnit((nowPlayerType + 1));
 
@@ -1025,7 +1038,7 @@ public class GameDirectorCopy : MonoBehaviour
                 //枠別判定
                 if (buttonNum == 1)
                 { //1番目の場合
-                    if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.BOMB))
+                    if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.BOMB1))
                     {
                         // 移動情報送信後に生成フラグをfalseに戻す
                         generateFlag = false;
@@ -1042,7 +1055,7 @@ public class GameDirectorCopy : MonoBehaviour
                 }
                 else if (buttonNum == 2)
                 { //２番目の場合
-                    if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.BOMB))
+                    if (player[nowPlayerType].OwnedPotionList.Contains(TYPE.BOMB2))
                     {
                         // 移動情報送信後に生成フラグをfalseに戻す
                         generateFlag = false;

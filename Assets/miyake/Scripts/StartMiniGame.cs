@@ -79,8 +79,7 @@ public class TutorialStartMiniGame : MonoBehaviour
     void LotteryGame()
     {
         //1`3‚Ì”š‚ğƒ‰ƒ“ƒ_ƒ€‚Å‘ã“üB–¢–‚Å’Š‘I
-        //gameNum = Random.Range(1, 4);
-        gameNum = 3;
+        gameNum = Random.Range(1, 4);
 
 
         if (gameNum == 1)

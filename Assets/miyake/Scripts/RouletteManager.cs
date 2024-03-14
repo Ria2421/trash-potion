@@ -22,6 +22,7 @@ public class RouletteManager : MonoBehaviour
     public Text limitTime;              //ミニゲームの制限時間
     int limit;                          //制限時間の変数
     bool isLimit;                     //制限時間を超えたかどうか
+    NetworkManager networkManager;
     [SerializeField] AudioClip veryGoodSE;      //大成功SE
     [SerializeField] AudioClip goodSE;          //成功SE
     [SerializeField] AudioClip badSE;           //失敗SE
@@ -36,6 +37,9 @@ public class RouletteManager : MonoBehaviour
         isLimit = false;
         //1秒ごとに関数を実行
         InvokeRepeating("CountDownTimer", 3.0f, 1.0f);
+
+        // ネットワークマネージャーの取得
+        networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
     }
 
     // Update is called once per frame
@@ -83,6 +87,9 @@ public class RouletteManager : MonoBehaviour
 
                 verygood.SetActive(true);
 
+                // 生成情報の送信
+                networkManager.SendPotionStatus((int)EventID.PotionComplete);
+
                 return;
             }
         }
@@ -94,6 +101,9 @@ public class RouletteManager : MonoBehaviour
                 audioSource.PlayOneShot(veryGoodSE);
 
                 verygood.SetActive(true);
+
+                // 生成情報の送信
+                networkManager.SendPotionStatus((int)EventID.PotionComplete);
                 return;
             }
         }
@@ -108,6 +118,9 @@ public class RouletteManager : MonoBehaviour
                 audioSource.PlayOneShot(goodSE);
 
                 good.SetActive(true);
+
+                // 生成情報の送信
+                networkManager.SendPotionStatus((int)EventID.PotionComplete);
                 return;
             }
         }
@@ -119,6 +132,9 @@ public class RouletteManager : MonoBehaviour
                 audioSource.PlayOneShot(goodSE);
 
                 good.SetActive(true);
+
+                // 生成情報の送信
+                networkManager.SendPotionStatus((int)EventID.PotionComplete);
                 return;
             }
         }
@@ -129,6 +145,9 @@ public class RouletteManager : MonoBehaviour
         audioSource.PlayOneShot(badSE);
 
         bad.SetActive(true);
+
+        // 失敗情報の送信
+        networkManager.SendPotionStatus((int)EventID.PotionFailure);
     }
 
     //void CountDownTimer()

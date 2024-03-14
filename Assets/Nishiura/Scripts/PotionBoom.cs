@@ -46,13 +46,19 @@ public class PotionBoom : MonoBehaviour
     int bombCnt;
 
     /// <summary>
+    /// ランダム加算カウント
+    /// </summary>
+    int randomCnt;
+
+    /// <summary>
     /// カウントテキスト
     /// </summary>
     [SerializeField] Text countText;
 
     void Start()
     {
-        bombCnt = 6;
+        randomCnt = Random.Range(0, 7);
+        bombCnt = 6 + randomCnt;
         potionType = new PotionType();
         gameDirector = GameObject.Find("GameDirector").GetComponent<GameDirectorCopy>();
     }

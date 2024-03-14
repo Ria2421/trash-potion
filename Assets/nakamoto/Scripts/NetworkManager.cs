@@ -595,4 +595,19 @@ public class NetworkManager : MonoBehaviour
         buffer = buffer.Prepend((byte)EventID.PotionSetPos).ToArray();  // 送信データの先頭にイベントIDを付与
         await stream.WriteAsync(buffer, 0, buffer.Length);              // JSON送信処理
     }
+
+    //----------------------------------------------------------------------------
+    // ゲーム終了フラグ送信処理 ----------------------
+    /// <summary>
+    /// 投擲位置を送信
+    /// </summary>
+    public async void SendEndFlag()
+    {
+        string data = "";
+
+        // 送信処理
+        byte[] buffer = Encoding.UTF8.GetBytes(data);              // JSONをbyteに変換
+        buffer = buffer.Prepend((byte)EventID.GameEnd).ToArray();  // 送信データの先頭にイベントIDを付与
+        await stream.WriteAsync(buffer, 0, buffer.Length);         // JSON送信処理
+    }
 }

@@ -31,7 +31,7 @@ public class PlayerRank : MonoBehaviour
     void Start()
     {
         networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
-
+        //PlayerRank.WinnerID = new int[] { 0, 1,2,3};
         //プレイヤーが一人の場合
         if (WinnerID.Length == 1)
         {
@@ -45,9 +45,9 @@ public class PlayerRank : MonoBehaviour
         else
         {
             // プレハブを指定の位置に生成し、180度回転させる
-            for (int i = 0; i < 4; ++i)
+            for (int i = 0; i <WinnerID.Length ; ++i)
             {   // プレイヤーの数だけ繰り返し、キャラクターを生成
-                Instantiate(characterPrefabs[WinnerID[i]], new Vector3(0.60f, 0f, -5f), Quaternion.Euler(0f, 180f, 0f));
+                Instantiate(characterPrefabs[WinnerID[i]], new Vector3(i * 1.20f-1.2f, 0f, -5f), Quaternion.Euler(0f, 180f, 0f));
             }
 
             // 引き分け

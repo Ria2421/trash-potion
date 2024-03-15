@@ -32,7 +32,7 @@ public class NetworkManager : MonoBehaviour
     /// <summary>
     /// 接続先IPアドレス
     /// </summary>
-    const string ipAddress = "20.196.200.136";
+    const string ipAddress = "20.194.122.141";
 
     // ↑ローカル時は"127.0.0.1"
 

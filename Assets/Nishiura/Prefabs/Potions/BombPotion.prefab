@@ -5262,7 +5262,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.025, y: 0.05, z: 0.3}
+  m_Size: {x: 0.025, y: 0.05, z: 0.8}
   m_Center: {x: 0, y: 0.03, z: 0}
 --- !u!65 &4273403318915696137
 BoxCollider:
@@ -5283,7 +5283,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.3, y: 0.05, z: 0.025}
+  m_Size: {x: 0.8, y: 0.05, z: 0.025}
   m_Center: {x: 0, y: 0.03, z: 0}
 --- !u!54 &6530936349448090551
 Rigidbody:
@@ -5324,6 +5324,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d9349266b2f0d44baa6a1341748f938, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioSource: {fileID: 0}
+  boomSE: {fileID: 0}
   explosionPrefab: {fileID: 183818, guid: 64d48cc8be380db4c9285fafe8c3c0a8, type: 3}
   countText: {fileID: 4461175432402873452}
 --- !u!1 &6402646069549422861
